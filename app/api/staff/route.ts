@@ -1,0 +1,37 @@
+import { NextRequest, NextResponse } from "next/server";
+import { PrismaClient } from "@/generated/client";
+import bcrypt from "bcryptjs";
+
+const prisma = new PrismaClient();
+
+export async function POST(request: NextRequest) {
+  try {
+    const { name, email, password, role } = await request.json();
+
+    if (!name || !email || !password || !role) {
+      return NextResponse.json({ error: "All fields are required." }, { status: 400 });
+    }
+
+    // Check if user already exists
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) {
+      return NextResponse.json({ error: "User with this email already exists." }, { status: 400 });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        role, // 'staff' or 'admin'
+      },
+    });
+
+    return NextResponse.json({ message: "Staff member created.", user }, { status: 201 });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Internal server error." }, { status: 500 });
+  }
+}

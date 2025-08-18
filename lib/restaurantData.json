@@ -1,0 +1,123 @@
+{
+    "brand": {
+      "name": "Mafi Restaurant",
+      "tagline": "Fine dining, warm hospitality.",
+      "shortDescription": "A modern restaurant offering signature Ethiopian and international dishes, plus elegant meeting halls for events."
+    },
+    "location": {
+      "address": "Mebrat Hail, Adama, Ethiopia",
+      "mapUrl": "https://maps.google.com",
+      "landmarks": ["Central business district", "Close to major hotels"]
+    },
+    "contact": {
+      "phone": "+251 912 345 678",
+      "email": "mafirestaurant@gmail.com",
+      "website": "https://mafirestaurant.com",
+      "social": {
+        "facebook": "https://facebook.com/mafirestaurant",
+        "instagram": "https://instagram.com/mafirestaurant",
+        "tiktok": "https://www.tiktok.com/@mafirestaurant"
+      }
+    },
+    "hours": [
+      { "days": "Mon-Sun", "open": "09:00", "close": "22:00" }
+    ],
+    "services": {
+      "reservations": {
+        "howToBook": "Use the /booking page or call us for assistance.",
+        "emailTemplateHint": "We’ll open your email client pre-filled; just send to confirm."
+      },
+      "meetingHalls": {
+        "summary": "Five halls: one large (~200 guests) and four smaller (~50 each).",
+        "amenities": ["Professional setup", "Audio/Visual support", "Catering options"],
+        "bookingNotes": [
+          "Date/time subject to confirmation",
+          "Custom layouts and decorations available"
+        ],
+        "capacity": {
+          "largeHall": 200,
+          "smallHallEach": 50,
+          "totalSmallHalls": 4
+        }
+      },
+      "catering": {
+        "available": true,
+        "notes": "On-site and event catering available. Custom menus by request."
+      },
+      "delivery": {
+        "available": false,
+        "notes": "Pick-up available; delivery coming soon."
+      }
+    },
+    "menu": {
+      "signature": [
+        {
+          "title": "Mixed Grill",
+          "description": "Mixed lamb, chicken, sausage, steak served with roasted tomatoes and fries, topped with red wine sauce."
+        },
+        {
+          "title": "Roast Chicken",
+          "description": "Roasted boneless chicken legs with fries and seasonal vegetables, topped with tomato garlic butter sauce."
+        },
+        {
+          "title": "Beef or Chicken Fajita",
+          "description": "Sliced beef or chicken with peppers and onions; served with sides."
+        },
+        {
+          "title": "Rolled Beef",
+          "description": "Beef roll stuffed with ricotta and spinach, served with mashed potatoes and seasonal vegetables."
+        },
+        {
+          "title": "Fish & Chips",
+          "description": "Crispy tilapia, fries, and tartar sauce."
+        },
+        {
+          "title": "Fish Cutlet",
+          "description": "Breaded fish fillet with sweet & sour sauce, served with mashed potatoes and vegetables."
+        },
+        {
+          "title": "Grilled Fish",
+          "description": "Grilled tilapia or Nile perch with spinach & parsley potatoes; garlic lemon butter or sweet & sour sauce."
+        },
+        {
+          "title": "Stuffed Chicken Breast",
+          "description": "Spinach & ricotta stuffed chicken breast with curry rice and vegetables; creamy white wine sauce."
+        }
+      ],
+      "notes": [
+        "Seasonal specials may rotate.",
+        "Please inform us of allergies or dietary requirements."
+      ]
+    },
+    "policies": {
+      "booking": [
+        "Booking requests are pending until confirmed by staff.",
+        "Email confirmation includes deposit details if applicable."
+      ],
+      "allergens": [
+        "Please disclose allergies; we take precautions but cannot guarantee 100% allergen-free."
+      ]
+    },
+    "developers": [
+      { "name": "Robel", "role": "Full‑stack developer" },
+      { "name": "Abenezer", "role": "Frontend developer" }
+    ],
+    "faqs": [
+      {
+        "q": "Do you have meeting halls?",
+        "a": "Yes. One large hall (~200 guests) and four small halls (~50 each). Book via /booking or call us."
+      },
+      {
+        "q": "How do I make a reservation?",
+        "a": "Use the /booking page for meeting halls, or call us for restaurant table reservations."
+      },
+      {
+        "q": "What are your opening hours?",
+        "a": "Daily from 09:00 to 22:00."
+      }
+    ],
+    "meta": {
+      "lastUpdated": "2025-08-01"
+    }
+  }
+  
