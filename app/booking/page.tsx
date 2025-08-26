@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
+import  Image  from "next/image";
 import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -169,11 +170,11 @@ export default function Booking() {
       } else {
         throw new Error(data.error || "Failed to submit booking");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       showAlert(
         "error",
         "Booking Failed",
-        error.message || "Please try again or contact us."
+        (error as Error)?.message || "Please try again or contact us."
       );
       console.error("Error submitting booking:", error);
     } finally {
@@ -199,7 +200,7 @@ export default function Booking() {
             </p>
             <div className="flex justify-center mb-10">
               <div className="relative overflow-hidden rounded-2xl shadow-elegant group transition-all duration-500">
-                <img
+                <Image
                   src="/lovable-uploads/75f0a2e1-ceb5-407b-bd2a-4b02d7c7d5e0.png"
                   alt="Mafi Restaurant Meeting Hall"
                   className="block w-full max-w-xl h-72 object-cover transition-all duration-500 group-hover:scale-105 group-hover:shadow-[0_0_40px_10px_rgba(212,175,55,0.4)] group-hover:ring-4 group-hover:ring-[#d4af37]/40"
@@ -379,12 +380,12 @@ export default function Booking() {
                           const prev = new Date(formData.bookingAt);
                           withTime.setHours(prev.getHours(), prev.getMinutes());
                         }
-                        handleInputChange({
-                          target: {
-                            name: "bookingAt",
-                            value: withTime.toISOString(),
-                          },
-                        } as any);
+                                                  handleInputChange({
+                            target: {
+                              name: "bookingAt",
+                              value: withTime.toISOString(),
+                            },
+                          } as React.ChangeEvent<HTMLInputElement>);
                       }}
                     />
                     </div>
@@ -413,7 +414,7 @@ export default function Booking() {
                               name: "bookingAt",
                               value: newDate.toISOString(),
                             },
-                          } as any);
+                          } as React.ChangeEvent<HTMLInputElement>);
                         }}
                         className="w-full border-primary/30 bg-background focus:border-primary"
                       />

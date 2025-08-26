@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Star, MapPin, Clock } from "lucide-react";
+import { Star, MapPin, Clock } from "lucide-react";
 
 const HeroSection = () => {
   return (

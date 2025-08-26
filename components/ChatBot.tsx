@@ -47,13 +47,7 @@ const ChatBot = () => {
     scrollToBottom();
   }, [messages]);
 
-  const quickReplies = [
-    "Make a reservation",
-    "View our menu",
-    "Opening hours",
-    "Location & directions",
-    "Contact information",
-  ];
+
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
@@ -88,10 +82,10 @@ const ChatBot = () => {
         throw new Error("Failed to fetch AI response");
       }
 
-      let data: any = {};
+      let data: { reply?: string; sources?: Array<{ id: string; section: string }> } = {};
       try {
         data = await response.json();
-      } catch (_) {
+      } catch {
         data = {};
       }
       const botResponseRaw = typeof data.reply === "string" ? data.reply : "";
@@ -106,11 +100,11 @@ const ChatBot = () => {
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, botMessage]);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error sending message to API:", error);
       const errorMessage: Message = {
         id: messages.length + 2,
-        text: error?.name === 'AbortError' 
+        text: (error as Error)?.name === 'AbortError' 
           ? "Request timed out. Please try again."
           : "Sorry, I'm having trouble connecting right now. Please try again later.",
         isBot: true,

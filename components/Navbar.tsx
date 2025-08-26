@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, MouseEvent } from "react";
-import { cn } from "../lib/utils"
+import { cn } from "../lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -16,25 +16,25 @@ const sections = [
 ];
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
+  // Consolidated scroll effect for efficiency.
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      // Use a single state variable to track the scroll position.
+      setScrolled(window.scrollY > 10);
+    };
+
+    // Call it once on mount to set the initial state.
     handleScroll();
+    // Use a passive event listener for better performance.
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   const toggleMenu = () => setIsOpen((v) => !v);
@@ -42,13 +42,17 @@ export default function Navbar() {
   const hrefFor = (id: string) => (pathname === "/" ? `#${id}` : `/#${id}`);
 
   const handleSectionClick = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
-    if (pathname !== "/") return;
-    e.preventDefault();
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-      history.replaceState(null, "", `#${id}`);
+    // Only prevent default and scroll if we're on the homepage.
+    if (pathname === "/") {
+      e.preventDefault();
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        // Use window.history for correct URL state management.
+        window.history.replaceState(null, "", `#${id}`);
+      }
     }
+    // Always close the mobile menu after a click.
     setIsOpen(false);
   };
 
@@ -67,13 +71,7 @@ export default function Navbar() {
           <Link
             href="/"
             onClick={(e) => {
-              if (pathname === "/") {
-                e.preventDefault();
-                const el = document.getElementById("hero");
-                el?.scrollIntoView({ behavior: "smooth", block: "start" });
-                history.replaceState(null, "", `#hero`);
-              }
-              setIsOpen(false);
+              handleSectionClick(e, "hero");
             }}
             className="flex items-center group"
             aria-label="Go to homepage"
@@ -113,6 +111,7 @@ export default function Navbar() {
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-full border border-primary/30 text-primary hover:text-background hover:bg-primary transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
+              aria-label="Visit our TikTok"
             >
               <FaTiktok className="h-5 w-5" />
             </a>
@@ -125,7 +124,11 @@ export default function Navbar() {
               onClick={toggleMenu}
               className="text-primary hover:text-primary-glow hover:bg-primary/10 transition-all duration-300 h-12 w-12 rounded-xl flex items-center justify-center"
             >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
@@ -146,7 +149,6 @@ export default function Navbar() {
                   </span>
                 </Link>
               ))}
-
               {/* TikTok in mobile menu */}
               <a
                 href="https://www.tiktok.com/@mafirestaurant"

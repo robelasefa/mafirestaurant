@@ -12,7 +12,7 @@ export async function PATCH(
     const body = await request.json();
     const { status } = body;
 
-    if (!status || !VALID_STATUSES.includes(status as any)) {
+    if (!status || !VALID_STATUSES.includes(status as typeof VALID_STATUSES[number])) {
       return NextResponse.json(
         { error: "Invalid status. Must be pending, approved, or rejected." },
         { status: 400 }

@@ -36,7 +36,7 @@ export default function Login() {
         // Redirect to staff booking management page
         router.push("/staff/manage-bookings");
       }
-    } catch (err) {
+    } catch {
       setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);

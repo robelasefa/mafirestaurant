@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Star, Award, Users, Clock, MapPin, Heart, Sparkles } from "lucide-react";
+import { Award, Clock, MapPin, Heart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const AboutUs = () => {
@@ -107,7 +107,7 @@ const AboutUs = () => {
                         experiences that celebrate both tradition and innovation.
                       </p>
                       <p>
-                        Today, we've become a beloved destination for locals and visitors alike, known for our 
+                        Today, we&apos;ve become a beloved destination for locals and visitors alike, known for our 
                         commitment to quality ingredients, exceptional service, and warm hospitality.
                       </p>
                       <p>
@@ -134,7 +134,7 @@ const AboutUs = () => {
 
                       <div className="bg-background-subtle/50 p-6 rounded-xl border border-primary/20">
                         <h4 className="text-lg font-semibold text-primary">Adama City Administration</h4>
-                        <p className="text-sm text-foreground-muted">Honored for contributions to the city's hospitality sector.</p>
+                        <p className="text-sm text-foreground-muted">Honored for contributions to the city&apos;s hospitality sector.</p>
                       </div>
                     </div>
                   </div>
