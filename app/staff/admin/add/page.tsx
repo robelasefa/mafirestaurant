@@ -6,9 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-export const metadata = {
-  title: "Add Staff Member | Mafi Restaurant",
-};
 
 export default function AddStaff() {
   useEffect(() => {
