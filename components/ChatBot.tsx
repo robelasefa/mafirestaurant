@@ -12,6 +12,19 @@ interface Message {
   timestamp: Date;
 }
 
+// Simple markdown parser for basic formatting
+const formatMarkdown = (text: string) => {
+  return text
+    // Bold text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    // Italic text
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    // Links
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">$1</a>')
+    // Line breaks
+    .replace(/\n/g, '<br />');
+};
+
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
@@ -58,7 +71,7 @@ const ChatBot = () => {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
       
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -176,11 +189,13 @@ const ChatBot = () => {
                             : "p-3 bg-primary text-primary-foreground shadow-gold"
                         }`}
                       >
-                        <p className={`text-sm leading-relaxed ${
+                        <div className={`text-sm leading-relaxed ${
                           message.isBot && message.id === 1 ? "font-medium" : ""
-                        }`}>
-                          {message.text}
-                        </p>
+                        }`}
+                        dangerouslySetInnerHTML={{ 
+                          __html: message.isBot ? formatMarkdown(message.text) : message.text 
+                        }}
+                        />
                       </div>
                       <p
                         className={`text-xs text-foreground-muted ${

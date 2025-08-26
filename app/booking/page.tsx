@@ -346,7 +346,7 @@ export default function Booking() {
                     >
                       <span className="flex items-center gap-2">
                         📅
-                        {formData.bookingAt ? (
+                      {formData.bookingAt ? (
                           new Date(formData.bookingAt).toLocaleDateString('en-US', {
                             weekday: 'short',
                             month: 'short',
@@ -362,31 +362,31 @@ export default function Booking() {
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <div className="p-4">
-                      <Calendar
-                        mode="single"
-                        selected={
-                          formData.bookingAt
-                            ? new Date(formData.bookingAt)
-                            : undefined
+                    <Calendar
+                      mode="single"
+                      selected={
+                        formData.bookingAt
+                          ? new Date(formData.bookingAt)
+                          : undefined
+                      }
+                      onSelect={(date) => {
+                        if (!date) return;
+                        // default to 12:00 PM if no time exists yet
+                        const withTime = new Date(date);
+                        if (!formData.bookingAt) {
+                          withTime.setHours(12, 0, 0, 0);
+                        } else {
+                          const prev = new Date(formData.bookingAt);
+                          withTime.setHours(prev.getHours(), prev.getMinutes());
                         }
-                        onSelect={(date) => {
-                          if (!date) return;
-                          // default to 12:00 PM if no time exists yet
-                          const withTime = new Date(date);
-                          if (!formData.bookingAt) {
-                            withTime.setHours(12, 0, 0, 0);
-                          } else {
-                            const prev = new Date(formData.bookingAt);
-                            withTime.setHours(prev.getHours(), prev.getMinutes());
-                          }
-                          handleInputChange({
-                            target: {
-                              name: "bookingAt",
-                              value: withTime.toISOString(),
-                            },
-                          } as any);
-                        }}
-                      />
+                        handleInputChange({
+                          target: {
+                            name: "bookingAt",
+                            value: withTime.toISOString(),
+                          },
+                        } as any);
+                      }}
+                    />
                     </div>
                     <div className="p-4 border-t border-primary/10 bg-background-subtle rounded-b-xl">
                       <Label className="text-sm font-medium text-foreground mb-2 block">Time</Label>
