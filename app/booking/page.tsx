@@ -9,19 +9,23 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useAlert } from "@/components/providers/AlertProvider";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-
 
 export default function Booking() {
   useEffect(() => {
-    document.title = "Booking | Mafi Restaurant"
+    document.title = "Booking | Mafi Restaurant";
   }, []);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     organization: "",
     bookingAt: "",
     purpose: "",
@@ -34,11 +38,51 @@ export default function Booking() {
 
   const validateField = (name: string, value: string) => {
     let error = "";
-    if (!value && name !== "organization") {
-      error = "This field is required";
+  
+    switch (name) {
+      case "name":
+        if (!value.trim()) error = "Please enter your full name.";
+        else if (value.trim().length < 3) error = "Name must be at least 3 characters.";
+        break;
+  
+      case "email":
+        if (!value) error = "Email is required.";
+        else {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(value)) error = "Enter a valid email address.";
+        }
+        break;
+  
+      case "phone":
+        if (!value) error = "Phone number is required.";
+        else {
+          const phoneRegex = /^0(9|7)\d{2}\d{3}\d{3}$/;
+          if (!phoneRegex.test(value)) error = "Enter a valid Ethiopian phone number.";
+        }
+        break;
+  
+      case "bookingAt":
+        if (!value) error = "Please select a date and time.";
+        else {
+          const selectedDate = new Date(value);
+          if (isNaN(selectedDate.getTime())) {
+            error = "Invalid date format.";
+          } else if (selectedDate < new Date()) {
+            error = "Booking date must be in the future.";
+          }
+        }
+        break;
+  
+      case "purpose":
+        if (!value.trim()) error = "Purpose is required.";
+        else if (value.trim().length < 10) error = "Please provide more details (min 10 chars).";
+        break;
     }
+  
     return error;
   };
+  
+  
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -73,61 +117,69 @@ export default function Booking() {
       (field) => formData[field as keyof typeof formData].trim() !== ""
     );
 
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-    
-      // Final validation
-      const newErrors: Record<string, string> = {};
-      Object.keys(formData).forEach((field) => {
-        newErrors[field] = validateField(
-          field,
-          formData[field as keyof typeof formData]
-        );
-      });
-      setErrors(newErrors);
-      setTouched(
-        Object.keys(formData).reduce(
-          (acc, field) => ({ ...acc, [field]: true }),
-          {}
-        )
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Final validation
+    const newErrors: Record<string, string> = {};
+    Object.keys(formData).forEach((field) => {
+      newErrors[field] = validateField(
+        field,
+        formData[field as keyof typeof formData]
       );
-      if (Object.values(newErrors).some((err) => err)) return;
-    
-      setIsSubmitting(true);
-    
-      try {
-        const response = await fetch("/api/bookings", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
+    });
+    setErrors(newErrors);
+    setTouched(
+      Object.keys(formData).reduce(
+        (acc, field) => ({ ...acc, [field]: true }),
+        {}
+      )
+    );
+    if (Object.values(newErrors).some((err) => err)) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          organization: "",
+          bookingAt: "",
+          purpose: "",
         });
-    
-        const data = await response.json();
-    
-        if (response.ok) {
-          setFormData({
-            name: "",
-            email: "",
-            organization: "",
-            bookingAt: "",
-            purpose: "",
-          });
-    
-          showAlert("success", "Booking Successful", data.message);
-          router.push("/");
-        } else {
-          throw new Error(data.message || "Failed to submit booking");
-        }
-      } catch (error: any) {
-        showAlert("error", "Booking Failed", error.message || "Please try again or contact us.");
-        console.error("Error submitting booking:", error);
-      } finally {
-        setIsSubmitting(false);
+
+        showAlert(
+          "success",
+          "Booking Request Sent",
+          "Your request is pending approval."
+        );
+        router.push("/");
+      } else {
+        throw new Error(data.error || "Failed to submit booking");
       }
-    };
-    ;
+    } catch (error: any) {
+      showAlert(
+        "error",
+        "Booking Failed",
+        error.message || "Please try again or contact us."
+      );
+      console.error("Error submitting booking:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="bg-background">
@@ -139,10 +191,11 @@ export default function Booking() {
               Book Our Meeting Hall
             </h2>
             <p className="text-lg md:text-xl text-foreground-muted max-w-2xl mx-auto mb-10 leading-8 text-center">
-              We offer <strong>5 meeting halls</strong> — one large hall that accommodates
-              approximately <strong>200 guests</strong>, and four smaller halls each holding
-              around <strong>50 guests</strong>. Perfect for corporate meetings, workshops,
-              and special celebrations.
+              We offer <strong>5 meeting halls</strong> — one large hall that
+              accommodates approximately <strong>200 guests</strong>, and four
+              smaller halls each holding around <strong>50 guests</strong>.
+              Perfect for corporate meetings, workshops, and special
+              celebrations.
             </p>
             <div className="flex justify-center mb-10">
               <div className="relative overflow-hidden rounded-2xl shadow-elegant group transition-all duration-500">
@@ -172,10 +225,11 @@ export default function Booking() {
                   aria-invalid={!!errors.name && touched.name}
                   aria-describedby="name-error"
                   required
-                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 ${errors.name && touched.name
-                    ? "border-amber-500 focus:ring-amber-500/20"
-                    : "hover:border-primary/50"
-                    }`}
+                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 ${
+                    errors.name && touched.name
+                      ? "border-amber-500 focus:ring-amber-500/20"
+                      : "hover:border-primary/50"
+                  }`}
                 />
                 {errors.name && touched.name && (
                   <p
@@ -204,10 +258,11 @@ export default function Booking() {
                   aria-describedby="email-error"
                   required
                   placeholder="your@email.com"
-                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 ${errors.email && touched.email
-                    ? "border-amber-500 focus:ring-amber-500/20"
-                    : "hover:border-primary/50"
-                    }`}
+                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 ${
+                    errors.email && touched.email
+                      ? "border-amber-500 focus:ring-amber-500/20"
+                      : "hover:border-primary/50"
+                  }`}
                 />
                 {errors.email && touched.email && (
                   <p
@@ -216,6 +271,39 @@ export default function Booking() {
                   >
                     <span className="w-1.5 h-1.5 bg-amber-500 rounded-full mr-2"></span>
                     {errors.email}
+                  </p>
+                )}
+              </div>
+
+              {/* Phone */}
+              <div>
+                <Label htmlFor="phone" className="text-primary font-medium">
+                  Phone Number *
+                </Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  onBlur={handleBlur}
+                  aria-invalid={!!errors.phone && touched.phone}
+                  aria-describedby="phone-error"
+                  required
+                  placeholder="+251 9XX XXX XXX"
+                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 ${
+                    errors.phone && touched.phone
+                      ? "border-amber-500 focus:ring-amber-500/20"
+                      : "hover:border-primary/50"
+                  }`}
+                />
+                {errors.phone && touched.phone && (
+                  <p
+                    id="phone-error"
+                    className="mt-2 text-sm text-amber-600 flex items-center"
+                  >
+                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full mr-2"></span>
+                    {errors.phone}
                   </p>
                 )}
               </div>
@@ -248,68 +336,86 @@ export default function Booking() {
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
-                      className={`w-full justify-start text-left font-normal mt-2 ${
+                      className={`w-full justify-start text-left font-normal mt-2 h-11 px-4 ${
                         !formData.bookingAt ? "text-muted-foreground" : ""
                       } ${
                         errors.bookingAt && touched.bookingAt
                           ? "border-amber-500 focus:ring-amber-500/20"
-                          : "hover:border-primary/50 border-primary/20"
+                          : "hover:border-primary/50 border-primary/30 bg-background-subtle"
                       }`}
                     >
-                      {formData.bookingAt ? (
-                        new Date(formData.bookingAt).toLocaleString()
-                      ) : (
-                        <span>Select date & time</span>
-                      )}
+                      <span className="flex items-center gap-2">
+                        📅
+                        {formData.bookingAt ? (
+                          new Date(formData.bookingAt).toLocaleDateString('en-US', {
+                            weekday: 'short',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })
+                        ) : (
+                          "Select date & time"
+                        )}
+                      </span>
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={formData.bookingAt ? new Date(formData.bookingAt) : undefined}
-                      onSelect={(date) => {
-                        if (!date) return
-                        // default to 12:00 PM if no time exists yet
-                        const withTime = new Date(date)
-                        if (!formData.bookingAt) {
-                          withTime.setHours(12, 0, 0, 0)
-                        } else {
-                          const prev = new Date(formData.bookingAt)
-                          withTime.setHours(prev.getHours(), prev.getMinutes())
+                    <div className="p-4">
+                      <Calendar
+                        mode="single"
+                        selected={
+                          formData.bookingAt
+                            ? new Date(formData.bookingAt)
+                            : undefined
                         }
-                        handleInputChange({
-                          target: {
-                            name: "bookingAt",
-                            value: withTime.toISOString(),
-                          },
-                        } as any)
-                      }}
-                      initialFocus
-                    />
-                    <div className="p-3 border-t border-muted">
+                        onSelect={(date) => {
+                          if (!date) return;
+                          // default to 12:00 PM if no time exists yet
+                          const withTime = new Date(date);
+                          if (!formData.bookingAt) {
+                            withTime.setHours(12, 0, 0, 0);
+                          } else {
+                            const prev = new Date(formData.bookingAt);
+                            withTime.setHours(prev.getHours(), prev.getMinutes());
+                          }
+                          handleInputChange({
+                            target: {
+                              name: "bookingAt",
+                              value: withTime.toISOString(),
+                            },
+                          } as any);
+                        }}
+                      />
+                    </div>
+                    <div className="p-4 border-t border-primary/10 bg-background-subtle rounded-b-xl">
+                      <Label className="text-sm font-medium text-foreground mb-2 block">Time</Label>
                       <Input
                         type="time"
                         value={
                           formData.bookingAt
-                            ? new Date(formData.bookingAt).toLocaleTimeString("en-GB", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })
-                            : ""
+                            ? new Date(formData.bookingAt).toLocaleTimeString(
+                                "en-GB",
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )
+                            : "12:00"
                         }
                         onChange={(e) => {
-                          if (!formData.bookingAt) return
-                          const newDate = new Date(formData.bookingAt)
-                          const [h, m] = e.target.value.split(":").map(Number)
-                          newDate.setHours(h, m, 0, 0)
+                          if (!formData.bookingAt) return;
+                          const newDate = new Date(formData.bookingAt);
+                          const [h, m] = e.target.value.split(":").map(Number);
+                          newDate.setHours(h, m, 0, 0);
                           handleInputChange({
                             target: {
                               name: "bookingAt",
                               value: newDate.toISOString(),
                             },
-                          } as any)
+                          } as any);
                         }}
-                        className="w-full"
+                        className="w-full border-primary/30 bg-background focus:border-primary"
                       />
                     </div>
                   </PopoverContent>
@@ -341,10 +447,11 @@ export default function Booking() {
                   aria-invalid={!!errors.purpose && touched.purpose}
                   aria-describedby="purpose-error"
                   placeholder="Describe the nature of your event or meeting..."
-                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 resize-none ${errors.purpose && touched.purpose
-                    ? "border-amber-500 focus:ring-amber-500/20"
-                    : "hover:border-primary/50"
-                    }`}
+                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 resize-none ${
+                    errors.purpose && touched.purpose
+                      ? "border-amber-500 focus:ring-amber-500/20"
+                      : "hover:border-primary/50"
+                  }`}
                 />
                 {errors.purpose && touched.purpose && (
                   <p
@@ -365,7 +472,7 @@ export default function Booking() {
                 className="w-full text-lg py-6 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!isFormValid || isSubmitting}
               >
-                {isSubmitting ? "Submitting..." : "Submit Booking Request"}
+                {isSubmitting ? "Submitting..." : "Submit"}
               </Button>
             </form>
           </div>

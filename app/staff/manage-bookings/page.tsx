@@ -9,17 +9,16 @@ interface Booking {
   id: string;
   name: string;
   email: string;
+  phone: string;
   organization: string | null;
-  date: string;
-  time: string;
+  bookingAt: string;
   purpose: string | null;
-  status: "pending" | "confirmed" | "approved" | "rejected";
+  status: "pending" | "approved" | "rejected";
   createdAt: string;
 }
 
 const statusColors = {
   pending: "bg-muted text-foreground-accent border border-primary/20",
-  confirmed: "bg-foreground-accent text-background border border-primary",
   approved: "bg-primary text-background border border-primary",
   rejected: "bg-destructive text-destructive-foreground border border-destructive/60",
 };
@@ -31,10 +30,13 @@ export default function ManageBookings() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    document.title = "Manage Bookings | Mafi Restaurant"
+    document.title = "Manage Bookings | Mafi Restaurant";
     if (status === "loading") return;
 
-    if (!session || (session.user?.role !== "staff" && session.user?.role !== "admin")) {
+    if (
+      !session ||
+      (session.user?.role !== "staff" && session.user?.role !== "admin")
+    ) {
       router.push("/staff/login");
       return;
     }
@@ -46,8 +48,8 @@ export default function ManageBookings() {
     try {
       const response = await fetch("/api/bookings");
       if (response.ok) {
-        const data = await response.json();
-        setBookings(data);
+        const result = await response.json();
+        setBookings(result.data || []);
       }
     } catch (error) {
       console.error("Error fetching bookings:", error);
@@ -65,7 +67,9 @@ export default function ManageBookings() {
       });
 
       if (response.ok) {
-        setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
+        setBookings((prev) =>
+          prev.map((b) => (b.id === id ? { ...b, status } : b))
+        );
         alert(`Booking ${status} successfully!`);
       }
     } catch (error) {
@@ -113,6 +117,8 @@ export default function ManageBookings() {
           <thead>
             <tr className="text-left text-primary text-lg">
               <th className="py-4 px-4">Name</th>
+              <th className="py-4 px-4">Email</th>
+              <th className="py-4 px-4">Phone</th>
               <th className="py-4 px-4">Organization</th>
               <th className="py-4 px-4">Booking At</th>
               <th className="py-4 px-4">Purpose</th>
@@ -123,7 +129,10 @@ export default function ManageBookings() {
           <tbody>
             {bookings.length === 0 ? (
               <tr>
-                <td colSpan={7} className="py-12 text-center text-foreground-muted text-xl">
+                <td
+                  colSpan={7}
+                  className="py-12 text-center text-foreground-muted text-xl"
+                >
                   No bookings found.
                 </td>
               </tr>
@@ -133,12 +142,42 @@ export default function ManageBookings() {
                   key={b.id}
                   className="border-t border-primary/10 hover:bg-background-accent transition-colors"
                 >
-                  <td className="py-4 px-4 font-medium text-foreground-accent">{b.name}</td>
+                  <td className="py-4 px-4 font-medium text-foreground-accent">
+                    {b.name}
+                  </td>
+                  <td className="py-4 px-4">{b.email}</td>
+                  <td className="py-4 px-4">{b.phone || "-"}</td>
                   <td className="py-4 px-4">{b.organization || "-"}</td>
-                  <td className="py-4 px-4">{new Date(b.bookingAt).toLocaleString()}</td>
-                  <td className="py-4 px-4 max-w-xs truncate" title={b.purpose || ""}>{b.purpose || "-"}</td>
                   <td className="py-4 px-4">
-                    <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${statusColors[b.status]}`}>
+                    <div className="flex flex-col">
+                      <span className="font-medium">
+                        {new Date(b.bookingAt).toLocaleDateString(undefined, {
+                          weekday: "short",
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </span>
+                      <span className="text-sm text-foreground-muted">
+                        {new Date(b.bookingAt).toLocaleTimeString(undefined, {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                    </div>
+                  </td>
+                  <td
+                    className="py-4 px-4 max-w-xs truncate"
+                    title={b.purpose || ""}
+                  >
+                    {b.purpose || "-"}
+                  </td>
+                  <td className="py-4 px-4">
+                    <span
+                      className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
+                        statusColors[b.status]
+                      }`}
+                    >
                       {b.status.charAt(0).toUpperCase() + b.status.slice(1)}
                     </span>
                   </td>

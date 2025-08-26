@@ -6,20 +6,6 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const API_KEY = process.env.GEMINI_API_KEY as string;
-if (!API_KEY) {
-  throw new Error("GEMINI_API_KEY is not defined");
-}
-
-const genAI = new GoogleGenerativeAI(API_KEY);
-const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
-  generationConfig: {
-    temperature: 0.2,
-    topP: 0.9,
-    topK: 40,
-    maxOutputTokens: 256,
-  },
-});
 
 // Simple in-memory cache to speed up repeated questions (best-effort)
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
@@ -43,16 +29,10 @@ Your job:
 - Answer ONLY questions about Mafi Restaurant: menu items, prices when provided, meeting halls, reservations, opening hours, location, contact details, policies, and general dining info.
 - If the user asks anything unrelated, politely decline and guide them back to restaurant topics.
 - Be concise, warm, and professional. Prefer short paragraphs and bullet points.
-
-Developers (mention only if asked):
-- Robel — Full‑stack developer
-- Abenezer — Full‑stack developer
-
-Rules:
-- If a user asks for details not in the provided context, say you don’t have that information and suggest contacting the restaurant directly (phone/email).
+- If the user asks for details not in the provided context, say you don’t have that information and suggest contacting the restaurant directly (phone/email).
 - Never fabricate prices, promotions, or availability.
 - Prefer concrete facts from context; if context conflicts with prior assumptions, prefer the context.
-- When relevant, remind users they can book via the /booking page or by phone.
+- When relevant (just mention it only when the user asks about it), remind users they can book meeting halls via the /booking page or by phone.
 `.trim();
 
 function buildPrompt(userMessage: string, context: string) {
@@ -74,6 +54,20 @@ Assistant guidelines:
 
 export async function POST(request: NextRequest) {
   try {
+    if (!API_KEY) {
+      return NextResponse.json({ error: "GEMINI_API_KEY missing" }, { status: 500 });
+    }
+
+    const genAI = new GoogleGenerativeAI(API_KEY);
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      generationConfig: {
+        temperature: 0.2,
+        topP: 0.9,
+        topK: 40,
+        maxOutputTokens: 256,
+      },
+    });
     let message: string | undefined;
     try {
       const raw = await request.text();

@@ -1,38 +1,41 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/client"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id        String    @id @default(cuid())
-  email     String    @unique
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
   password  String
-  name      String
-  role      String    @default("staff") // "staff" | "admin"
-  createdAt DateTime  @default(now())
-  bookings  Booking[]
+  role      Role
+  image     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Booking {
   id           String   @id @default(cuid())
   name         String
   email        String
-  organization String?
+  phone        String?
+  organization String?  @default("General")
   bookingAt    DateTime
   purpose      String
-  status       String   @default("pending") // pending, confirmed, approved, rejected
+  status       String   @default("pending")
+  
   createdAt    DateTime @default(now())
-  userId       String?  
-  user         User?    @relation(fields: [userId], references: [id])
-  confirmToken String?  
-  tokenExpires DateTime?
-
-  @@unique([email, bookingAt])
+  updatedAt    DateTime @updatedAt
 }
 
+
+enum Role {
+  admin
+  staff
+}

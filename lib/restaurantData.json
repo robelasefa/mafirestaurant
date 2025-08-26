@@ -6,11 +6,11 @@
     },
     "location": {
       "address": "Mebrat Hail, Adama, Ethiopia",
-      "mapUrl": "https://maps.google.com",
+      "mapUrl": "https://maps.google.com/?q=Mafi+Restaurant",
       "landmarks": ["Central business district", "Close to major hotels"]
     },
     "contact": {
-      "phone": "+251 912 345 678",
+      "phone": ["+251 945 184 545", "+251 456 665 55"],
       "email": "mafirestaurant@gmail.com",
       "website": "https://mafirestaurant.com",
       "social": {

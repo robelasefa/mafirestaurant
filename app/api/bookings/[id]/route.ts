@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@/generated/client";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
-
-const VALID_STATUSES = ["pending", "approved", "rejected", "confirmed"] as const;
+const VALID_STATUSES = ["pending", "approved", "rejected"] as const;
 
 export async function PATCH(
   request: NextRequest,
@@ -16,7 +14,7 @@ export async function PATCH(
 
     if (!status || !VALID_STATUSES.includes(status as any)) {
       return NextResponse.json(
-        { error: "Invalid status. Must be pending, approved, rejected, or confirmed." },
+        { error: "Invalid status. Must be pending, approved, or rejected." },
         { status: 400 }
       );
     }

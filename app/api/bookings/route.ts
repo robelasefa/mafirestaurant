@@ -1,71 +1,60 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient, Prisma } from "@/generated/client";
-import crypto from "crypto";
-import { supabase } from "../../../lib/supabse";
-
-const prisma = new PrismaClient();
-
-// Generate secure confirmation token
-const generateToken = () => crypto.randomBytes(32).toString("hex");
+import { prisma } from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, organization, bookingAt, purpose } = body;
+    const { name, email, phone, organization, bookingAt, purpose } = body;
 
+    // Required fields
     if (!name || !email || !bookingAt || !purpose) {
       return NextResponse.json(
-        { success: false, message: "Missing required fields." },
+        { success: false, message: "Missing required fields: name, email, bookingAt, purpose." },
         { status: 400 }
       );
     }
 
-    const confirmToken = generateToken();
-    const tokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
+    // Validate booking date
+    const bookingDate = new Date(bookingAt);
+    if (isNaN(bookingDate.getTime())) {
+      return NextResponse.json(
+        { success: false, message: "Invalid booking date." },
+        { status: 400 }
+      );
+    }
 
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid email format." },
+        { status: 400 }
+      );
+    };
+
+    // Create booking
     const booking = await prisma.booking.create({
       data: {
         name,
         email,
-        organization: organization || "General",
-        bookingAt: new Date(bookingAt),
+        phone: phone || null,
+        organization: organization || null,
+        bookingAt: bookingDate,
         purpose,
         status: "pending",
-        confirmToken,
-        tokenExpires,
       },
     });
-
-    const confirmUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/?bookingStatus=success&token=${confirmToken}`;
-
-    try {
-      await supabase.functions.invoke("send_email", {
-        body: {
-          to: email,
-          subject: "Confirm your Mafi Restaurant booking",
-          html: `
-            <p>Hello ${name},</p>
-            <p>Please confirm your booking by clicking the link below:</p>
-            <a href="${confirmUrl}">Confirm Booking</a>
-            <p>This link will expire in 24 hours.</p>
-          `,
-        },
-      });
-    } catch (emailError) {
-      console.error("Failed to send email:", emailError);
-      // Still return success, booking is saved
-    }
 
     return NextResponse.json(
       {
         success: true,
-        message: "Booking created successfully. Please check your email to confirm.",
+        message: "Booking created successfully.",
         data: booking,
       },
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error creating booking:", error);
+    console.error("❌ Error creating booking:", error);
     return NextResponse.json(
       { success: false, message: "Internal server error" },
       { status: 500 }
@@ -78,9 +67,10 @@ export async function GET() {
     const bookings = await prisma.booking.findMany({
       orderBy: { createdAt: "desc" },
     });
+
     return NextResponse.json({ success: true, data: bookings });
   } catch (error) {
-    console.error("Error fetching bookings:", error);
+    console.error("❌ Error fetching bookings:", error);
     return NextResponse.json(
       { success: false, message: "Internal server error" },
       { status: 500 }
