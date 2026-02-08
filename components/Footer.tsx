@@ -3,6 +3,7 @@
 import { MapPin, Phone, Mail } from "lucide-react";
 import { FaInstagram, FaFacebook, FaTiktok } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
+import Image from 'next/image';
 
 
 const Footer = () => {
@@ -43,11 +44,13 @@ const Footer = () => {
           <div className="space-y-8">
             <div className="flex justify-center lg:justify-start">
               <div className="relative group">
-                <img
-                  src="/lovable-uploads/95062c7d-275a-4648-b44f-bfaaab0b29ca.png"
-                  alt="Mafi Restaurant Logo"
-                  className="h-20 w-20 object-cover rounded-full border-2 border-primary transition-all duration-300 group-hover:border-primary-glow group-hover:scale-105"
-                />
+                <Image
+  src="/lovable-uploads/95062c7d-275a-4648-b44f-bfaaab0b29ca.png"
+  alt="Mafi Restaurant Logo"
+  width={80}
+  height={80}
+  className="h-20 w-20 object-cover rounded-full border-2 border-primary transition-all duration-300 group-hover:border-primary-glow group-hover:scale-105"
+/>
                 <div className="absolute inset-0 rounded-full bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
             </div>
