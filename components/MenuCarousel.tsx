@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Image from 'next/image':
 
 const menuItems = [
   {
@@ -122,16 +123,18 @@ const MenuCarousel = () => {
         <div className="w-full flex flex-col items-center">
           {/* Image Display - FIXED to show food portions */}
           <div className="relative w-full max-w-lg aspect-[4/3] rounded-xl overflow-hidden shadow-lg bg-white group">
-            <img
-              key={currentItem.image}
-              src={currentItem.image}
-              alt={currentItem.title}
-              className="w-full h-full object-cover transition-all duration-700 ease-in-out group-hover:scale-105"
-              style={{
-                filter: "brightness(1.05) contrast(1.1) saturate(1.05)",
-                objectPosition: "center bottom", // Show bottom part where food is located
-              }}
-            />
+            <Image
+  key={currentItem.image}
+  src={currentItem.image}
+  alt={currentItem.title}
+  width={800} // Set the actual width in px if known
+  height={600} // Or 4:3 aspect from the parent div
+  className="w-full h-full object-cover transition-all duration-700 ease-in-out group-hover:scale-105"
+  style={{
+    filter: "brightness(1.05) contrast(1.1) saturate(1.05)",
+    objectPosition: "center bottom",
+  }}
+/>
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent pointer-events-none" />
 
