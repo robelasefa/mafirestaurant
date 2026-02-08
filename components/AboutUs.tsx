@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Award, Clock, MapPin, Heart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Image from 'next/image';
 
 const AboutUs = () => {
   const [activeTab, setActiveTab] = useState("story");
@@ -54,11 +55,13 @@ const AboutUs = () => {
           <div className="order-2 lg:order-1 animate-fade-in">
             <div className="relative">
               <div className="relative overflow-hidden rounded-3xl shadow-2xl">
-                <img
-                  src="/lovable-uploads/75f0a2e1-ceb5-407b-bd2a-4b02d7c7d5e0.png"
-                  alt="Mafi Restaurant Interior"
-                  className="w-full h-[500px] object-cover transition-transform duration-700 hover:scale-105"
-                />
+                <Image
+  src="/lovable-uploads/75f0a2e1-ceb5-407b-bd2a-4b02d7c7d5e0.png"
+  alt="Mafi Restaurant Interior"
+  width={1000}        
+  height={500}
+  className="w-full h-[500px] object-cover transition-transform duration-700 hover:scale-105"
+/>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
               </div>
               {/* Floating Badge */}
