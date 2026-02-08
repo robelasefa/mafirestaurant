@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import Image from 'next/image';
 
 const MeetingHallBooking = () => {
   const router = useRouter();
@@ -31,11 +32,13 @@ const MeetingHallBooking = () => {
           {/* Meeting Hall Image */}
           <div className="order-2 lg:order-1 animate-fade-in">
             <div className="relative overflow-hidden rounded-3xl shadow-2xl group">
-              <img
-                src="/lovable-uploads/75f0a2e1-ceb5-407b-bd2a-4b02d7c7d5e0.png"
-                alt="Mafi Restaurant Meeting Hall"
-                className="w-full h-[500px] object-cover transition-transform duration-700 group-hover:scale-105"
-              />
+              <Image
+  src="/lovable-uploads/75f0a2e1-ceb5-407b-bd2a-4b02d7c7d5e0.png"
+  alt="Mafi Restaurant Meeting Hall"
+  width={1000}
+  height={500}
+  className="w-full h-[500px] object-cover transition-transform duration-700 group-hover:scale-105"
+/>
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
               {/* Floating Info Cards */}
