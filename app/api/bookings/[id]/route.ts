@@ -7,6 +7,7 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const { params } = context ?? { params: { id: "" } }; // id will be "" if undefined, handle this as needed
   try {
     const { id } = params;
     const body = await request.json();
@@ -43,6 +44,7 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const { params } = context ?? { params: { id: "" } };
   try {
     const { id } = params;
 
