@@ -89,9 +89,9 @@ const AboutUs = ({ id }: AboutUsProps) => {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 px-8 py-3 rounded-full transition-all duration-500 font-serif font-bold tracking-wide ${activeTab === tab.id
-                          ? "bg-primary text-primary-foreground shadow-gold scale-105"
-                          : "text-foreground-muted hover:text-primary hover:bg-primary/5"
+                      className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 ${activeTab === tab.id
+                        ? "bg-primary text-primary-foreground shadow-gold"
+                        : "bg-background-subtle text-foreground-muted hover:bg-primary/10 hover:text-primary border border-primary/20"
                         }`}
                     >
                       <Icon className="h-5 w-5" />
