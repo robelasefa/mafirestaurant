@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/ui2/alert";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/base-alert";
 import { X, CheckCircle, AlertCircle, Info } from "lucide-react";
 
 interface AlertProps {
@@ -13,11 +13,11 @@ interface AlertProps {
   className?: string;
 }
 
-const AlertComponent = ({ 
-  title, 
-  description, 
-  type = "success", 
-  duration = 5000, 
+const AlertComponent = ({
+  title,
+  description,
+  type = "success",
+  duration = 5000,
   onClose,
   className = ""
 }: AlertProps) => {

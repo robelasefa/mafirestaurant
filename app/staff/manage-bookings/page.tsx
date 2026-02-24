@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import Swal from 'sweetalert2';
 
 interface Booking {
   id: string;
@@ -14,6 +15,7 @@ interface Booking {
   bookingAt: string;
   purpose: string | null;
   status: "pending" | "approved" | "rejected";
+  letterUrl: string | null;
   createdAt: string;
 }
 
@@ -70,26 +72,57 @@ export default function ManageBookings() {
         setBookings((prev) =>
           prev.map((b) => (b.id === id ? { ...b, status } : b))
         );
-        alert(`Booking ${status} successfully!`);
+
+        Swal.fire({
+          title: 'Success!',
+          text: `Booking ${status} successfully!`,
+          icon: 'success',
+          confirmButtonColor: '#d4af37'
+        });
       }
     } catch (error) {
       console.error("Error updating booking:", error);
-      alert("Error updating booking status. Please try again.");
+      Swal.fire({
+        title: 'Error!',
+        text: 'Error updating booking status. Please try again.',
+        icon: 'error',
+        confirmButtonColor: '#d4af37'
+      });
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this booking?")) return;
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d4af37',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
       const response = await fetch(`/api/bookings/${id}`, { method: "DELETE" });
       if (response.ok) {
         setBookings((prev) => prev.filter((b) => b.id !== id));
-        alert("Booking deleted successfully!");
+        Swal.fire({
+          title: 'Deleted!',
+          text: 'Booking deleted successfully.',
+          icon: 'success',
+          confirmButtonColor: '#d4af37'
+        });
       }
     } catch (error) {
       console.error("Error deleting booking:", error);
-      alert("Error deleting booking. Please try again.");
+      Swal.fire({
+        title: 'Error!',
+        text: 'Error deleting booking. Please try again.',
+        icon: 'error',
+        confirmButtonColor: '#d4af37'
+      });
     }
   };
 
@@ -103,12 +136,22 @@ export default function ManageBookings() {
 
   return (
     <section className="max-w-5xl mx-auto px-4 animate-fade-in">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary">
           Manage Meeting Hall Bookings
         </h1>
-        <div className="text-foreground-muted">
-          Welcome, {session?.user?.name}
+        <div className="flex items-center gap-4">
+          <div className="text-foreground-muted">
+            Welcome, {session?.user?.name}
+          </div>
+          {session?.user?.role === "admin" && (
+            <Button
+              variant="gold"
+              onClick={() => router.push('/staff/admin/add')}
+            >
+              Add Staff
+            </Button>
+          )}
         </div>
       </div>
 
@@ -122,6 +165,7 @@ export default function ManageBookings() {
               <th className="py-4 px-4">Organization</th>
               <th className="py-4 px-4">Booking At</th>
               <th className="py-4 px-4">Purpose</th>
+              <th className="py-4 px-4">Letter</th>
               <th className="py-4 px-4">Status</th>
               <th className="py-4 px-4 text-center">Actions</th>
             </tr>
@@ -130,7 +174,7 @@ export default function ManageBookings() {
             {bookings.length === 0 ? (
               <tr>
                 <td
-                  colSpan={7}
+                  colSpan={8}
                   className="py-12 text-center text-foreground-muted text-xl"
                 >
                   No bookings found.
@@ -173,10 +217,23 @@ export default function ManageBookings() {
                     {b.purpose || "-"}
                   </td>
                   <td className="py-4 px-4">
+                    {b.letterUrl ? (
+                      <a
+                        href={b.letterUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline font-medium flex items-center gap-1"
+                      >
+                        📄 View
+                      </a>
+                    ) : (
+                      <span className="text-foreground-muted">-</span>
+                    )}
+                  </td>
+                  <td className="py-4 px-4">
                     <span
-                      className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
-                        statusColors[b.status]
-                      }`}
+                      className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${statusColors[b.status]
+                        }`}
                     >
                       {b.status.charAt(0).toUpperCase() + b.status.slice(1)}
                     </span>

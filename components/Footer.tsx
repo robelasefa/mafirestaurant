@@ -45,12 +45,12 @@ const Footer = () => {
             <div className="flex justify-center lg:justify-start">
               <div className="relative group">
                 <Image
-  src="/lovable-uploads/95062c7d-275a-4648-b44f-bfaaab0b29ca.png"
-  alt="Mafi Restaurant Logo"
-  width={80}
-  height={80}
-  className="h-20 w-20 object-cover rounded-full border-2 border-primary transition-all duration-300 group-hover:border-primary-glow group-hover:scale-105"
-/>
+                  src="/images/logo.png"
+                  alt="Mafi Restaurant Logo"
+                  width={80}
+                  height={80}
+                  className="h-20 w-20 object-cover rounded-full border-2 border-primary transition-all duration-300 group-hover:border-primary-glow group-hover:scale-105"
+                />
                 <div className="absolute inset-0 rounded-full bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
             </div>
@@ -134,7 +134,7 @@ const Footer = () => {
                 size="icon"
                 className="w-12 h-12 gold-hover border-primary/30 text-primary hover:text-background hover:bg-primary transition-all duration-300 transform hover:scale-110"
               >
-                <FaTiktok className="h-5 w-5"/>
+                <FaTiktok className="h-5 w-5" />
               </Button>
               <Button
                 onClick={() => handleSocialClick("instagram")}

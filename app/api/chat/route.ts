@@ -7,52 +7,20 @@ export const dynamic = "force-dynamic";
 
 const API_KEY = process.env.GEMINI_API_KEY as string;
 
-// Simple in-memory cache to speed up repeated questions (best-effort)
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
-const cache = new Map<string, { value: string; ts: number }>();
-function getCache(key: string) {
-  const entry = cache.get(key);
-  if (!entry) return null;
-  if (Date.now() - entry.ts > CACHE_TTL_MS) {
-    cache.delete(key);
-    return null;
-  }
-  return entry.value;
-}
-function setCache(key: string, value: string) {
-  cache.set(key, { value, ts: Date.now() });
-}
-
 const SYSTEM_PROMPT = `
 You are **Mafi Restaurant's** friendly, on-brand assistant.
 Your job:
 - Answer ONLY questions about Mafi Restaurant: menu items, prices when provided, meeting halls, reservations, opening hours, location, contact details, policies, and general dining info.
 - If the user asks anything unrelated, politely decline and guide them back to restaurant topics.
 - Be concise, warm, and professional. Use **bold** for emphasis and structure with line breaks.
-- Use markdown formatting: **bold** for important info, *italic* for subtle emphasis, and [links](url) when relevant.
-- If the user asks for details not in the provided context, say you don’t have that information and suggest contacting the restaurant directly (phone/email).
+- Use markdown formatting: **bold** for important info, *italic* for subtle emphasis.
+- If the user asks for details not in the provided context, say you don't have that information and suggest contacting the restaurant directly (phone/email).
 - Never fabricate prices, promotions, or availability.
 - Prefer concrete facts from context; if context conflicts with prior assumptions, prefer the context.
 - When relevant, remind users they can book meeting halls via the **/booking** page or by phone.
 - Format responses with clear structure using line breaks and bold text for better readability.
-`.trim();
-
-function buildPrompt(userMessage: string, context: string) {
-  return `
-${SYSTEM_PROMPT}
-
-Context (authoritative, may be partial):
-${context || "• No additional context found."}
-
-User question:
-"${userMessage}"
-
-Assistant guidelines:
-- Answer directly and helpfully using the context.
-- If context is insufficient, say so and offer the best next step (call/email/visit /booking).
 - Keep it under ~80 words unless listing items.
-  `.trim();
-}
+`.trim();
 
 export async function POST(request: NextRequest) {
   try {
@@ -60,67 +28,84 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "GEMINI_API_KEY missing" }, { status: 500 });
     }
 
-    const genAI = new GoogleGenerativeAI(API_KEY);
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-      generationConfig: {
-        temperature: 0.2,
-        topP: 0.9,
-        topK: 40,
-        maxOutputTokens: 256,
-      },
-    });
-    let message: string | undefined;
+    let data: { message?: string; history?: Array<{ role: string; text: string }> } = {};
     try {
       const raw = await request.text();
-      if (raw) {
-        const data = JSON.parse(raw);
-        if (typeof data?.message === "string") {
-          message = data.message;
-        }
-      }
+      if (raw) data = JSON.parse(raw);
     } catch {
-
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
 
-    if (!message) {
-      const url = new URL(request.url);
-      const q = url.searchParams.get("message");
-      if (q) message = q;
-    }
+    const message = data.message;
+    const history = Array.isArray(data.history) ? data.history : [];
 
-    if (!message || typeof message !== "string") {
+    if (!message || typeof message !== "string" || !message.trim()) {
       return NextResponse.json({ error: "Invalid message" }, { status: 400 });
     }
 
-    const key = message.toLowerCase().trim();
-    const cached = getCache(key);
-    if (cached) {
-      return NextResponse.json({ reply: cached, sources: [] }, { status: 200 });
+    // Build conversation summary from history for context-aware retrieval
+    const recentHistory = history.slice(-6); // Last 3 exchanges max
+    const conversationContext = recentHistory
+      .map(h => `${h.role === "user" ? "User" : "Assistant"}: ${h.text}`)
+      .join("\n");
+
+    // Enhance retrieval query: for short follow-up messages, include recent context
+    const isFollowUp = message.split(" ").length < 5;
+    const lastUserMsg = [...recentHistory].reverse().find(h => h.role === "user");
+    const lastBotMsg = [...recentHistory].reverse().find(h => h.role === "model");
+    let queryForRetrieval = message;
+    if (isFollowUp) {
+      // Append keywords from recent messages to improve retrieval
+      const extraContext = [lastBotMsg?.text, lastUserMsg?.text]
+        .filter(Boolean)
+        .join(" ")
+        .slice(0, 200);
+      queryForRetrieval = `${message} ${extraContext}`;
     }
 
     // Retrieve relevant context from our local knowledge base
-    const topDocs = getRelevantInfo(message, 6);
+    const topDocs = getRelevantInfo(queryForRetrieval, 6);
     const context = formatContext(topDocs);
 
-    // Build prompt and query Gemini
-    const prompt = buildPrompt(message, context);
+    // Build a single prompt with conversation history embedded
+    const prompt = `
+${SYSTEM_PROMPT}
+
+Restaurant Knowledge Base:
+${context || "• No additional context found."}
+
+${conversationContext ? `Recent conversation:\n${conversationContext}\n` : ""}
+User's latest message:
+"${message}"
+
+Respond helpfully. If context is insufficient, say so and suggest calling or emailing the restaurant.
+`.trim();
+
+    const genAI = new GoogleGenerativeAI(API_KEY);
+    const model = genAI.getGenerativeModel({
+      model: "gemini-flash-latest",
+      generationConfig: {
+        temperature: 0.3,
+        topP: 0.9,
+        topK: 40,
+        maxOutputTokens: 300,
+      },
+    });
+
     const result = await model.generateContent(prompt);
     let text = result.response.text()?.trim();
 
     if (!text) {
-      text = "I don't have that information right now. Please contact us if the issue persists.";
+      text = "I don't have that information right now. Please contact us directly.";
     }
 
-    // Optionally include brief “sources” for transparency (section names only)
     const sources = topDocs.map(d => ({ id: d.id, section: d.section }));
 
-    setCache(key, text);
     return NextResponse.json({ reply: text, sources }, { status: 200 });
   } catch (error) {
     console.error("Error in /api/chat:", error);
     return NextResponse.json(
-      { error: "Internal server error or issue with AI response." },
+      { error: "Internal server error." },
       { status: 500 }
     );
   }

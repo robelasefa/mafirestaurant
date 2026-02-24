@@ -56,12 +56,12 @@ const AboutUs = () => {
             <div className="relative">
               <div className="relative overflow-hidden rounded-3xl shadow-2xl">
                 <Image
-  src="/lovable-uploads/75f0a2e1-ceb5-407b-bd2a-4b02d7c7d5e0.png"
-  alt="Mafi Restaurant Interior"
-  width={1000}        
-  height={500}
-  className="w-full h-[500px] object-cover transition-transform duration-700 hover:scale-105"
-/>
+                  src="/images/meeting-hall.png"
+                  alt="Mafi Restaurant Interior"
+                  width={1000}
+                  height={500}
+                  className="w-full h-[500px] object-cover transition-transform duration-700 hover:scale-105"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
               </div>
               {/* Floating Badge */}
@@ -85,11 +85,10 @@ const AboutUs = () => {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 ${
-                        activeTab === tab.id
+                      className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 ${activeTab === tab.id
                           ? "bg-primary text-primary-foreground shadow-gold"
                           : "bg-background-subtle text-foreground-muted hover:bg-primary/10 hover:text-primary border border-primary/20"
-                      }`}
+                        }`}
                     >
                       <Icon className="h-4 w-4" />
                       <span className="font-medium">{tab.label}</span>
@@ -105,16 +104,16 @@ const AboutUs = () => {
                     <h3 className="text-3xl font-serif font-bold text-primary">Our Culinary Journey</h3>
                     <div className="space-y-4 text-foreground-muted leading-relaxed">
                       <p>
-                        Founded in 2017, Mafi Restaurant began as a dream to bring authentic Ethiopian cuisine 
-                        with a modern twist to the heart of Adama. Our mission: to create memorable dining 
+                        Founded in 2017, Mafi Restaurant began as a dream to bring authentic Ethiopian cuisine
+                        with a modern twist to the heart of Adama. Our mission: to create memorable dining
                         experiences that celebrate both tradition and innovation.
                       </p>
                       <p>
-                        Today, we&apos;ve become a beloved destination for locals and visitors alike, known for our 
+                        Today, we&apos;ve become a beloved destination for locals and visitors alike, known for our
                         commitment to quality ingredients, exceptional service, and warm hospitality.
                       </p>
                       <p>
-                        Combining the rich flavors of Ethiopian cuisine with contemporary dining aesthetics, 
+                        Combining the rich flavors of Ethiopian cuisine with contemporary dining aesthetics,
                         we create an atmosphere where every meal becomes a celebration of culture and community.
                       </p>
                     </div>

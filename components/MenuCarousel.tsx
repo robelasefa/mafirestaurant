@@ -11,55 +11,55 @@ const menuItems = [
     title: "Mixed Grill",
     description:
       "mixed lamb, chicken, sausage, steak served with roasted tomatoes and french fries topped with red wine sauce",
-    image: "/lovable-uploads/e46e5316-7297-47db-8121-7fe1edd9bebc.png",
+    image: "/images/mixed-grill.png",
   },
   {
     id: 2,
     title: "Roast Chicken",
     description:
       "roasted boneless chicken legs served with french fries and seasonal vegetables topped with french fries or tomato garlic butter sauce",
-    image: "/lovable-uploads/71cc6eba-1d9e-4c9a-85ab-1a752ea25432.png",
+    image: "/images/roast-chicken.png",
   },
   {
     id: 3,
     title: "Beef or Chicken Fajita",
     description:
       "mixed lamb or chicken sausage, steak served with roasted tomatoes and french fries topped with red wine sauce",
-    image: "/lovable-uploads/940cdfeb-04fd-4f5b-bcf3-4e9014f00fd3.png",
+    image: "/images/fajita.png",
   },
   {
     id: 4,
     title: "Rolled Beef",
     description:
       "mafi beef rolle stuffed with ricotta cheese and spinach served with mashed potatoes and seasonal vegetables",
-    image: "/lovable-uploads/1cbe3168-0c8c-4904-bdfa-8ac4b06384bf.png",
+    image: "/images/rolled-beef.png",
   },
   {
     id: 5,
     title: "Fish & Chips",
     description: "fried tilapia served with french fries and tartar sauce",
-    image: "/lovable-uploads/55e56740-fc9f-474b-b07e-fb27d975b8e6.png",
+    image: "/images/fish-chips.png",
   },
   {
     id: 6,
     title: "Fish Cutlet",
     description:
       "breaded fish fillet topped with sweet or sour sauce served with mashed potatoes and seasonal vegetables",
-    image: "/lovable-uploads/fcbc4740-3755-45df-9921-ad6edb3ea55a.png",
+    image: "/images/fish-cutlet.png",
   },
   {
     id: 7,
     title: "Grilled Fish",
     description:
       "grilled catch of the trillet of tilapia or nile perch served with spinach and parsley potato with garlic lemon butter sauce or sweet and sour sauce",
-    image: "/lovable-uploads/1132423c-2f5b-4405-9bc5-c2889ca3d0d0.png",
+    image: "/images/grilled-fish.png",
   },
   {
     id: 8,
     title: "Stuffed Chicken Breast",
     description:
       "spinach and ricotta cheese stuffed chicken breast served with curry rice and seasonal vegetables topped with creamy white wine sauce",
-    image: "/lovable-uploads/ddae9436-950e-4dae-b2db-4ecc8c9c3090.png",
+    image: "/images/stuffed-chicken.png",
   },
 ];
 
@@ -124,17 +124,17 @@ const MenuCarousel = () => {
           {/* Image Display - FIXED to show food portions */}
           <div className="relative w-full max-w-lg aspect-[4/3] rounded-xl overflow-hidden shadow-lg bg-white group">
             <Image
-  key={currentItem.image}
-  src={currentItem.image}
-  alt={currentItem.title}
-  width={800} // Set the actual width in px if known
-  height={600} // Or 4:3 aspect from the parent div
-  className="w-full h-full object-cover transition-all duration-700 ease-in-out group-hover:scale-105"
-  style={{
-    filter: "brightness(1.05) contrast(1.1) saturate(1.05)",
-    objectPosition: "center bottom",
-  }}
-/>
+              key={currentItem.image}
+              src={currentItem.image}
+              alt={currentItem.title}
+              width={800} // Set the actual width in px if known
+              height={600} // Or 4:3 aspect from the parent div
+              className="w-full h-full object-cover transition-all duration-700 ease-in-out group-hover:scale-105"
+              style={{
+                filter: "brightness(1.05) contrast(1.1) saturate(1.05)",
+                objectPosition: "center bottom",
+              }}
+            />
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent pointer-events-none" />
 

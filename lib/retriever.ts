@@ -8,13 +8,12 @@ type Doc = {
   url?: string;
 };
 
-type IndexedDoc = Doc & { normText: string };
+type IndexedDoc = Doc & { normText: string; tokens: string[] };
 
 export type RelevantDoc = Doc & { score: number };
 
 /**
- * Build a flat corpus of short docs from our JSON so we can do simple lexical retrieval.
- * (Easy to swap with embeddings later.)
+ * Build a flat corpus of short docs from our JSON for lexical retrieval.
  */
 function buildCorpus(): Doc[] {
   const docs: Doc[] = [];
@@ -30,26 +29,20 @@ function buildCorpus(): Doc[] {
   docs.push({
     id: "location",
     section: "Location",
-    text: `Address: ${data.location.address}. Landmarks: ${data.location.landmarks.join(", ")}`
-  });
-
-  docs.push({
-    id: "map",
-    section: "Map",
-    text: `Map: ${data.location.mapUrl}`
+    text: `Address: ${data.location.address}. Landmarks: ${data.location.landmarks.join(", ")}. Map: ${data.location.mapUrl}`
   });
 
   docs.push({
     id: "contact",
     section: "Contact",
-    text: `Phone: ${data.contact.phone}. Email: ${data.contact.email}. Website: ${data.contact.website}. Facebook: ${data.contact.social.facebook}. Instagram: ${data.contact.social.instagram}. TikTok: ${data.contact.social.tiktok}`
+    text: `Phone: ${Array.isArray(data.contact.phone) ? data.contact.phone.join(", ") : data.contact.phone}. Email: ${data.contact.email}. Website: ${data.contact.website}. Facebook: ${data.contact.social.facebook}. Instagram: ${data.contact.social.instagram}. TikTok: ${data.contact.social.tiktok}`
   });
 
   // Hours
   docs.push({
     id: "hours",
     section: "Hours",
-    text: data.hours.map(h => `${h.days} ${h.open}–${h.close}`).join(" | ")
+    text: `Opening hours: ${data.hours.map(h => `${h.days} ${h.open}–${h.close}`).join(" | ")}. The restaurant is open every day.`
   });
 
   // Services
@@ -63,7 +56,7 @@ function buildCorpus(): Doc[] {
   docs.push({
     id: "services-meetingHalls",
     section: "Meeting Halls",
-    text: `Meeting halls: ${mh.summary}. Amenities: ${mh.amenities.join(", ")}. Notes: ${mh.bookingNotes.join("; ")}. Capacity: Large ${mh.capacity.largeHall}, Small each ${mh.capacity.smallHallEach} (x${mh.capacity.totalSmallHalls}).`
+    text: `Meeting halls: ${mh.summary}. Amenities: ${mh.amenities.join(", ")}. Notes: ${mh.bookingNotes.join("; ")}. Capacity: Large hall ${mh.capacity.largeHall} guests, Small halls each ${mh.capacity.smallHallEach} guests (${mh.capacity.totalSmallHalls} small halls total). Total capacity across all halls: approximately ${mh.capacity.largeHall + mh.capacity.smallHallEach * mh.capacity.totalSmallHalls} guests.`
   });
 
   if (data.services.catering?.available) {
@@ -78,23 +71,24 @@ function buildCorpus(): Doc[] {
     docs.push({
       id: "services-delivery",
       section: "Delivery",
-      text: `Delivery available: ${data.services.delivery.available ? "Yes" : "No"}. ${data.services.delivery.notes}`
+      text: `Delivery: ${data.services.delivery.available ? "Available" : "Not yet available"}. ${data.services.delivery.notes}`
     });
   }
 
-  // Menu (signature items)
+  // Menu (signature items) — one doc per item for precise retrieval
   data.menu.signature.forEach((item, idx) => {
     docs.push({
       id: `menu-signature-${idx}`,
-      section: "Menu · Signature",
+      section: `Menu · ${item.title}`,
       text: `${item.title}: ${item.description}`
     });
   });
 
+  // Also a combined menu doc for general "what do you serve" questions
   docs.push({
-    id: "menu-notes",
-    section: "Menu · Notes",
-    text: data.menu.notes.join(" ")
+    id: "menu-all",
+    section: "Menu · All Items",
+    text: `Signature dishes: ${data.menu.signature.map(item => item.title).join(", ")}. ${data.menu.notes.join(" ")}`
   });
 
   // Policies
@@ -133,85 +127,133 @@ function normalize(s: string) {
   return s.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ").replace(/\s+/g, " ").trim();
 }
 
-const CORPUS: IndexedDoc[] = buildCorpus().map(d => ({ ...d, normText: normalize(d.text) }));
-
 const STOP = new Set([
-  "the","a","an","and","or","of","to","for","in","on","at","with","do","does","have","has","is","are","be","by","from","it","this","that","what","how","can","i","we","you","they","our","your","about","please"
+  "the", "a", "an", "and", "or", "of", "to", "for", "in", "on", "at", "with", "do", "does",
+  "have", "has", "is", "are", "be", "by", "from", "it", "this", "that", "what", "how",
+  "can", "i", "we", "you", "they", "our", "your", "about", "please", "me", "my", "tell",
+  "know", "want", "would", "like", "there", "also", "very", "just", "so", "than", "some",
+  "could", "should", "will", "may", "much", "many", "any", "get", "got", "which", "when",
+  "where", "who", "if", "but", "not", "no", "yes", "up", "out", "all", "been", "being"
 ]);
 
 function tokenize(q: string) {
-  return normalize(q).split(" ").filter(w => w && !STOP.has(w));
+  return normalize(q).split(" ").filter(w => w.length > 1 && !STOP.has(w));
+}
+
+// Pre-build the indexed corpus once at module load
+const CORPUS: IndexedDoc[] = buildCorpus().map(d => ({
+  ...d,
+  normText: normalize(d.text),
+  tokens: tokenize(d.text),
+}));
+
+// Bi-directional synonym groups: any word in a group maps to all others
+const SYNONYM_GROUPS: string[][] = [
+  ["book", "booking", "reserve", "reservation", "reservations"],
+  ["meeting", "hall", "halls", "event", "venue", "conference", "room"],
+  ["menu", "dish", "dishes", "food", "meal", "meals", "eat", "cuisine", "serve"],
+  ["hour", "hours", "time", "open", "opening", "close", "closing", "schedule", "available"],
+  ["location", "where", "address", "map", "directions", "direction", "near", "located", "find"],
+  ["price", "cost", "fee", "fees", "deposit", "prices", "charge", "pay", "payment", "expensive", "cheap", "affordable"],
+  ["catering", "buffet", "banquet", "cater"],
+  ["contact", "phone", "email", "call", "reach", "number", "mobile", "website"],
+  ["social", "facebook", "instagram", "tiktok"],
+  ["capacity", "guests", "people", "size", "seats", "seating", "fit", "hold", "accommodate"],
+  ["delivery", "deliver", "takeout", "pickup", "pick"],
+  ["chicken", "poultry"],
+  ["fish", "tilapia", "perch", "seafood"],
+  ["beef", "steak", "meat", "lamb"],
+  ["allergy", "allergen", "allergens", "allergies", "dietary", "gluten", "vegan", "vegetarian"],
+  ["developer", "developers", "built", "made", "created", "who"],
+];
+
+// Build a lookup: word -> set of synonyms
+const SYNONYM_MAP = new Map<string, Set<string>>();
+for (const group of SYNONYM_GROUPS) {
+  for (const word of group) {
+    if (!SYNONYM_MAP.has(word)) SYNONYM_MAP.set(word, new Set());
+    for (const other of group) {
+      if (other !== word) SYNONYM_MAP.get(word)!.add(other);
+    }
+  }
+}
+
+function expandTerms(terms: string[]): Set<string> {
+  const expanded = new Set(terms);
+  for (const t of terms) {
+    const syns = SYNONYM_MAP.get(t);
+    if (syns) syns.forEach(s => expanded.add(s));
+  }
+  return expanded;
+}
+
+// Compute IDF (Inverse Document Frequency) for each unique token across the corpus
+const IDF_MAP = new Map<string, number>();
+{
+  const allTokens = new Set<string>();
+  CORPUS.forEach(d => d.tokens.forEach(t => allTokens.add(t)));
+  for (const token of allTokens) {
+    const docCount = CORPUS.filter(d => d.normText.includes(token)).length;
+    IDF_MAP.set(token, Math.log((CORPUS.length + 1) / (docCount + 1)) + 1);
+  }
 }
 
 /**
- * Simple keyword scoring (term frequency + light synonyms), plus intent boosts.
+ * Improved scoring: TF-IDF style with synonym expansion, section boosting, and
+ * n-gram overlap for multi-word matching.
  */
 export function getRelevantInfo(query: string, topK = 6): RelevantDoc[] {
-  const terms = tokenize(query);
-  if (!terms.length) {
-    // Return sensible defaults
-    return CORPUS.filter(d => ["Hours","Location","Reservations","Meeting Halls"].includes(d.section))
-                 .slice(0, topK)
-                 .map(d => ({ id: d.id, section: d.section, text: d.text, score: 0.1 }));
+  const rawTerms = tokenize(query);
+  if (!rawTerms.length) {
+    // Return sensible defaults for empty queries
+    return CORPUS
+      .filter(d => ["Hours", "Location", "Reservations", "Meeting Halls", "Menu · All Items"].includes(d.section))
+      .slice(0, topK)
+      .map(d => ({ id: d.id, section: d.section, text: d.text, score: 0.1 }));
   }
 
-  // Lightweight synonyms to improve recall
-  const synonymMap: Record<string, string[]> = {
-    booking: ["book","reserve","reservation","reservations","meeting","hall","event","venue"],
-    menu: ["dish","food","meal","signature","specials"],
-    hours: ["time","open","opening","close","closing","schedule"],
-    location: ["where","address","map","directions","near","located"],
-    price: ["cost","fee","fees","deposit","price","prices"],
-    catering: ["buffet","banquet","serve","service","cater"],
-    contact: ["phone","email","call","reach","number","mobile","website","facebook","instagram","tiktok"],
-    capacity: ["capacity","guests","people","size","seats"]
-  };
+  const expandedTerms = expandTerms(rawTerms);
+  const queryNorm = normalize(query);
 
-  const expandedTerms = new Set<string>(terms);
-  for (const t of terms) {
-    if (synonymMap[t]) {
-      synonymMap[t].forEach(s => expandedTerms.add(s));
-    }
+  // Build bi-grams from the query for phrase-level matching
+  const bigrams: string[] = [];
+  const rawArr = rawTerms;
+  for (let i = 0; i < rawArr.length - 1; i++) {
+    bigrams.push(`${rawArr[i]} ${rawArr[i + 1]}`);
   }
-
-  const joined = terms.join(" ");
 
   const scores = CORPUS.map(doc => {
     let score = 0;
 
-    expandedTerms.forEach(t => {
-      // frequency weight
-      const matches = doc.normText.split(t).length - 1;
-      score += matches * 2;
-
-      // section/field boosting
-      if (doc.section.toLowerCase().includes(t)) score += 1.5;
-    });
-
-    // Manual boosts for likely intents
-    if (/meeting|hall|reserve|book|reservation/.test(joined)) {
-      if (doc.section.toLowerCase().includes("meeting")) score += 2.5;
-      if (doc.section.toLowerCase().includes("reserv")) score += 1.5;
+    // 1. TF-IDF style term matching
+    for (const term of expandedTerms) {
+      const tf = doc.normText.split(term).length - 1;
+      if (tf > 0) {
+        const idf = IDF_MAP.get(term) || 1;
+        // Original query terms get full weight, expanded synonyms get 60%
+        const weight = rawTerms.includes(term) ? 1.0 : 0.6;
+        score += tf * idf * weight;
+      }
     }
 
-    if (/menu|dish|food|signature/.test(joined)) {
-      if (doc.section.toLowerCase().includes("menu")) score += 2.5;
+    // 2. Section name boost (if the query relates to the section)
+    const sectionNorm = normalize(doc.section);
+    for (const term of expandedTerms) {
+      if (sectionNorm.includes(term)) {
+        score += rawTerms.includes(term) ? 4 : 2;
+      }
     }
 
-    if (/hour|open|close|time/.test(joined)) {
-      if (doc.section.toLowerCase().includes("hours")) score += 2.5;
+    // 3. Bi-gram bonus (phrase-level matching is more precise than individual terms)
+    for (const bg of bigrams) {
+      if (doc.normText.includes(bg)) {
+        score += 5;
+      }
     }
 
-    if (/phone|email|call|number|contact|facebook|instagram|tiktok|website/.test(joined)) {
-      if (doc.section.toLowerCase().includes("contact")) score += 3;
-    }
-
-    if (/where|address|map|direction|located|near/.test(joined)) {
-      if (doc.section.toLowerCase().includes("location") || doc.section.toLowerCase().includes("map")) score += 2.5;
-    }
-
-    if (/capacity|guests|people|size|seats/.test(joined)) {
-      if (doc.section.toLowerCase().includes("meeting")) score += 2.5;
+    // 4. Exact substring match bonus (if the whole query appears verbatim)
+    if (queryNorm.length > 4 && doc.normText.includes(queryNorm)) {
+      score += 8;
     }
 
     return { id: doc.id, section: doc.section, text: doc.text, score };
@@ -224,7 +266,7 @@ export function getRelevantInfo(query: string, topK = 6): RelevantDoc[] {
 }
 
 /** Turn the chosen docs into a compact context block for the LLM. */
-export function formatContext(docs: RelevantDoc[], charLimit = 1200): string {
+export function formatContext(docs: RelevantDoc[], charLimit = 1500): string {
   const lines: string[] = [];
   for (const d of docs) {
     const chunk = `• [${d.section}] ${d.text}`;

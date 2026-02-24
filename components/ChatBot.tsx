@@ -66,16 +66,26 @@ const ChatBot = () => {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
-      
+
+      const historyPayload = messages
+        .filter(m => m.id > 1) // Skip the first welcome message to save tokens
+        .map(m => ({
+          role: m.isBot ? "model" : "user",
+          text: m.text
+        }));
+
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: inputMessage }),
+        body: JSON.stringify({
+          message: inputMessage,
+          history: historyPayload
+        }),
         signal: controller.signal,
       });
-      
+
       clearTimeout(timeoutId);
 
       if (!response.ok) {
@@ -104,7 +114,7 @@ const ChatBot = () => {
       console.error("Error sending message to API:", error);
       const errorMessage: Message = {
         id: messages.length + 2,
-        text: (error as Error)?.name === 'AbortError' 
+        text: (error as Error)?.name === 'AbortError'
           ? "Request timed out. Please try again."
           : "Sorry, I'm having trouble connecting right now. Please try again later.",
         isBot: true,
@@ -132,7 +142,7 @@ const ChatBot = () => {
       {/* Chat Toggle Button */}
       <Button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-2xl z-50 bg-primary hover:bg-primary-glow transition-all duration-300 transform hover:scale-110 group"
+        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-2xl z-50 bg-primary hover:bg-primary-glow transition-all duration-300 transform hover:scale-105 group"
         size="icon"
       >
         {isOpen ? (
@@ -152,52 +162,46 @@ const ChatBot = () => {
           />
 
           {/* Chat Window */}
-          <div className="fixed bottom-28 right-6 w-96 h-[500px] bg-background border border-primary/30 rounded-3xl shadow-2xl z-50 flex flex-col animate-slide-in-right overflow-hidden">
-            {/* Header */}
-            <div className="p-6 border-b border-primary/20 bg-gradient-to-r from-background-subtle to-background-accent rounded-t-3xl">
-              <div className="flex items-center gap-3">
-                <div>
-                  <h3 className="font-bold text-primary text-lg">Mafi AI</h3>
-                  <p className="text-foreground-muted text-sm">Online</p>
+          <div className="fixed bottom-28 right-6 w-96 max-w-[calc(100vw-3rem)] h-[550px] max-h-[calc(100vh-8rem)] bg-background/95 backdrop-blur-xl border border-primary/20 rounded-3xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] z-50 flex flex-col animate-slide-in-right overflow-hidden transition-all duration-300">
+            <div className="p-4 border-b border-primary/20 bg-background/90 backdrop-blur-md rounded-t-3xl shadow-sm">
+              <div className="flex items-center gap-4">
+                <div className="relative flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/30 shadow-inner">
+                    <MessageCircle className="h-5 w-5 text-primary" />
+                  </div>
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-background rounded-full animate-pulse"></span>
+                </div>
+                <div className="flex flex-col">
+                  <h3 className="font-serif font-bold text-foreground text-xl leading-none">Mafi AI</h3>
+                  <p className="text-primary text-[10px] font-semibold uppercase tracking-widest mt-1">Concierge</p>
                 </div>
               </div>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 p-6 overflow-y-auto space-y-4 bg-background-subtle/30 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+            <div className="flex-1 p-5 overflow-y-auto space-y-6 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex ${
-                    message.isBot ? "justify-start" : "justify-end"
-                  }`}
+                  className={`flex w-full animate-fade-in ${message.isBot ? "justify-start" : "justify-end"}`}
                 >
-                  <div className="flex gap-3 max-w-[85%]">
-                    <div className="space-y-1">
-                      <div
-                        className={`rounded-2xl ${
-                          message.isBot
-                            ? message.id === 1 
-                              ? "p-4 bg-gradient-to-r from-primary/10 to-primary/5 text-foreground border-2 border-primary/30 shadow-lg"
-                              : "p-4 bg-background text-foreground border border-primary/20 shadow-sm"
-                            : "p-3 bg-primary text-primary-foreground shadow-gold"
+                  <div className={`flex flex-col relative max-w-[85%] ${message.isBot ? "items-start" : "items-end"}`}>
+                    <div
+                      className={`px-4 py-3 shadow-sm relative ${message.isBot
+                        ? message.id === 1
+                          ? "bg-background-subtle border border-primary/20 text-foreground rounded-2xl rounded-tl-sm"
+                          : "bg-background border border-primary/10 text-foreground rounded-2xl rounded-tl-sm"
+                        : "bg-primary text-primary-foreground shadow-gold rounded-2xl rounded-tr-sm"
                         }`}
-                      >
-                        <div className={`text-sm leading-relaxed ${
-                          message.isBot && message.id === 1 ? "font-medium" : ""
-                        }`}
-                        dangerouslySetInnerHTML={{ 
-                          __html: message.isBot ? formatMarkdown(message.text) : message.text 
+                    >
+                      <div className={`text-sm leading-relaxed break-words whitespace-pre-wrap ${message.isBot && message.id === 1 ? "font-serif text-[15px]" : ""}`}
+                        dangerouslySetInnerHTML={{
+                          __html: message.isBot ? formatMarkdown(message.text) : message.text
                         }}
-                        />
-                      </div>
-                      <p
-                        className={`text-xs text-foreground-muted ${
-                          message.isBot ? "text-left" : "text-right"
-                        }`}
-                      >
+                      />
+                      <div className={`text-[9px] mt-1.5 opacity-70 flex ${message.isBot ? "justify-start" : "justify-end"}`}>
                         {formatTime(message.timestamp)}
-                      </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -228,24 +232,24 @@ const ChatBot = () => {
             </div>
 
             {/* Input */}
-            <div className="p-6 border-t border-primary/20 bg-background">
-              <div className="flex gap-3">
+            <div className="p-4 border-t border-primary/10 bg-background/95 backdrop-blur-md rounded-b-3xl">
+              <div className="flex items-center gap-3">
                 <Input
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyDown={handleKeyPress}
                   placeholder="Type your message..."
-                  className="flex-1 bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary focus:ring-primary/20 transition-all duration-300"
+                  className="flex-1 bg-background-accent border-0 focus-visible:ring-1 focus-visible:ring-primary/50 text-foreground px-4 py-5 rounded-xl transition-all duration-300 shadow-inner"
                   disabled={isTyping}
                 />
                 <Button
                   onClick={handleSendMessage}
                   variant="gold"
                   size="icon"
-                  className="shadow-gold hover:shadow-glow transition-all duration-300 transform hover:scale-105"
+                  className="h-10 w-10 shrink-0 rounded-xl shadow-gold hover:shadow-glow transition-all duration-300 transform hover:-translate-y-1"
                   disabled={!inputMessage.trim() || isTyping}
                 >
-                  <Send className="h-4 w-4" />
+                  <Send className="h-4 w-4 ml-0.5" />
                 </Button>
               </div>
             </div>

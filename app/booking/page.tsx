@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
-import  Image  from "next/image";
+import Image from "next/image";
 import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,7 +15,12 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
+import dynamic from "next/dynamic";
+
+const Calendar = dynamic(
+  () => import("@/components/ui/calendar").then((mod) => mod.Calendar),
+  { ssr: false, loading: () => <div className="p-4 text-center text-sm text-foreground-muted">Loading calendar...</div> }
+);
 
 export default function Booking() {
   useEffect(() => {
@@ -31,6 +36,7 @@ export default function Booking() {
     bookingAt: "",
     purpose: "",
   });
+  const [letterFile, setLetterFile] = useState<File | null>(null);
 
   const router = useRouter();
   const { showAlert } = useAlert();
@@ -39,13 +45,13 @@ export default function Booking() {
 
   const validateField = (name: string, value: string) => {
     let error = "";
-  
+
     switch (name) {
       case "name":
         if (!value.trim()) error = "Please enter your full name.";
         else if (value.trim().length < 3) error = "Name must be at least 3 characters.";
         break;
-  
+
       case "email":
         if (!value) error = "Email is required.";
         else {
@@ -53,7 +59,7 @@ export default function Booking() {
           if (!emailRegex.test(value)) error = "Enter a valid email address.";
         }
         break;
-  
+
       case "phone":
         if (!value) error = "Phone number is required.";
         else {
@@ -61,7 +67,7 @@ export default function Booking() {
           if (!phoneRegex.test(value)) error = "Enter a valid Ethiopian phone number.";
         }
         break;
-  
+
       case "bookingAt":
         if (!value) error = "Please select a date and time.";
         else {
@@ -73,17 +79,17 @@ export default function Booking() {
           }
         }
         break;
-  
+
       case "purpose":
         if (!value.trim()) error = "Purpose is required.";
         else if (value.trim().length < 10) error = "Please provide more details (min 10 chars).";
         break;
     }
-  
+
     return error;
   };
-  
-  
+
+
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -141,12 +147,17 @@ export default function Booking() {
     setIsSubmitting(true);
 
     try {
+      const submitData = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        submitData.append(key, value);
+      });
+      if (letterFile && formData.organization) {
+        submitData.append("letter", letterFile);
+      }
+
       const response = await fetch("/api/bookings", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        body: submitData,
       });
 
       const data = await response.json();
@@ -160,6 +171,7 @@ export default function Booking() {
           bookingAt: "",
           purpose: "",
         });
+        setLetterFile(null);
 
         showAlert(
           "success",
@@ -201,8 +213,10 @@ export default function Booking() {
             <div className="flex justify-center mb-10">
               <div className="relative overflow-hidden rounded-2xl shadow-elegant group transition-all duration-500">
                 <Image
-                  src="/lovable-uploads/75f0a2e1-ceb5-407b-bd2a-4b02d7c7d5e0.png"
+                  src="/images/meeting-hall.png"
                   alt="Mafi Restaurant Meeting Hall"
+                  width={600}
+                  height={300}
                   className="block w-full max-w-xl h-72 object-cover transition-all duration-500 group-hover:scale-105 group-hover:shadow-[0_0_40px_10px_rgba(212,175,55,0.4)] group-hover:ring-4 group-hover:ring-[#d4af37]/40"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none transition-all duration-500 group-hover:from-[#d4af37]/30" />
@@ -226,11 +240,10 @@ export default function Booking() {
                   aria-invalid={!!errors.name && touched.name}
                   aria-describedby="name-error"
                   required
-                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 ${
-                    errors.name && touched.name
-                      ? "border-amber-500 focus:ring-amber-500/20"
-                      : "hover:border-primary/50"
-                  }`}
+                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 ${errors.name && touched.name
+                    ? "border-amber-500 focus:ring-amber-500/20"
+                    : "hover:border-primary/50"
+                    }`}
                 />
                 {errors.name && touched.name && (
                   <p
@@ -259,11 +272,10 @@ export default function Booking() {
                   aria-describedby="email-error"
                   required
                   placeholder="your@email.com"
-                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 ${
-                    errors.email && touched.email
-                      ? "border-amber-500 focus:ring-amber-500/20"
-                      : "hover:border-primary/50"
-                  }`}
+                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 ${errors.email && touched.email
+                    ? "border-amber-500 focus:ring-amber-500/20"
+                    : "hover:border-primary/50"
+                    }`}
                 />
                 {errors.email && touched.email && (
                   <p
@@ -292,11 +304,10 @@ export default function Booking() {
                   aria-describedby="phone-error"
                   required
                   placeholder="+251 9XX XXX XXX"
-                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 ${
-                    errors.phone && touched.phone
-                      ? "border-amber-500 focus:ring-amber-500/20"
-                      : "hover:border-primary/50"
-                  }`}
+                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 ${errors.phone && touched.phone
+                    ? "border-amber-500 focus:ring-amber-500/20"
+                    : "hover:border-primary/50"
+                    }`}
                 />
                 {errors.phone && touched.phone && (
                   <p
@@ -328,6 +339,35 @@ export default function Booking() {
                 />
               </div>
 
+              {/* Upload Letter (Only show if organization is provided) */}
+              {formData.organization.trim() && (
+                <div className="animate-fade-in">
+                  <Label
+                    htmlFor="letter"
+                    className="text-primary font-medium"
+                  >
+                    Upload Letter (Optional)
+                  </Label>
+                  <Input
+                    id="letter"
+                    name="letter"
+                    type="file"
+                    accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        setLetterFile(e.target.files[0]);
+                      } else {
+                        setLetterFile(null);
+                      }
+                    }}
+                    className="bg-background-subtle border-primary/20 text-foreground-accent file:bg-primary file:text-primary-foreground file:border-0 file:rounded-md file:mr-4 file:px-4 file:py-2 focus:border-primary mt-2 cursor-pointer hover:border-primary/50"
+                  />
+                  <p className="mt-2 text-sm text-foreground-muted">
+                    Please upload an official letter if booking on behalf of an organization. Supported formats: PDF, DOC, Images. Max 2MB.
+                  </p>
+                </div>
+              )}
+
               {/* Booking Date & Time */}
               <div>
                 <Label htmlFor="bookingAt" className="text-primary font-medium">
@@ -337,17 +377,15 @@ export default function Booking() {
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
-                      className={`w-full justify-start text-left font-normal mt-2 h-11 px-4 ${
-                        !formData.bookingAt ? "text-muted-foreground" : ""
-                      } ${
-                        errors.bookingAt && touched.bookingAt
+                      className={`w-full justify-start text-left font-normal mt-2 h-11 px-4 ${!formData.bookingAt ? "text-muted-foreground" : ""
+                        } ${errors.bookingAt && touched.bookingAt
                           ? "border-amber-500 focus:ring-amber-500/20"
                           : "hover:border-primary/50 border-primary/30 bg-background-subtle"
-                      }`}
+                        }`}
                     >
                       <span className="flex items-center gap-2">
                         📅
-                      {formData.bookingAt ? (
+                        {formData.bookingAt ? (
                           new Date(formData.bookingAt).toLocaleDateString('en-US', {
                             weekday: 'short',
                             month: 'short',
@@ -363,31 +401,31 @@ export default function Booking() {
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <div className="p-4">
-                    <Calendar
-                      mode="single"
-                      selected={
-                        formData.bookingAt
-                          ? new Date(formData.bookingAt)
-                          : undefined
-                      }
-                      onSelect={(date) => {
-                        if (!date) return;
-                        // default to 12:00 PM if no time exists yet
-                        const withTime = new Date(date);
-                        if (!formData.bookingAt) {
-                          withTime.setHours(12, 0, 0, 0);
-                        } else {
-                          const prev = new Date(formData.bookingAt);
-                          withTime.setHours(prev.getHours(), prev.getMinutes());
+                      <Calendar
+                        mode="single"
+                        selected={
+                          formData.bookingAt
+                            ? new Date(formData.bookingAt)
+                            : undefined
                         }
-                                                  handleInputChange({
+                        onSelect={(date) => {
+                          if (!date) return;
+                          // default to 12:00 PM if no time exists yet
+                          const withTime = new Date(date);
+                          if (!formData.bookingAt) {
+                            withTime.setHours(12, 0, 0, 0);
+                          } else {
+                            const prev = new Date(formData.bookingAt);
+                            withTime.setHours(prev.getHours(), prev.getMinutes());
+                          }
+                          handleInputChange({
                             target: {
                               name: "bookingAt",
                               value: withTime.toISOString(),
                             },
                           } as React.ChangeEvent<HTMLInputElement>);
-                      }}
-                    />
+                        }}
+                      />
                     </div>
                     <div className="p-4 border-t border-primary/10 bg-background-subtle rounded-b-xl">
                       <Label className="text-sm font-medium text-foreground mb-2 block">Time</Label>
@@ -396,12 +434,12 @@ export default function Booking() {
                         value={
                           formData.bookingAt
                             ? new Date(formData.bookingAt).toLocaleTimeString(
-                                "en-GB",
-                                {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                }
-                              )
+                              "en-GB",
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              }
+                            )
                             : "12:00"
                         }
                         onChange={(e) => {
@@ -448,11 +486,10 @@ export default function Booking() {
                   aria-invalid={!!errors.purpose && touched.purpose}
                   aria-describedby="purpose-error"
                   placeholder="Describe the nature of your event or meeting..."
-                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 resize-none ${
-                    errors.purpose && touched.purpose
-                      ? "border-amber-500 focus:ring-amber-500/20"
-                      : "hover:border-primary/50"
-                  }`}
+                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 resize-none ${errors.purpose && touched.purpose
+                    ? "border-amber-500 focus:ring-amber-500/20"
+                    : "hover:border-primary/50"
+                    }`}
                 />
                 {errors.purpose && touched.purpose && (
                   <p

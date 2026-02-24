@@ -3,13 +3,14 @@ import { prisma } from "@/lib/prisma";
 
 const VALID_STATUSES = ["pending", "approved", "rejected"] as const;
 
+export const dynamic = "force-dynamic";
+
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { params } = context ?? { params: { id: "" } }; // id will be "" if undefined, handle this as needed
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const { status } = body;
 
@@ -42,11 +43,10 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { params } = context ?? { params: { id: "" } };
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const booking = await prisma.booking.findUnique({ where: { id } });
     if (!booking) {

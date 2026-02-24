@@ -20,8 +20,8 @@ const config = {
     },
     extend: {
       fontFamily: {
-        serif: ['Playfair Display', 'serif'],
-        body: ['Inter', 'sans-serif'],
+        serif: ['Cormorant Garamond', 'serif'],
+        body: ['Montserrat', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",

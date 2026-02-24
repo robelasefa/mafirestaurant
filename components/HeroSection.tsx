@@ -6,13 +6,13 @@ import { Star, MapPin, Clock } from "lucide-react";
 const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex flex-col justify-center overflow-hidden pt-20 md:pt-24 lg:pt-28">
-      
+
       {/* Background Image with Parallax Effect */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat cursor-pointer group transition-transform duration-700 hover:scale-105"
         style={{
           backgroundImage:
-            "url('/lovable-uploads/1c44f0df-7cff-47ed-9b37-fc2c7808913c.png')",
+            "url('/images/hero-bg.png')",
         }}
         onClick={() => {
           const menuSection = document.getElementById("menu");
@@ -59,7 +59,7 @@ const HeroSection = () => {
             size="lg"
             className="text-base md:text-lg px-8 py-4 h-auto font-semibold tracking-wide shadow-elegant hover:shadow-gold transition-all duration-300 transform hover:scale-105"
             onClick={() => {
-              const hallSection = document.getElementById("meeting-hall");
+              const hallSection = document.getElementById("reservation");
               if (hallSection)
                 hallSection.scrollIntoView({ behavior: "smooth" });
             }}
@@ -79,7 +79,7 @@ const HeroSection = () => {
               Finest ingredients and authentic flavors
             </p>
           </div>
-          
+
           <div className="flex flex-col items-center text-center group">
             <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary/30 transition-colors duration-300">
               <MapPin className="h-8 w-8 text-primary" />
@@ -89,7 +89,7 @@ const HeroSection = () => {
               Heart of Adama with easy accessibility
             </p>
           </div>
-          
+
           <div className="flex flex-col items-center text-center group">
             <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary/30 transition-colors duration-300">
               <Clock className="h-8 w-8 text-primary" />

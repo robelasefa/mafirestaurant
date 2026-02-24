@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
   // Create a default staff user
   const hashedPassword = await bcrypt.hash('staff123', 10);
-  
+
   const staffUser = await prisma.user.upsert({
     where: { email: 'staff@mafirestaurant.com' },
     update: {},
@@ -18,51 +18,59 @@ async function main() {
     },
   });
 
+  const adminPassword = await bcrypt.hash('admin123', 10);
+  const adminUser = await prisma.user.upsert({
+    where: { email: 'admin@mafirestaurant.com' },
+    update: {},
+    create: {
+      email: 'admin@mafirestaurant.com',
+      name: 'Admin User',
+      password: adminPassword,
+      role: 'admin',
+    },
+  });
+
   console.log('Staff user created:', staffUser);
-  
+  console.log('Admin user created:', adminUser);
+
   // Add some sample bookings
   const sampleBookings = [
     {
       name: 'Alemu Bekele',
       email: 'alemu@example.com',
       organization: 'Adama Tech',
-      date: '2024-07-10',
-      time: '14:00',
+      bookingAt: new Date('2024-07-10T14:00:00Z'),
       purpose: 'Board Meeting',
       status: 'pending',
+      phone: '1234567890',
     },
     {
       name: 'Sara Tadesse',
       email: 'sara@example.com',
       organization: 'Ethiopia Bank',
-      date: '2024-07-12',
-      time: '10:00',
+      bookingAt: new Date('2024-07-12T10:00:00Z'),
       purpose: 'Training Session',
       status: 'approved',
+      phone: '0987654321',
     },
     {
       name: 'Mulugeta Kebede',
       email: 'mulu@example.com',
       organization: 'NGO Connect',
-      date: '2024-07-15',
-      time: '16:00',
+      bookingAt: new Date('2024-07-15T16:00:00Z'),
       purpose: 'Charity Event Planning',
       status: 'rejected',
+      phone: '1112223333',
     },
   ];
 
   for (const booking of sampleBookings) {
-    await prisma.booking.upsert({
-      where: { 
-        email_date_time: {
-          email: booking.email,
-          date: booking.date,
-          time: booking.time,
-        }
-      },
-      update: {},
-      create: booking,
+    const existing = await prisma.booking.findFirst({
+      where: { email: booking.email, bookingAt: booking.bookingAt }
     });
+    if (!existing) {
+      await prisma.booking.create({ data: booking });
+    }
   }
 
   console.log('Sample bookings created');

@@ -27,7 +27,8 @@ export const authOptions: NextAuthOptions = {
         return {
           id: user.id,
           email: user.email,
-          role: user.role,
+          role: user.role as "admin" | "staff" | "customer",
+          needsPasswordChange: user.needsPasswordChange,
         };
       },
     }),
@@ -37,13 +38,15 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.needsPasswordChange = user.needsPasswordChange;
       }
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string;
-        session.user.role = token.role as string;
+        session.user.role = token.role as "admin" | "staff" | "customer";
+        session.user.needsPasswordChange = token.needsPasswordChange as boolean;
       }
       return session;
     },

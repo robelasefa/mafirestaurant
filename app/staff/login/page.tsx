@@ -29,19 +29,19 @@ export default function Login() {
         password,
         redirect: false,
       });
-    
+
       if (result?.error) {
         setError("Invalid email or password");
       } else {
-        // Redirect to staff booking management page
-        router.push("/staff/manage-bookings");
+        // Redirect to staff root which middleware catches and routes to specific dashboards!
+        router.push("/staff");
       }
     } catch {
       setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
-    
+
   };
 
   return (
