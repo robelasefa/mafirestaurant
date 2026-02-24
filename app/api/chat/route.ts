@@ -19,7 +19,7 @@ Your job:
 - Prefer concrete facts from context; if context conflicts with prior assumptions, prefer the context.
 - When relevant, remind users they can book meeting halls via the **/booking** page or by phone.
 - Format responses with clear structure using line breaks and bold text for better readability.
-- Keep it under ~80 words unless listing items.
+- Keep your responses complete and do not truncate them.
 `.trim();
 
 export async function POST(request: NextRequest) {
@@ -88,7 +88,7 @@ Respond helpfully. If context is insufficient, say so and suggest calling or ema
         temperature: 0.3,
         topP: 0.9,
         topK: 40,
-        maxOutputTokens: 300,
+        maxOutputTokens: 1000,
       },
     });
 
