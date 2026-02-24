@@ -119,30 +119,28 @@ const MenuCarousel = () => {
           </p>
         </div>
 
-        {/* Enhanced Carousel Container */}
+        {/* Carousel Container */}
         <div className="w-full flex flex-col items-center">
-          {/* Enhanced Image Display */}
-          <div className="relative w-full max-w-lg aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-white group">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10 pointer-events-none" />
+          {/* Image Display - FIXED to show food portions */}
+          <div className="relative w-full max-w-lg aspect-[4/3] rounded-xl overflow-hidden shadow-lg bg-white group">
             <Image
               key={currentItem.image}
               src={currentItem.image}
               alt={currentItem.title}
-              width={800}
-              height={600}
-              className="w-full h-full object-cover transition-all duration-1000 ease-in-out group-hover:scale-110 group-hover:rotate-1"
+              width={800} // Set the actual width in px if known
+              height={600} // Or 4:3 aspect from the parent div
+              className="w-full h-full object-cover transition-all duration-700 ease-in-out group-hover:scale-105"
               style={{
                 filter: "brightness(1.05) contrast(1.1) saturate(1.05)",
                 objectPosition: "center bottom",
               }}
             />
-            {/* Enhanced Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent pointer-events-none" />
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent pointer-events-none" />
 
-            {/* Enhanced Floating Badge */}
-            <div className="absolute top-4 right-4 bg-primary/95 backdrop-blur-md text-primary-foreground px-4 py-2 rounded-full shadow-gold border border-primary-glow/30 group-hover:scale-110 transition-transform duration-300">
-              <span className="font-bold text-xs tracking-wider">SIGNATURE</span>
+            {/* Floating Badge */}
+            <div className="absolute top-3 right-3 bg-primary/90 backdrop-blur-sm text-primary-foreground px-2 py-1 rounded-full shadow-md">
+              <span className="font-semibold text-xs">Signature</span>
             </div>
           </div>
 
@@ -188,33 +186,29 @@ const MenuCarousel = () => {
             </Button>
           </div>
 
-          {/* Enhanced Content Display */}
-          <div className="text-center mt-10 space-y-4 max-w-2xl animate-fade-in">
-            <div className="space-y-3">
-              <h3 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-primary transition-all duration-500 tracking-tight">
+          {/* Content Display */}
+          <div className="text-center mt-8 space-y-3 max-w-2xl">
+            <div className="space-y-2">
+              <h3 className="text-xl md:text-2xl lg:text-3xl font-serif font-bold text-primary transition-all duration-500">
                 {currentItem.title}
               </h3>
-              <div className="flex items-center justify-center gap-2">
-                <div className="w-20 h-px bg-gradient-to-r from-transparent via-primary to-primary/50"></div>
-                <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-                <div className="w-20 h-px bg-gradient-to-l from-transparent via-primary to-primary/50"></div>
-              </div>
+              <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent mx-auto transition-all duration-500"></div>
             </div>
 
-            <p className="text-sm md:text-base text-foreground-muted mx-auto max-w-lg leading-relaxed px-4">
+            <p className="text-sm md:text-base text-foreground-muted mx-auto max-w-lg leading-relaxed opacity-90">
               {currentItem.description}
             </p>
 
-            {/* Enhanced Menu Categories */}
-            <div className="flex flex-wrap justify-center gap-3 mt-6">
-              <span className="px-4 py-2 bg-gradient-to-r from-primary/15 to-primary/10 text-primary rounded-full text-xs font-semibold border border-primary/30 shadow-sm hover:shadow-gold transition-all duration-300 hover:scale-105">
-                PREMIUM
+            {/* Menu Categories */}
+            <div className="flex flex-wrap justify-center gap-2 mt-4">
+              <span className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium border border-primary/20">
+                Premium
               </span>
-              <span className="px-4 py-2 bg-gradient-to-r from-primary/15 to-primary/10 text-primary rounded-full text-xs font-semibold border border-primary/30 shadow-sm hover:shadow-gold transition-all duration-300 hover:scale-105">
-                FRESH
+              <span className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium border border-primary/20">
+                Fresh
               </span>
-              <span className="px-4 py-2 bg-gradient-to-r from-primary/15 to-primary/10 text-primary rounded-full text-xs font-semibold border border-primary/30 shadow-sm hover:shadow-gold transition-all duration-300 hover:scale-105">
-                EXPERT
+              <span className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium border border-primary/20">
+                Expert
               </span>
             </div>
           </div>

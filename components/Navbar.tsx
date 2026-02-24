@@ -60,9 +60,9 @@ export default function Navbar() {
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 w-full z-50 transition-all duration-500",
+        "fixed top-0 left-0 w-full z-50 transition-all duration-300",
         scrolled
-          ? "bg-background/95 backdrop-blur-xl shadow-elegant border-b border-primary/10"
+          ? "bg-background/98 backdrop-blur-md shadow-elegant"
           : "bg-transparent"
       )}
     >
@@ -78,16 +78,16 @@ export default function Navbar() {
             aria-label="Go to homepage"
           >
             <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-primary/30 blur-md opacity-0 group-hover:opacity-100 transition-all duration-500" />
               <Image
                 src="/images/logo.png"
                 alt="Mafi Restaurant"
-                width={56}
+                width={56}   // h-14 = 56px
                 height={56}
-                className="relative h-14 w-14 rounded-full object-cover border-2 border-primary/50 transition-all duration-500 group-hover:border-primary group-hover:scale-110 group-hover:rotate-6 shadow-lg"
+                className="h-14 w-14 rounded-full object-cover border-2 border-primary transition-all duration-300 group-hover:border-primary-glow group-hover:scale-105"
               />
+              <div className="absolute inset-0 rounded-full bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </div>
-            <span className="ml-4 text-2xl font-serif font-bold text-primary group-hover:text-primary-glow transition-all duration-300 tracking-tight">
+            <span className="ml-4 text-2xl font-serif font-bold text-primary group-hover:text-primary-glow transition-colors duration-300">
               Mafi Restaurant
             </span>
           </Link>
