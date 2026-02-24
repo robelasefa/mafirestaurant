@@ -36,15 +36,18 @@ const AboutUs = () => {
           </p>
         </div>
 
-        {/* Stats Section */}
+        {/* Enhanced Stats Section */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
           {stats.map((stat, index) => (
-            <div key={index} className="text-center group">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors duration-300">
-                <stat.icon className="h-8 w-8 text-primary" />
+            <div key={index} className="text-center group cursor-pointer">
+              <div className="relative w-20 h-20 mx-auto mb-5">
+                <div className="absolute inset-0 bg-primary/20 rounded-full blur-lg group-hover:bg-primary/30 transition-all duration-500" />
+                <div className="relative w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full flex items-center justify-center border border-primary/30 group-hover:border-primary/50 transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 shadow-lg">
+                  <stat.icon className="h-9 w-9 text-primary group-hover:scale-110 transition-transform duration-500" />
+                </div>
               </div>
-              <div className="text-3xl font-bold text-primary mb-2">{stat.value}</div>
-              <div className="text-foreground-muted text-sm font-medium">{stat.label}</div>
+              <div className="text-4xl font-bold text-primary mb-2 group-hover:text-primary-glow transition-colors duration-300">{stat.value}</div>
+              <div className="text-foreground-muted text-sm font-medium tracking-wide">{stat.label}</div>
             </div>
           ))}
         </div>
