@@ -45,21 +45,11 @@ export default function Home() {
       )}
 
       <Navbar />
-      <div id="hero">
-        <HeroSection />
-      </div>
-      <div id="about">
-        <AboutUs />
-      </div>
-      <div id="menu">
-        <MenuCarousel />
-      </div>
-      <div id="meeting-hall">
-        <MeetingHallBooking />
-      </div>
-      <div id="contact">
-        <Footer />
-      </div>
+      <HeroSection />
+      <AboutUs />
+      <MenuCarousel />
+      <MeetingHallBooking />
+      <Footer />
       <ChatBot />
     </div>
   );

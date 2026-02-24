@@ -45,28 +45,32 @@ export default function Login() {
   };
 
   return (
-    <section className="bg-background min-h-screen flex items-center justify-center py-20 px-4">
-      <div className="max-w-md w-full animate-fade-in">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary mb-4">
-            Staff Login
+    <section className="min-h-[80vh] flex items-center justify-center py-12 px-4">
+      <div className="max-w-md w-full animate-slide-up">
+        <div className="text-center mb-10">
+          <h1 className="text-4xl md:text-6xl font-serif font-bold text-primary mb-4 tracking-tight">
+            Welcome Back
           </h1>
-          <p className="text-foreground-muted">
-            Access the booking management system
+          <p className="text-foreground-muted italic text-lg">
+            Excellence begins with service.
           </p>
+          <div className="w-16 h-0.5 bg-primary/40 mx-auto mt-6" />
         </div>
 
-        <div className="bg-background rounded-2xl shadow-elegant p-8 border border-primary/20">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="glass-dark rounded-[2rem] shadow-glow p-10 border border-primary/30 relative overflow-hidden group">
+          {/* Decorative accent */}
+          <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all duration-500" />
+
+          <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
             {error && (
-              <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg text-sm">
+              <div className="bg-destructive/10 border border-destructive/20 text-destructive px-6 py-4 rounded-xl text-sm animate-shake">
                 {error}
               </div>
             )}
 
-            <div>
-              <Label htmlFor="email" className="text-primary font-medium">
-                Email Address
+            <div className="space-y-2">
+              <Label htmlFor="email">
+                Staff Email
               </Label>
               <Input
                 id="email"
@@ -74,13 +78,13 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2"
+                className="bg-black/40 border-primary/20"
                 placeholder="staff@mafirestaurant.com"
               />
             </div>
 
-            <div>
-              <Label htmlFor="password" className="text-primary font-medium">
+            <div className="space-y-2">
+              <Label htmlFor="password">
                 Password
               </Label>
               <Input
@@ -89,8 +93,8 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2"
-                placeholder="Enter your password"
+                className="bg-black/40 border-primary/20"
+                placeholder="••••••••"
               />
             </div>
 
@@ -98,16 +102,16 @@ export default function Login() {
               type="submit"
               variant="gold"
               size="lg"
-              className="w-full text-lg py-6"
+              className="w-full text-lg py-7 shadow-gold hover:shadow-glow rounded-xl font-bold transition-all duration-500"
               disabled={isLoading}
             >
-              {isLoading ? "Signing In..." : "Sign In"}
+              {isLoading ? "Authenticating..." : "Authorize Access"}
             </Button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-foreground-muted">
-              This area is restricted to Mafi Restaurant staff only.
+          <div className="mt-10 text-center relative z-10">
+            <p className="text-xs text-foreground-muted uppercase tracking-widest opacity-60">
+              Restricted Area • Mafi Personnel Only
             </p>
           </div>
         </div>

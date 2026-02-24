@@ -135,140 +135,156 @@ export default function ManageBookings() {
   }
 
   return (
-    <section className="max-w-5xl mx-auto px-4 animate-fade-in">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary">
-          Manage Meeting Hall Bookings
-        </h1>
-        <div className="flex items-center gap-4">
-          <div className="text-foreground-muted">
-            Welcome, {session?.user?.name}
+    <section className="max-w-7xl mx-auto px-4 animate-slide-up">
+      <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6 border-b border-primary/20 pb-8">
+        <div>
+          <h1 className="text-4xl md:text-6xl font-serif font-bold text-primary mb-2">
+            Reservations
+          </h1>
+          <p className="text-foreground-muted italic">Manage hall bookings and guest requests.</p>
+        </div>
+
+        <div className="flex flex-col md:flex-row items-center gap-6">
+          <div className="glass px-6 py-3 rounded-full border-primary/30">
+            <span className="text-primary/60 text-xs uppercase tracking-widest block mb-1">Active Session</span>
+            <span className="text-foreground-accent font-bold">{session?.user?.name}</span>
           </div>
           {session?.user?.role === "admin" && (
             <Button
               variant="gold"
+              size="lg"
+              className="rounded-full px-8 shadow-gold"
               onClick={() => router.push('/staff/admin/add')}
             >
-              Add Staff
+              + Add Personnel
             </Button>
           )}
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-background-subtle rounded-2xl shadow-elegant border border-primary/20">
-          <thead>
-            <tr className="text-left text-primary text-lg">
-              <th className="py-4 px-4">Name</th>
-              <th className="py-4 px-4">Email</th>
-              <th className="py-4 px-4">Phone</th>
-              <th className="py-4 px-4">Organization</th>
-              <th className="py-4 px-4">Booking At</th>
-              <th className="py-4 px-4">Purpose</th>
-              <th className="py-4 px-4">Letter</th>
-              <th className="py-4 px-4">Status</th>
-              <th className="py-4 px-4 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={8}
-                  className="py-12 text-center text-foreground-muted text-xl"
-                >
-                  No bookings found.
-                </td>
+      <div className="glass-dark rounded-[2.5rem] shadow-elegant border border-primary/20 overflow-hidden">
+        <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+          <table className="min-w-full">
+            <thead>
+              <tr className="text-left border-b border-primary/10 bg-primary/5">
+                <th className="py-6 px-6 text-primary uppercase tracking-widest text-xs font-bold">Client Details</th>
+                <th className="py-6 px-6 text-primary uppercase tracking-widest text-xs font-bold">Contact Info</th>
+                <th className="py-6 px-6 text-primary uppercase tracking-widest text-xs font-bold">Schedule</th>
+                <th className="py-6 px-6 text-primary uppercase tracking-widest text-xs font-bold">Documentation</th>
+                <th className="py-6 px-6 text-primary uppercase tracking-widest text-xs font-bold">Status</th>
+                <th className="py-6 px-6 text-primary uppercase tracking-widest text-xs font-bold text-center">Actions</th>
               </tr>
-            ) : (
-              bookings.map((b) => (
-                <tr
-                  key={b.id}
-                  className="border-t border-primary/10 hover:bg-background-accent transition-colors"
-                >
-                  <td className="py-4 px-4 font-medium text-foreground-accent">
-                    {b.name}
-                  </td>
-                  <td className="py-4 px-4">{b.email}</td>
-                  <td className="py-4 px-4">{b.phone || "-"}</td>
-                  <td className="py-4 px-4">{b.organization || "-"}</td>
-                  <td className="py-4 px-4">
-                    <div className="flex flex-col">
-                      <span className="font-medium">
-                        {new Date(b.bookingAt).toLocaleDateString(undefined, {
-                          weekday: "short",
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </span>
-                      <span className="text-sm text-foreground-muted">
-                        {new Date(b.bookingAt).toLocaleTimeString(undefined, {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                    </div>
-                  </td>
+            </thead>
+            <tbody className="divide-y divide-primary/10">
+              {bookings.length === 0 ? (
+                <tr>
                   <td
-                    className="py-4 px-4 max-w-xs truncate"
-                    title={b.purpose || ""}
+                    colSpan={6}
+                    className="py-24 text-center text-foreground-muted italic text-xl"
                   >
-                    {b.purpose || "-"}
-                  </td>
-                  <td className="py-4 px-4">
-                    {b.letterUrl ? (
-                      <a
-                        href={b.letterUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline font-medium flex items-center gap-1"
-                      >
-                        📄 View
-                      </a>
-                    ) : (
-                      <span className="text-foreground-muted">-</span>
-                    )}
-                  </td>
-                  <td className="py-4 px-4">
-                    <span
-                      className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${statusColors[b.status]
-                        }`}
-                    >
-                      {b.status.charAt(0).toUpperCase() + b.status.slice(1)}
-                    </span>
-                  </td>
-                  <td className="py-4 px-4 text-center space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="border-primary/30 text-primary hover:bg-primary hover:text-background transition-elegant"
-                      onClick={() => handleStatus(b.id, "approved")}
-                    >
-                      Approve
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="border-destructive/30 text-destructive hover:bg-destructive hover:text-background transition-elegant"
-                      onClick={() => handleStatus(b.id, "rejected")}
-                    >
-                      Reject
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-foreground-muted hover:text-destructive"
-                      onClick={() => handleDelete(b.id)}
-                    >
-                      Delete
-                    </Button>
+                    No pending or historical bookings found.
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                bookings.map((b) => (
+                  <tr
+                    key={b.id}
+                    className="group hover:bg-primary/5 transition-all duration-300"
+                  >
+                    <td className="py-6 px-6">
+                      <div className="flex flex-col">
+                        <span className="font-bold text-foreground-accent text-lg">{b.name}</span>
+                        <span className="text-xs text-foreground-muted uppercase tracking-tighter mt-1">{b.organization || "Private Event"}</span>
+                      </div>
+                    </td>
+                    <td className="py-6 px-6">
+                      <div className="flex flex-col text-sm space-y-1">
+                        <span className="text-foreground-accent/80">{b.email}</span>
+                        <span className="text-foreground-muted font-mono">{b.phone || "No Phone"}</span>
+                      </div>
+                    </td>
+                    <td className="py-6 px-6">
+                      <div className="flex flex-col">
+                        <span className="font-bold text-primary">
+                          {new Date(b.bookingAt).toLocaleDateString(undefined, {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </span>
+                        <span className="text-xs text-foreground-muted font-mono uppercase">
+                          {new Date(b.bookingAt).toLocaleTimeString(undefined, {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="py-6 px-6">
+                      <div className="flex flex-col gap-2">
+                        {b.letterUrl ? (
+                          <a
+                            href={b.letterUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="glass px-3 py-1 rounded-md text-xs text-primary hover:bg-primary hover:text-black transition-all inline-fit w-fit"
+                          >
+                            VIEW LETTER
+                          </a>
+                        ) : (
+                          <span className="text-xs text-foreground-muted/50 italic font-light tracking-widest">NO DOCS</span>
+                        )}
+                        <p className="text-xs text-foreground-muted max-w-[150px] truncate" title={b.purpose || ""}>
+                          {b.purpose || "No purpose stated"}
+                        </p>
+                      </div>
+                    </td>
+                    <td className="py-6 px-6">
+                      <span
+                        className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm ${statusColors[b.status]
+                          }`}
+                      >
+                        {b.status}
+                      </span>
+                    </td>
+                    <td className="py-6 px-6 text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        {b.status === "pending" && (
+                          <>
+                            <Button
+                              variant="gold"
+                              size="sm"
+                              className="h-8 px-4 text-[10px] rounded-full"
+                              onClick={() => handleStatus(b.id, "approved")}
+                            >
+                              APPROVE
+                            </Button>
+                            <Button
+                              variant="luxury"
+                              size="sm"
+                              className="h-8 px-4 text-[10px] rounded-full border-destructive text-destructive hover:bg-destructive hover:text-white"
+                              onClick={() => handleStatus(b.id, "rejected")}
+                            >
+                              REJECT
+                            </Button>
+                          </>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0 rounded-full text-foreground-muted hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => handleDelete(b.id)}
+                        >
+                          ✕
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   );

@@ -33,6 +33,7 @@ const config = {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
           glow: "hsl(var(--primary-glow))",
+          light: "hsl(var(--primary-light))",
           dark: "hsl(var(--primary-dark))",
         },
         secondary: {
@@ -61,6 +62,7 @@ const config = {
         },
         'background-accent': "hsl(var(--background-accent))",
         'background-subtle': "hsl(var(--background-subtle))",
+        'background-soft': "hsl(var(--background-soft))",
         'foreground-muted': "hsl(var(--foreground-muted))",
         'foreground-accent': "hsl(var(--foreground-accent))",
         sidebar: {

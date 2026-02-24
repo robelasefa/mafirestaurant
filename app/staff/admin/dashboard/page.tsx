@@ -110,129 +110,148 @@ export default function AdminDashboard() {
         }
     };
 
-    if (status === "loading" || isLoading) return <div className="min-h-screen items-center flex justify-center text-primary">Loading Framework...</div>;
+    if (status === "loading" || isLoading) return (
+        <div className="min-h-screen bg-background flex flex-col items-center justify-center">
+            <div className="relative w-24 h-24 mb-8">
+                <div className="absolute inset-0 border-t-2 border-primary rounded-full animate-spin" />
+                <div className="absolute inset-2 border-r-2 border-primary/50 rounded-full animate-spin-slow" />
+            </div>
+            <p className="text-primary font-serif italic tracking-widest animate-pulse">Initializing Administrative Systems...</p>
+        </div>
+    );
 
     return (
-        <section className="bg-background min-h-screen py-20 px-4 md:px-8">
-            <div className="max-w-7xl mx-auto space-y-12 animate-fade-in">
+        <section className="bg-background min-h-screen py-12 px-4 md:px-8 overflow-hidden relative">
+            {/* Background Atmosphere */}
+            <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+            <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
+
+            <div className="max-w-7xl mx-auto space-y-16 animate-slide-up relative z-10">
 
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-center bg-background-subtle border border-primary/20 p-8 rounded-2xl shadow-elegant">
+                <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-primary/20 pb-10">
                     <div>
-                        <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary mb-2">Admin Dashboard</h1>
-                        <p className="text-foreground-muted">System Overview & Staff Management</p>
+                        <h1 className="text-4xl md:text-7xl font-serif font-bold text-primary mb-2">
+                            Governance
+                        </h1>
+                        <p className="text-foreground-muted italic text-lg tracking-wide">System intelligence & authority management.</p>
                     </div>
-                    <div className="mt-6 md:mt-0 flex gap-4">
-                        <Button onClick={() => router.push('/staff/manage-bookings')} variant="luxury">View Bookings Portal</Button>
-                    </div>
-                </div>
-
-                {/* Analytics Overview - Mock Data For Display */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div className="bg-background-accent border border-primary/10 p-6 rounded-xl shadow-elegant hover:shadow-glow transition-all">
-                        <div className="flex items-center gap-4 text-primary mb-2"><TrendingUp /> <span className="font-semibold text-lg">Website Visits</span></div>
-                        <div className="text-4xl font-bold text-foreground">1,248</div>
-                        <div className="text-sm text-green-500 mt-2">+14% this week</div>
-                    </div>
-                    <div className="bg-background-accent border border-primary/10 p-6 rounded-xl shadow-elegant hover:shadow-glow transition-all">
-                        <div className="flex items-center gap-4 text-primary mb-2"><FileText /> <span className="font-semibold text-lg">Total Bookings</span></div>
-                        <div className="text-4xl font-bold text-foreground">84</div>
-                        <div className="text-sm text-foreground-muted mt-2">Historical</div>
-                    </div>
-                    <div className="bg-background-accent border border-primary/10 p-6 rounded-xl shadow-elegant hover:shadow-glow transition-all">
-                        <div className="flex items-center gap-4 text-primary mb-2"><CheckCircle /> <span className="font-semibold text-lg">Pending Requests</span></div>
-                        <div className="text-4xl font-bold text-amber-500">5</div>
-                        <div className="text-sm text-foreground-muted mt-2">Needs approval</div>
-                    </div>
-                    <div className="bg-background-accent border border-primary/10 p-6 rounded-xl shadow-elegant hover:shadow-glow transition-all">
-                        <div className="flex items-center gap-4 text-primary mb-2"><Users /> <span className="font-semibold text-lg">Active Staff</span></div>
-                        <div className="text-4xl font-bold text-foreground">{users.length}</div>
-                        <div className="text-sm text-foreground-muted mt-2">Manage below</div>
+                    <div className="flex gap-4">
+                        <Button
+                            onClick={() => router.push('/staff/manage-bookings')}
+                            variant="gold"
+                            size="lg"
+                            className="rounded-full px-8 shadow-gold"
+                        >
+                            Logistics Portal
+                        </Button>
                     </div>
                 </div>
 
-                {/* Staff Management Section */}
-                <div className="grid lg:grid-cols-3 gap-8">
+                {/* Analytics Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {[
+                        { label: "Site Traversal", value: "1,248", detail: "+14% this week", icon: <TrendingUp className="w-5 h-5" /> },
+                        { label: "Historical Records", value: "84", detail: "Total bookings", icon: <FileText className="w-5 h-5" /> },
+                        { label: "Pending Decrees", value: "5", detail: "Awaiting review", icon: <CheckCircle className="w-5 h-5 text-primary" />, highlight: "text-primary" },
+                        { label: "Active Personnel", value: users.length, detail: "Authorized agents", icon: <Users className="w-5 h-5" /> }
+                    ].map((stat, idx) => (
+                        <div key={idx} className="glass-dark border border-primary/10 p-8 rounded-[2rem] shadow-elegant hover:shadow-gold/20 transition-all group">
+                            <div className="flex items-center gap-4 text-primary/60 mb-6 uppercase tracking-widest text-[10px] font-bold">
+                                {stat.icon} <span>{stat.label}</span>
+                            </div>
+                            <div className={`text-5xl font-bold mb-3 ${stat.highlight || 'text-foreground-accent'}`}>{stat.value}</div>
+                            <div className="text-xs text-foreground-muted font-mono uppercase tracking-tighter">{stat.detail}</div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Management Section */}
+                <div className="grid lg:grid-cols-12 gap-10">
 
                     {/* Invite Form */}
-                    <div className="bg-background-subtle border border-primary/20 p-8 rounded-2xl shadow-elegant h-fit">
-                        <h3 className="text-2xl font-serif font-bold text-primary mb-6">Invite Staff</h3>
-                        <form onSubmit={handleInvite} className="space-y-4">
-                            <div>
-                                <label className="text-sm font-medium text-foreground-muted mb-2 block">Email Address</label>
+                    <div className="lg:col-span-4 glass-dark border border-primary/20 p-10 rounded-[2.5rem] shadow-elegant h-fit relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+
+                        <h3 className="text-2xl font-serif font-bold text-primary mb-8">Authorize Personnel</h3>
+                        <form onSubmit={handleInvite} className="space-y-8">
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-bold text-primary uppercase tracking-widest ml-1">Member Email</label>
                                 <Input
                                     required
                                     type="email"
-                                    placeholder="staff@mafi.com"
+                                    placeholder="agent@grandhorizon.com"
                                     value={inviteEmail}
                                     onChange={e => setInviteEmail(e.target.value)}
-                                    className="w-full bg-background border-primary/30 text-foreground"
+                                    className="rounded-2xl h-12"
                                 />
                             </div>
-                            <div>
-                                <label className="text-sm font-medium text-foreground-muted mb-2 block">System Role</label>
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-bold text-primary uppercase tracking-widest ml-1">Access Tier</label>
                                 <select
                                     value={inviteRole}
                                     onChange={e => setInviteRole(e.target.value)}
-                                    className="w-full h-10 px-3 bg-background border border-primary/30 rounded-md text-foreground focus:ring-2 focus:ring-primary focus:outline-none"
+                                    className="flex h-12 w-full rounded-2xl border border-primary/20 bg-background/50 px-4 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
                                 >
-                                    <option value="staff">Staff (Bookings Only)</option>
-                                    <option value="admin">Administrator (Full Access)</option>
+                                    <option value="staff" className="bg-black">Staff (Logistics Only)</option>
+                                    <option value="admin" className="bg-black">Admin (Full Dominion)</option>
                                 </select>
                             </div>
-                            <Button type="submit" variant="gold" className="w-full mt-4">Send Invite</Button>
+                            <Button type="submit" variant="gold" className="w-full h-14 rounded-2xl shadow-gold mt-4 text-xs tracking-[0.2em] font-bold">
+                                DISPATCH INVITATION
+                            </Button>
                         </form>
                     </div>
 
                     {/* Users Table */}
-                    <div className="lg:col-span-2 bg-background-subtle border border-primary/20 rounded-2xl shadow-elegant overflow-hidden">
-                        <div className="p-6 border-b border-primary/10 bg-background-accent">
-                            <h3 className="text-2xl font-serif font-bold text-primary">Manage Authority</h3>
+                    <div className="lg:col-span-8 glass-dark border border-primary/20 rounded-[2.5rem] shadow-elegant overflow-hidden flex flex-col">
+                        <div className="p-8 border-b border-primary/10 bg-primary/5 flex justify-between items-center">
+                            <h3 className="text-2xl font-serif font-bold text-primary">Authority Registry</h3>
+                            <span className="text-[10px] font-bold text-primary/40 uppercase tracking-[0.3em]">Confidential</span>
                         </div>
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
-                                <thead className="bg-background/50 border-b border-primary/10">
-                                    <tr>
-                                        <th className="py-4 px-6 font-medium text-primary">Member</th>
-                                        <th className="py-4 px-6 font-medium text-primary">Account Security</th>
-                                        <th className="py-4 px-6 font-medium text-primary">Role</th>
-                                        <th className="py-4 px-6 font-medium text-primary text-right">Actions</th>
+                                <thead>
+                                    <tr className="border-b border-primary/10">
+                                        <th className="py-6 px-8 text-[10px] font-bold text-primary uppercase tracking-widest">Personnel</th>
+                                        <th className="py-6 px-8 text-[10px] font-bold text-primary uppercase tracking-widest text-center">Security Status</th>
+                                        <th className="py-6 px-8 text-[10px] font-bold text-primary uppercase tracking-widest text-center">Clearance</th>
+                                        <th className="py-6 px-8 text-[10px] font-bold text-primary uppercase tracking-widest text-right">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-primary/5">
+                                <tbody className="divide-y divide-primary/10">
                                     {users.map(u => (
-                                        <tr key={u.id} className="hover:bg-background/30 transition-colors">
-                                            <td className="py-4 px-6">
-                                                <div className="font-semibold text-foreground">{u.name || "Pending..."}</div>
-                                                <div className="text-sm text-foreground-muted">{u.email}</div>
+                                        <tr key={u.id} className="group hover:bg-primary/5 transition-all">
+                                            <td className="py-6 px-8">
+                                                <div className="font-bold text-foreground-accent text-lg">{u.name || "Registry Pending"}</div>
+                                                <div className="text-xs text-foreground-muted font-mono">{u.email}</div>
                                             </td>
-                                            <td className="py-4 px-6">
+                                            <td className="py-6 px-8 text-center">
                                                 {u.needsPasswordChange ?
-                                                    <span className="text-xs font-semibold bg-amber-500/10 text-amber-500 px-3 py-1 rounded-full border border-amber-500/20">Pending Setup</span>
+                                                    <span className="text-[9px] font-bold bg-amber-500/10 text-amber-500 px-4 py-1.5 rounded-full border border-amber-500/20 uppercase tracking-widest">Action Required</span>
                                                     :
-                                                    <span className="text-xs font-semibold bg-green-500/10 text-green-500 px-3 py-1 rounded-full border border-green-500/20">Secured</span>
+                                                    <span className="text-[9px] font-bold bg-green-500/10 text-green-500 px-4 py-1.5 rounded-full border border-green-500/20 uppercase tracking-widest">Verified</span>
                                                 }
                                             </td>
-                                            <td className="py-4 px-6">
+                                            <td className="py-6 px-8 text-center">
                                                 <select
-                                                    disabled={session?.user?.id === u.id} // Prevents admin from demoting themselves by accident
+                                                    disabled={session?.user?.id === u.id}
                                                     value={u.role}
                                                     onChange={e => handleRoleChange(u.id, e.target.value)}
-                                                    className="bg-transparent border border-primary/30 rounded px-2 py-1 text-sm font-medium text-foreground focus:ring-1 focus:ring-primary focus:outline-none"
+                                                    className="bg-transparent border border-primary/20 rounded-lg px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-primary focus:ring-1 focus:ring-primary focus:outline-none cursor-pointer"
                                                 >
-                                                    <option value="admin">Admin</option>
-                                                    <option value="staff">Staff</option>
+                                                    <option value="admin" className="bg-black">Admin</option>
+                                                    <option value="staff" className="bg-black">Staff</option>
                                                 </select>
                                             </td>
-                                            <td className="py-4 px-6 text-right">
-                                                <Button
-                                                    variant="ghost"
+                                            <td className="py-6 px-8 text-right">
+                                                <button
                                                     onClick={() => handleDelete(u.id, u.name)}
                                                     disabled={session?.user?.id === u.id}
-                                                    className="text-destructive hover:bg-destructive/10 hover:text-destructive h-8 px-3 text-xs"
+                                                    className="text-foreground-muted hover:text-destructive transition-colors p-2 rounded-full hover:bg-destructive/10 disabled:opacity-0"
                                                 >
-                                                    Remove
-                                                </Button>
+                                                    <span className="text-xs uppercase font-bold tracking-tighter">Deauthorize</span>
+                                                </button>
                                             </td>
                                         </tr>
                                     ))}

@@ -41,26 +41,25 @@ const Footer = () => {
 
         <div className="grid lg:grid-cols-3 gap-16 text-center lg:text-left">
           {/* Logo and Description */}
-          <div className="space-y-8">
+          <div className="space-y-8 glass p-10 rounded-[3rem] border-primary/10">
             <div className="flex justify-center lg:justify-start">
               <div className="relative group">
                 <Image
                   src="/images/logo.png"
                   alt="Mafi Restaurant Logo"
-                  width={80}
-                  height={80}
-                  className="h-20 w-20 object-cover rounded-full border-2 border-primary transition-all duration-300 group-hover:border-primary-glow group-hover:scale-105"
+                  width={100}
+                  height={100}
+                  className="h-24 w-24 object-cover rounded-full border-2 border-primary transition-all duration-500 group-hover:border-primary-light group-hover:scale-110 group-hover:rotate-12"
                 />
                 <div className="absolute inset-0 rounded-full bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
             </div>
             <div className="space-y-4">
-              <h3 className="text-3xl font-serif font-bold text-primary">
+              <h3 className="text-4xl font-serif font-bold text-primary tracking-tight">
                 Mafi Restaurant
               </h3>
-              <p className="text-foreground-muted leading-relaxed text-lg">
-                Experience luxury dining with exquisite cuisine and elegant
-                atmosphere in the heart of Adama, Ethiopia.
+              <p className="text-foreground-muted leading-relaxed text-lg italic">
+                &quot;Where tradition meets luxury, creating unforgettable culinary journeys in the heart of Adama.&quot;
               </p>
             </div>
           </div>
@@ -72,16 +71,16 @@ const Footer = () => {
             </h4>
             <div className="space-y-6">
               {/* Phone Numbers */}
-              <div className="flex items-start gap-3 text-foreground-muted group">
-                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors duration-300">
-                  <Phone className="h-5 w-5 text-primary" />
+              <div className="flex items-center gap-4 text-foreground-muted group glass p-4 rounded-2xl border-primary/10 hover:border-primary/30 transition-all duration-300">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-primary group-hover:scale-110 transition-all duration-500">
+                  <Phone className="h-6 w-6 text-primary group-hover:text-background transition-colors" />
                 </div>
-                <div className="flex flex-col space-y-1">
-                  <p className="hover:text-primary transition-colors duration-300 font-medium">
+                <div className="flex flex-col">
+                  <p className="text-primary font-bold tracking-wider">
                     +251 945 184 545
                   </p>
-                  <p className="hover:text-primary transition-colors duration-300 font-medium">
-                    +251 456 665 55
+                  <p className="text-sm opacity-70">
+                    Direct Reservation Line
                   </p>
                 </div>
               </div>
@@ -155,16 +154,16 @@ const Footer = () => {
             </div>
 
             {/* Opening Hours */}
-            <div className="space-y-4">
-              <h5 className="text-lg font-semibold text-primary">Opening Hours</h5>
-              <div className="space-y-2 text-foreground-muted">
-                <div className="flex justify-between">
-                  <span>Monday - Friday</span>
-                  <span className="font-medium">11:00 AM - 11:00 PM</span>
+            <div className="space-y-6 glass p-8 rounded-3xl border-primary/10">
+              <h5 className="text-2xl font-serif font-bold text-primary tracking-wide">Opening Hours</h5>
+              <div className="space-y-4 text-foreground-muted">
+                <div className="flex justify-between items-center border-b border-primary/10 pb-2">
+                  <span className="font-medium">Mon - Fri</span>
+                  <span className="text-primary font-bold">11:00 AM - 11:00 PM</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Saturday - Sunday</span>
-                  <span className="font-medium">10:00 AM - 12:00 AM</span>
+                <div className="flex justify-between items-center border-b border-primary/10 pb-2">
+                  <span className="font-medium">Sat - Sun</span>
+                  <span className="text-primary font-bold">10:00 AM - 12:00 AM</span>
                 </div>
               </div>
             </div>

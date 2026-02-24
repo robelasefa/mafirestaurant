@@ -63,65 +63,98 @@ export default function AddStaff() {
   };
 
   return (
-    <section className="max-w-md mx-auto p-6 bg-background-subtle rounded-2xl shadow-elegant mt-16">
-      <h1 className="text-3xl font-bold text-primary mb-6">Add Staff Member</h1>
+    <section className="max-w-xl mx-auto px-4 py-12 animate-slide-up">
+      <div className="glass-dark rounded-[2.5rem] p-12 shadow-elegant border border-primary/20 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl" />
 
-      {error && <div className="text-destructive mb-4">{error}</div>}
-      {success && <div className="text-green-600 mb-4">{success}</div>}
+        <div className="relative z-10">
+          <div className="text-center mb-10">
+            <h1 className="text-4xl font-serif font-bold text-primary mb-3">
+              Personnel Registry
+            </h1>
+            <p className="text-foreground-muted text-sm tracking-widest uppercase">Create New Authorized Access</p>
+          </div>
 
-      <form className="space-y-4" onSubmit={handleSubmit}>
-        <div>
-          <Label htmlFor="name">Name</Label>
-          <Input
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            placeholder="Staff Name"
-          />
+          {error && (
+            <div className="mb-6 p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-center text-sm">
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="mb-6 p-4 rounded-xl bg-primary/10 border border-primary/20 text-primary text-center text-sm">
+              {success}
+            </div>
+          )}
+
+          <form className="space-y-8" onSubmit={handleSubmit}>
+            <div className="space-y-3">
+              <Label htmlFor="name" className="ml-1">Full Name</Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="rounded-2xl"
+                placeholder="Ex. Julian Vance"
+              />
+            </div>
+
+            <div className="space-y-3">
+              <Label htmlFor="email" className="ml-1">Email Address</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="rounded-2xl"
+                placeholder="name@grandhorizon.com"
+              />
+            </div>
+
+            <div className="space-y-3">
+              <Label htmlFor="password" className="ml-1">Secure Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="rounded-2xl"
+                placeholder="••••••••"
+              />
+            </div>
+
+            <div className="space-y-3">
+              <Label htmlFor="role" className="ml-1">Security Clearance</Label>
+              <select
+                id="role"
+                value={role}
+                onChange={(e) => setRole(e.target.value as "staff" | "admin")}
+                className="flex h-14 w-full rounded-2xl border border-primary/20 bg-background/50 backdrop-blur-sm px-6 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+              >
+                <option value="staff" className="bg-black text-white">Staff Access</option>
+                <option value="admin" className="bg-black text-white">Administrative Access</option>
+              </select>
+            </div>
+
+            <div className="pt-4 flex flex-col gap-4">
+              <Button type="submit" variant="gold" size="lg" disabled={isLoading} className="w-full h-14 rounded-2xl text-lg tracking-widest uppercase shadow-gold">
+                {isLoading ? "AUTHORIZING..." : "REGISTER PERSONNEL"}
+              </Button>
+
+              <button
+                type="button"
+                onClick={() => window.history.back()}
+                className="w-full text-center text-xs text-foreground-muted hover:text-primary transition-colors tracking-widest uppercase py-2"
+              >
+                Cancel and Return
+              </button>
+            </div>
+          </form>
         </div>
-
-        <div>
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            placeholder="staff@example.com"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            placeholder="Enter a secure password"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="role">Role</Label>
-          <select
-            id="role"
-            value={role}
-            onChange={(e) => setRole(e.target.value as "staff" | "admin")}
-            className="w-full p-2 border rounded"
-          >
-            <option value="staff">Staff</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
-
-        <Button type="submit" variant="gold" size="lg" disabled={isLoading} className="w-full">
-          {isLoading ? "Adding..." : "Add Staff"}
-        </Button>
-      </form>
+      </div>
     </section>
   );
 }

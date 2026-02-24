@@ -60,57 +60,65 @@ export default function SetupPassword() {
     };
 
     return (
-        <section className="bg-background min-h-screen flex items-center justify-center py-20 px-4">
-            <div className="max-w-md w-full animate-fade-in text-center">
+        <section className="bg-background min-h-screen flex items-center justify-center py-20 px-4 relative overflow-hidden">
+            {/* Background Decor */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
 
-                <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-4">
-                    Security Setup
-                </h1>
-                <p className="text-foreground-muted mb-8">
-                    Please choose a secure password to activate your staff account.
-                </p>
+            <div className="max-w-md w-full animate-slide-up text-center relative z-10">
 
-                <div className="bg-background rounded-2xl shadow-elegant p-8 border border-primary/20 text-left">
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="mb-10">
+                    <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary mb-3">
+                        Security Setup
+                    </h1>
+                    <p className="text-foreground-muted italic tracking-wide">
+                        Choose a secure credential to activate your access.
+                    </p>
+                </div>
 
-                        <div>
-                            <Label htmlFor="password">New Password</Label>
+                <div className="glass-dark rounded-[2.5rem] shadow-elegant p-10 border border-primary/20 text-left">
+                    <form onSubmit={handleSubmit} className="space-y-8">
+
+                        <div className="space-y-3">
+                            <Label htmlFor="password text-[10px] uppercase tracking-[0.2em] font-bold text-primary">New Password</Label>
                             <Input
                                 id="password"
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                className="mt-2"
-                                placeholder="Must be at least 6 characters"
+                                className="rounded-2xl h-12"
+                                placeholder="Min. 6 characters"
                             />
                         </div>
 
-                        <div>
-                            <Label htmlFor="confirmPassword">Confirm Password</Label>
+                        <div className="space-y-3">
+                            <Label htmlFor="confirmPassword text-[10px] uppercase tracking-[0.2em] font-bold text-primary">Confirm Password</Label>
                             <Input
                                 id="confirmPassword"
                                 type="password"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 required
-                                className="mt-2"
-                                placeholder="Retype password"
+                                className="rounded-2xl h-12"
+                                placeholder="Verify password"
                             />
                         </div>
 
                         <Button
                             type="submit"
                             variant="gold"
-                            size="lg"
-                            className="w-full text-lg py-6 mt-4"
+                            className="w-full h-14 rounded-2xl text-xs font-bold tracking-[0.2em] shadow-gold mt-4 uppercase"
                             disabled={isLoading}
                         >
-                            {isLoading ? "Saving..." : "Save & Continue"}
+                            {isLoading ? "PROVISIONING..." : "ACTIVATE ACCOUNT"}
                         </Button>
 
                     </form>
                 </div>
+
+                <p className="mt-8 text-[10px] text-foreground-muted/50 uppercase tracking-[0.3em] font-mono">
+                    GRAND HORIZON ADMINISTRATIVE PROTOCOL
+                </p>
             </div>
         </section>
     );

@@ -9,10 +9,12 @@
     --primary: 45 100% 50%;
     --primary-foreground: 0 0% 0%;
     --primary-glow: 48 100% 65%;
+    --primary-light: 45 100% 60%;
     --primary-dark: 42 100% 45%;
     --background: 0 0% 0%;
     --background-accent: 0 0% 3%;
     --background-subtle: 0 0% 8%;
+    --background-soft: 0 0% 12%;
     --foreground: 45 100% 50%;
     --foreground-muted: 45 100% 70%;
     --foreground-accent: 45 100% 60%;
@@ -59,8 +61,24 @@
 }
 
 @layer components {
+  .glass {
+    @apply bg-background/70 backdrop-blur-lg border border-primary/20;
+  }
+
+  .glass-dark {
+    @apply bg-black/80 backdrop-blur-xl border border-primary/10;
+  }
+
+  .glass-light {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
+  }
+
   .gradient-gold {
     background: linear-gradient(135deg, hsl(45 100% 50%), hsl(48 100% 65%));
+  }
+
+  .gradient-gold-hover {
+    background: linear-gradient(135deg, hsl(48 100% 65%), hsl(45 100% 50%));
   }
 
   .shadow-gold {
@@ -102,9 +120,23 @@
     animation: slideUp 0.8s ease-out forwards;
   }
 
+  .animate-slide-in-right {
+    animation: slideInRight 0.5s ease-out forwards;
+  }
+
   .animate-glow {
     animation: glow 2s ease-in-out infinite alternate;
   }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
 }
 
 @keyframes fadeIn {

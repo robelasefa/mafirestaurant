@@ -5,7 +5,11 @@ import { Award, Clock, MapPin, Heart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from 'next/image';
 
-const AboutUs = () => {
+interface AboutUsProps {
+  id?: string;
+}
+
+const AboutUs = ({ id }: AboutUsProps) => {
   const [activeTab, setActiveTab] = useState("story");
 
   const tabs = [
@@ -19,7 +23,7 @@ const AboutUs = () => {
   ];
 
   return (
-    <section id="about" className="py-20 bg-background relative overflow-hidden">
+    <section id={id || "about"} className="py-20 bg-background relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16 animate-fade-in">
@@ -39,12 +43,12 @@ const AboutUs = () => {
         {/* Stats Section */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
           {stats.map((stat, index) => (
-            <div key={index} className="text-center group">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors duration-300">
+            <div key={index} className="glass p-8 rounded-3xl text-center group hover:scale-105 transition-all duration-500">
+              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 group-hover:rotate-12 transition-all duration-300">
                 <stat.icon className="h-8 w-8 text-primary" />
               </div>
-              <div className="text-3xl font-bold text-primary mb-2">{stat.value}</div>
-              <div className="text-foreground-muted text-sm font-medium">{stat.label}</div>
+              <div className="text-4xl font-serif font-bold text-primary mb-2 tracking-tight">{stat.value}</div>
+              <div className="text-foreground-muted text-sm uppercase tracking-widest font-semibold">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -78,31 +82,31 @@ const AboutUs = () => {
           <div className="order-1 lg:order-2 animate-slide-up">
             <div className="space-y-8">
               {/* Tab Navigation */}
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-4 glass p-2 rounded-full w-fit">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
                   return (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 ${activeTab === tab.id
-                          ? "bg-primary text-primary-foreground shadow-gold"
-                          : "bg-background-subtle text-foreground-muted hover:bg-primary/10 hover:text-primary border border-primary/20"
+                      className={`flex items-center gap-2 px-8 py-3 rounded-full transition-all duration-500 font-serif font-bold tracking-wide ${activeTab === tab.id
+                          ? "bg-primary text-primary-foreground shadow-gold scale-105"
+                          : "text-foreground-muted hover:text-primary hover:bg-primary/5"
                         }`}
                     >
-                      <Icon className="h-4 w-4" />
-                      <span className="font-medium">{tab.label}</span>
+                      <Icon className="h-5 w-5" />
+                      <span>{tab.label}</span>
                     </button>
                   );
                 })}
               </div>
 
               {/* Tab Content */}
-              <div className="space-y-6">
+              <div className="space-y-6 min-h-[300px]">
                 {activeTab === "story" && (
-                  <div className="space-y-6">
-                    <h3 className="text-3xl font-serif font-bold text-primary">Our Culinary Journey</h3>
-                    <div className="space-y-4 text-foreground-muted leading-relaxed">
+                  <div className="space-y-6 animate-fade-in">
+                    <h3 className="text-4xl font-serif font-bold text-primary leading-tight">Our Culinary Journey</h3>
+                    <div className="space-y-6 text-lg text-foreground-muted leading-relaxed italic">
                       <p>
                         Founded in 2017, Mafi Restaurant began as a dream to bring authentic Ethiopian cuisine
                         with a modern twist to the heart of Adama. Our mission: to create memorable dining
@@ -121,20 +125,20 @@ const AboutUs = () => {
                 )}
 
                 {activeTab === "awards" && (
-                  <div className="space-y-6">
-                    <h3 className="text-3xl font-serif font-bold text-primary">Recognition & Awards</h3>
+                  <div className="space-y-6 animate-fade-in">
+                    <h3 className="text-4xl font-serif font-bold text-primary leading-tight">Recognition & Awards</h3>
                     <div className="space-y-6">
-                      <div className="bg-background-subtle/50 p-6 rounded-xl border border-primary/20">
+                      <div className="glass p-6 rounded-2xl border border-primary/20 hover:border-primary/40 transition-colors">
                         <h4 className="text-lg font-semibold text-primary">World Health Organization (WHO)</h4>
                         <p className="text-sm text-foreground-muted">Awarded for excellence in hygiene and food safety standards.</p>
                       </div>
 
-                      <div className="bg-background-subtle/50 p-6 rounded-xl border border-primary/20">
+                      <div className="glass p-6 rounded-2xl border border-primary/20 hover:border-primary/40 transition-colors">
                         <h4 className="text-lg font-semibold text-primary">Ethiopian Electric Service</h4>
                         <p className="text-sm text-foreground-muted">Recognized for outstanding operational standards.</p>
                       </div>
 
-                      <div className="bg-background-subtle/50 p-6 rounded-xl border border-primary/20">
+                      <div className="glass p-6 rounded-2xl border border-primary/20 hover:border-primary/40 transition-colors">
                         <h4 className="text-lg font-semibold text-primary">Adama City Administration</h4>
                         <p className="text-sm text-foreground-muted">Honored for contributions to the city&apos;s hospitality sector.</p>
                       </div>

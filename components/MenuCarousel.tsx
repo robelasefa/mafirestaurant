@@ -63,7 +63,11 @@ const menuItems = [
   },
 ];
 
-const MenuCarousel = () => {
+interface MenuCarouselProps {
+  id?: string;
+}
+
+const MenuCarousel = ({ id }: MenuCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoSliding, setIsAutoSliding] = useState(true);
 
@@ -101,7 +105,7 @@ const MenuCarousel = () => {
   const currentItem = menuItems[currentIndex];
 
   return (
-    <section id="menu" className="py-20 bg-background-accent">
+    <section id={id || "menu"} className="py-20 bg-background-accent">
       <div className="max-w-4xl mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-16 animate-fade-in">
@@ -122,25 +126,30 @@ const MenuCarousel = () => {
         {/* Carousel Container */}
         <div className="w-full flex flex-col items-center">
           {/* Image Display - FIXED to show food portions */}
-          <div className="relative w-full max-w-lg aspect-[4/3] rounded-xl overflow-hidden shadow-lg bg-white group">
+          <div className="relative w-full max-w-2xl aspect-[16/10] rounded-[2rem] overflow-hidden shadow-2xl bg-black border border-primary/20 group">
             <Image
               key={currentItem.image}
               src={currentItem.image}
               alt={currentItem.title}
-              width={800} // Set the actual width in px if known
-              height={600} // Or 4:3 aspect from the parent div
-              className="w-full h-full object-cover transition-all duration-700 ease-in-out group-hover:scale-105"
+              width={1000}
+              height={625}
+              className="w-full h-full object-cover transition-all duration-1000 ease-in-out group-hover:scale-110"
               style={{
-                filter: "brightness(1.05) contrast(1.1) saturate(1.05)",
-                objectPosition: "center bottom",
+                filter: "brightness(1.1) contrast(1.1) saturate(1.1)",
+                objectPosition: "center",
               }}
             />
             {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
 
             {/* Floating Badge */}
-            <div className="absolute top-3 right-3 bg-primary/90 backdrop-blur-sm text-primary-foreground px-2 py-1 rounded-full shadow-md">
-              <span className="font-semibold text-xs">Signature</span>
+            <div className="absolute top-6 right-6 glass px-4 py-2 rounded-full shadow-gold animate-glow">
+              <span className="font-serif font-bold text-sm tracking-widest text-primary uppercase">Chef&apos;s Special</span>
+            </div>
+
+            {/* Price/Tag Overlay */}
+            <div className="absolute bottom-6 left-6 glass px-4 py-2 rounded-xl">
+               <span className="text-primary font-bold">Premium Selection</span>
             </div>
           </div>
 
@@ -187,29 +196,25 @@ const MenuCarousel = () => {
           </div>
 
           {/* Content Display */}
-          <div className="text-center mt-8 space-y-3 max-w-2xl">
+          <div className="text-center mt-12 space-y-4 max-w-3xl animate-fade-in" key={currentItem.id}>
             <div className="space-y-2">
-              <h3 className="text-xl md:text-2xl lg:text-3xl font-serif font-bold text-primary transition-all duration-500">
+              <h3 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-primary tracking-tight">
                 {currentItem.title}
               </h3>
-              <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent mx-auto transition-all duration-500"></div>
+              <div className="w-32 h-1 bg-primary mx-auto rounded-full" />
             </div>
 
-            <p className="text-sm md:text-base text-foreground-muted mx-auto max-w-lg leading-relaxed opacity-90">
-              {currentItem.description}
+            <p className="text-lg md:text-xl text-foreground-muted mx-auto max-w-2xl leading-relaxed font-light italic">
+              &quot;{currentItem.description}&quot;
             </p>
 
             {/* Menu Categories */}
-            <div className="flex flex-wrap justify-center gap-2 mt-4">
-              <span className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium border border-primary/20">
-                Premium
-              </span>
-              <span className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium border border-primary/20">
-                Fresh
-              </span>
-              <span className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium border border-primary/20">
-                Expert
-              </span>
+            <div className="flex flex-wrap justify-center gap-4 mt-6">
+              {["Authentic", "Gourmet", "Signature"].map((tag) => (
+                <span key={tag} className="glass px-4 py-1 text-primary rounded-full text-sm font-semibold tracking-widest uppercase border border-primary/30">
+                  {tag}
+                </span>
+              ))}
             </div>
           </div>
         </div>

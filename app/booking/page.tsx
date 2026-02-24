@@ -195,324 +195,276 @@ export default function Booking() {
   };
 
   return (
-    <div className="bg-background">
+    <div className="bg-background min-h-screen selection:bg-primary selection:text-black">
       <Navbar />
-      <main className="pt-20">
-        <section className="py-20 bg-background-accent">
-          <div className="max-w-3xl mx-auto px-6 animate-fade-in">
-            <h2 className=" text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-primary mb-3 text-center">
-              Book Our Meeting Hall
-            </h2>
-            <p className="text-lg md:text-xl text-foreground-muted max-w-2xl mx-auto mb-10 leading-8 text-center">
-              We offer <strong>5 meeting halls</strong> — one large hall that
-              accommodates approximately <strong>200 guests</strong>, and four
-              smaller halls each holding around <strong>50 guests</strong>.
-              Perfect for corporate meetings, workshops, and special
-              celebrations.
-            </p>
-            <div className="flex justify-center mb-10">
-              <div className="relative overflow-hidden rounded-2xl shadow-elegant group transition-all duration-500">
+      <main className="pt-32 pb-24 relative overflow-hidden">
+        {/* Background Atmosphere */}
+        <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[120px] rounded-full" />
+        </div>
+
+        <section className="relative z-10 px-6">
+          <div className="max-w-4xl mx-auto">
+            {/* Header Content */}
+            <div className="text-center mb-16 animate-slide-up">
+              <h1 className="text-5xl md:text-7xl font-serif font-bold text-primary mb-6 leading-tight">
+                Reserve Your Horizon
+              </h1>
+              <p className="text-lg md:text-xl text-foreground-muted max-w-2xl mx-auto leading-relaxed italic font-light">
+                Experience the pinnacle of hospitality. Our five distinguished halls offer bespoke environments for up to 200 guests.
+              </p>
+            </div>
+
+            {/* Feature Image */}
+            <div className="flex justify-center mb-20 animate-slide-up delay-100">
+              <div className="relative overflow-hidden rounded-[2.5rem] shadow-2xl group border border-primary/20">
                 <Image
                   src="/images/meeting-hall.png"
                   alt="Mafi Restaurant Meeting Hall"
-                  width={600}
-                  height={300}
-                  className="block w-full max-w-xl h-72 object-cover transition-all duration-500 group-hover:scale-105 group-hover:shadow-[0_0_40px_10px_rgba(212,175,55,0.4)] group-hover:ring-4 group-hover:ring-[#d4af37]/40"
+                  width={800}
+                  height={400}
+                  className="block w-full max-w-2xl h-80 object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none transition-all duration-500 group-hover:from-[#d4af37]/30" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
+                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-full text-center">
+                  <span className="text-primary text-[10px] font-bold uppercase tracking-[0.5em] drop-shadow-lg">Grand Horizon Suites</span>
+                </div>
               </div>
             </div>
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-6 bg-background rounded-2xl shadow-elegant p-8 border border-primary/20"
-            >
-              {/* Full Name */}
-              <div>
-                <Label htmlFor="name" className="text-primary font-medium">
-                  Full Name *
-                </Label>
-                <Input
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  aria-invalid={!!errors.name && touched.name}
-                  aria-describedby="name-error"
-                  required
-                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 ${errors.name && touched.name
-                    ? "border-amber-500 focus:ring-amber-500/20"
-                    : "hover:border-primary/50"
-                    }`}
-                />
-                {errors.name && touched.name && (
-                  <p
-                    id="name-error"
-                    className="mt-2 text-sm text-amber-600 flex items-center"
-                  >
-                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full mr-2"></span>
-                    {errors.name}
-                  </p>
-                )}
-              </div>
 
-              {/* Email */}
-              <div>
-                <Label htmlFor="email" className="text-primary font-medium">
-                  Email Address *
-                </Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  aria-invalid={!!errors.email && touched.email}
-                  aria-describedby="email-error"
-                  required
-                  placeholder="your@email.com"
-                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 ${errors.email && touched.email
-                    ? "border-amber-500 focus:ring-amber-500/20"
-                    : "hover:border-primary/50"
-                    }`}
-                />
-                {errors.email && touched.email && (
-                  <p
-                    id="email-error"
-                    className="mt-2 text-sm text-amber-600 flex items-center"
-                  >
-                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full mr-2"></span>
-                    {errors.email}
-                  </p>
-                )}
-              </div>
+            {/* Booking Form Card */}
+            <div className="glass-dark rounded-[3rem] shadow-elegant p-8 md:p-16 border border-primary/20 relative animate-slide-up delay-200">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-30" />
 
-              {/* Phone */}
-              <div>
-                <Label htmlFor="phone" className="text-primary font-medium">
-                  Phone Number *
-                </Label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  aria-invalid={!!errors.phone && touched.phone}
-                  aria-describedby="phone-error"
-                  required
-                  placeholder="+251 9XX XXX XXX"
-                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 ${errors.phone && touched.phone
-                    ? "border-amber-500 focus:ring-amber-500/20"
-                    : "hover:border-primary/50"
-                    }`}
-                />
-                {errors.phone && touched.phone && (
-                  <p
-                    id="phone-error"
-                    className="mt-2 text-sm text-amber-600 flex items-center"
-                  >
-                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full mr-2"></span>
-                    {errors.phone}
-                  </p>
-                )}
-              </div>
-
-              {/* Organization (Optional) */}
-              <div>
-                <Label
-                  htmlFor="organization"
-                  className="text-primary font-medium"
-                >
-                  Organization (Optional)
-                </Label>
-                <Input
-                  id="organization"
-                  name="organization"
-                  value={formData.organization}
-                  onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  placeholder="Your company or organization"
-                  className="bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 hover:border-primary/50"
-                />
-              </div>
-
-              {/* Upload Letter (Only show if organization is provided) */}
-              {formData.organization.trim() && (
-                <div className="animate-fade-in">
-                  <Label
-                    htmlFor="letter"
-                    className="text-primary font-medium"
-                  >
-                    Upload Letter (Optional)
-                  </Label>
-                  <Input
-                    id="letter"
-                    name="letter"
-                    type="file"
-                    accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files.length > 0) {
-                        setLetterFile(e.target.files[0]);
-                      } else {
-                        setLetterFile(null);
-                      }
-                    }}
-                    className="bg-background-subtle border-primary/20 text-foreground-accent file:bg-primary file:text-primary-foreground file:border-0 file:rounded-md file:mr-4 file:px-4 file:py-2 focus:border-primary mt-2 cursor-pointer hover:border-primary/50"
-                  />
-                  <p className="mt-2 text-sm text-foreground-muted">
-                    Please upload an official letter if booking on behalf of an organization. Supported formats: PDF, DOC, Images. Max 2MB.
-                  </p>
+              <div className="mb-12 text-center">
+                <h3 className="text-2xl font-serif font-bold text-primary mb-2 uppercase tracking-widest">Inquiry Form</h3>
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-8 h-[1px] bg-primary/30" />
+                  <span className="text-[10px] font-bold text-primary/60 uppercase tracking-widest">Required Fields Marked *</span>
+                  <div className="w-8 h-[1px] bg-primary/30" />
                 </div>
-              )}
+              </div>
 
-              {/* Booking Date & Time */}
-              <div>
-                <Label htmlFor="bookingAt" className="text-primary font-medium">
-                  Booking Date & Time *
-                </Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={`w-full justify-start text-left font-normal mt-2 h-11 px-4 ${!formData.bookingAt ? "text-muted-foreground" : ""
-                        } ${errors.bookingAt && touched.bookingAt
-                          ? "border-amber-500 focus:ring-amber-500/20"
-                          : "hover:border-primary/50 border-primary/30 bg-background-subtle"
-                        }`}
-                    >
-                      <span className="flex items-center gap-2">
-                        📅
-                        {formData.bookingAt ? (
-                          new Date(formData.bookingAt).toLocaleDateString('en-US', {
-                            weekday: 'short',
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })
-                        ) : (
-                          "Select date & time"
-                        )}
-                      </span>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <div className="p-4">
-                      <Calendar
-                        mode="single"
-                        selected={
-                          formData.bookingAt
-                            ? new Date(formData.bookingAt)
-                            : undefined
-                        }
-                        onSelect={(date) => {
-                          if (!date) return;
-                          // default to 12:00 PM if no time exists yet
-                          const withTime = new Date(date);
-                          if (!formData.bookingAt) {
-                            withTime.setHours(12, 0, 0, 0);
-                          } else {
-                            const prev = new Date(formData.bookingAt);
-                            withTime.setHours(prev.getHours(), prev.getMinutes());
-                          }
-                          handleInputChange({
-                            target: {
-                              name: "bookingAt",
-                              value: withTime.toISOString(),
-                            },
-                          } as React.ChangeEvent<HTMLInputElement>);
-                        }}
-                      />
-                    </div>
-                    <div className="p-4 border-t border-primary/10 bg-background-subtle rounded-b-xl">
-                      <Label className="text-sm font-medium text-foreground mb-2 block">Time</Label>
+              <form onSubmit={handleSubmit} className="space-y-10">
+                <div className="grid md:grid-cols-2 gap-10">
+                  {/* Full Name */}
+                  <div className="space-y-3">
+                    <Label htmlFor="name" className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary ml-1">
+                      Guest Name *
+                    </Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      onBlur={handleBlur}
+                      required
+                      className="rounded-2xl h-12"
+                      placeholder="Ex. Julian Vance"
+                    />
+                    {errors.name && touched.name && (
+                      <p className="text-[10px] text-amber-500 uppercase tracking-widest ml-1 font-bold animate-pulse">
+                        {errors.name}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Email */}
+                  <div className="space-y-3">
+                    <Label htmlFor="email" className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary ml-1">
+                      Email Address *
+                    </Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      onBlur={handleBlur}
+                      required
+                      className="rounded-2xl h-12"
+                      placeholder="name@example.com"
+                    />
+                    {errors.email && touched.email && (
+                      <p className="text-[10px] text-amber-500 uppercase tracking-widest ml-1 font-bold animate-pulse">
+                        {errors.email}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-10">
+                  {/* Phone */}
+                  <div className="space-y-3">
+                    <Label htmlFor="phone" className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary ml-1">
+                      Phone Number *
+                    </Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      onBlur={handleBlur}
+                      required
+                      className="rounded-2xl h-12"
+                      placeholder="+251 9XX XXX XXX"
+                    />
+                    {errors.phone && touched.phone && (
+                      <p className="text-[10px] text-amber-500 uppercase tracking-widest ml-1 font-bold animate-pulse">
+                        {errors.phone}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Organization */}
+                  <div className="space-y-3">
+                    <Label htmlFor="organization" className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary ml-1">
+                      Organization
+                    </Label>
+                    <Input
+                      id="organization"
+                      name="organization"
+                      value={formData.organization}
+                      onChange={handleInputChange}
+                      onBlur={handleBlur}
+                      className="rounded-2xl h-12"
+                      placeholder="Optional"
+                    />
+                  </div>
+                </div>
+
+                {/* Date & Time */}
+                <div className="space-y-3">
+                  <Label htmlFor="bookingAt" className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary ml-1">
+                    Event Schedule *
+                  </Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="luxury"
+                        className="w-full justify-start text-left h-14 rounded-2xl px-6 border-primary/20 glass hover:border-primary/50 group"
+                      >
+                        <span className="flex items-center gap-3 text-sm font-medium">
+                          <span className="text-primary group-hover:scale-110 transition-transform">📅</span>
+                          {formData.bookingAt ? (
+                            <span className="text-foreground-accent">
+                              {new Date(formData.bookingAt).toLocaleDateString('en-US', {
+                                weekday: 'long',
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                          ) : (
+                            <span className="text-foreground-muted/50 font-light italic tracking-widest">SELECT DATE AND TIME</span>
+                          )}
+                        </span>
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0 border-primary/30 shadow-2xl rounded-3xl overflow-hidden glass-dark" align="center">
+                      <div className="p-6">
+                        <Calendar
+                          mode="single"
+                          selected={formData.bookingAt ? new Date(formData.bookingAt) : undefined}
+                          onSelect={(date) => {
+                            if (!date) return;
+                            const withTime = new Date(date);
+                            if (!formData.bookingAt) withTime.setHours(12, 0, 0, 0);
+                            else {
+                              const prev = new Date(formData.bookingAt);
+                              withTime.setHours(prev.getHours(), prev.getMinutes());
+                            }
+                            handleInputChange({
+                              target: { name: "bookingAt", value: withTime.toISOString() },
+                            } as React.ChangeEvent<HTMLInputElement>);
+                          }}
+                        />
+                      </div>
+                      <div className="p-6 border-t border-primary/10 bg-primary/5">
+                        <Label className="text-[10px] font-bold text-primary uppercase tracking-widest mb-3 block">Configure Time</Label>
+                        <Input
+                          type="time"
+                          value={formData.bookingAt ? new Date(formData.bookingAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : "12:00"}
+                          onChange={(e) => {
+                            if (!formData.bookingAt) return;
+                            const newDate = new Date(formData.bookingAt);
+                            const [h, m] = e.target.value.split(":").map(Number);
+                            newDate.setHours(h, m, 0, 0);
+                            handleInputChange({
+                              target: { name: "bookingAt", value: newDate.toISOString() },
+                            } as React.ChangeEvent<HTMLInputElement>);
+                          }}
+                          className="h-12 rounded-xl"
+                        />
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  {errors.bookingAt && touched.bookingAt && (
+                    <p className="text-[10px] text-amber-500 uppercase tracking-widest ml-1 font-bold animate-pulse">
+                      {errors.bookingAt}
+                    </p>
+                  )}
+                </div>
+
+                {/* Purpose */}
+                <div className="space-y-3">
+                  <Label htmlFor="purpose" className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary ml-1">
+                    Event Description *
+                  </Label>
+                  <Textarea
+                    id="purpose"
+                    name="purpose"
+                    value={formData.purpose}
+                    onChange={handleInputChange}
+                    onBlur={handleBlur}
+                    rows={4}
+                    required
+                    placeholder="Describe the nature of your gathering..."
+                    className="rounded-[2rem] p-6 min-h-[160px]"
+                  />
+                  {errors.purpose && touched.purpose && (
+                    <p className="text-[10px] text-amber-500 uppercase tracking-widest ml-1 font-bold animate-pulse">
+                      {errors.purpose}
+                    </p>
+                  )}
+                </div>
+
+                {/* Upload Letter (Only show if organization is provided) */}
+                {formData.organization.trim() && (
+                  <div className="space-y-3 animate-slide-up">
+                    <Label htmlFor="letter" className="text-[10px] uppercase tracking-[0.2em] font-bold text-primary ml-1">
+                      Official Authorization (PDF/Image)
+                    </Label>
+                    <div className="relative">
                       <Input
-                        type="time"
-                        value={
-                          formData.bookingAt
-                            ? new Date(formData.bookingAt).toLocaleTimeString(
-                              "en-GB",
-                              {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              }
-                            )
-                            : "12:00"
-                        }
-                        onChange={(e) => {
-                          if (!formData.bookingAt) return;
-                          const newDate = new Date(formData.bookingAt);
-                          const [h, m] = e.target.value.split(":").map(Number);
-                          newDate.setHours(h, m, 0, 0);
-                          handleInputChange({
-                            target: {
-                              name: "bookingAt",
-                              value: newDate.toISOString(),
-                            },
-                          } as React.ChangeEvent<HTMLInputElement>);
-                        }}
-                        className="w-full border-primary/30 bg-background focus:border-primary"
+                        id="letter"
+                        name="letter"
+                        type="file"
+                        accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                        onChange={(e) => setLetterFile(e.target.files?.[0] || null)}
+                        className="rounded-2xl h-14 pt-4 px-6 cursor-pointer file:hidden"
                       />
+                      <div className="absolute inset-y-0 right-6 flex items-center pointer-events-none text-primary/40 text-xs font-bold uppercase tracking-widest">
+                        {letterFile ? letterFile.name : "Choose File"}
+                      </div>
                     </div>
-                  </PopoverContent>
-                </Popover>
-                {errors.bookingAt && touched.bookingAt && (
-                  <p
-                    id="bookingAt-error"
-                    className="mt-2 text-sm text-amber-600 flex items-center"
-                  >
-                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full mr-2"></span>
-                    {errors.bookingAt}
-                  </p>
+                  </div>
                 )}
-              </div>
 
-              {/* Purpose */}
-              <div>
-                <Label htmlFor="purpose" className="text-primary font-medium">
-                  Purpose of Meeting *
-                </Label>
-                <Textarea
-                  id="purpose"
-                  name="purpose"
-                  value={formData.purpose}
-                  onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  rows={4}
-                  required
-                  aria-invalid={!!errors.purpose && touched.purpose}
-                  aria-describedby="purpose-error"
-                  placeholder="Describe the nature of your event or meeting..."
-                  className={`bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2 resize-none ${errors.purpose && touched.purpose
-                    ? "border-amber-500 focus:ring-amber-500/20"
-                    : "hover:border-primary/50"
-                    }`}
-                />
-                {errors.purpose && touched.purpose && (
-                  <p
-                    id="purpose-error"
-                    className="mt-2 text-sm text-amber-600 flex items-center"
-                  >
-                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full mr-2"></span>
-                    {errors.purpose}
-                  </p>
-                )}
-              </div>
-
-              {/* Submit */}
-              <Button
-                type="submit"
-                variant="gold"
-                size="lg"
-                className="w-full text-lg py-6 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!isFormValid || isSubmitting}
-              >
-                {isSubmitting ? "Submitting..." : "Submit"}
-              </Button>
-            </form>
+                {/* Submit */}
+                <Button
+                  type="submit"
+                  variant="gold"
+                  size="lg"
+                  className="w-full h-20 rounded-full text-lg tracking-[0.3em] font-bold shadow-gold mt-10 uppercase transition-all hover:scale-[1.02]"
+                  disabled={!isFormValid || isSubmitting}
+                >
+                  {isSubmitting ? "TRANSMITTING..." : "CONFIRM RESERVATION"}
+                </Button>
+              </form>
+            </div>
           </div>
         </section>
       </main>
