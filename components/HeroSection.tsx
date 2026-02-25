@@ -45,7 +45,7 @@ const HeroSection = () => {
           <Button
             variant="gold"
             size="lg"
-            className="text-base md:text-lg px-8 py-4 h-auto font-semibold tracking-wide shadow-gold hover:shadow-glow transition-all duration-300 transform hover:scale-105"
+            className="text-base md:text-lg px-8 py-4 h-14 font-semibold tracking-wide shadow-gold hover:shadow-glow transition-all duration-300 transform hover:scale-105 interactive-element"
             onClick={() => {
               const menuSection = document.getElementById("menu");
               if (menuSection)
@@ -57,9 +57,9 @@ const HeroSection = () => {
           <Button
             variant="luxury"
             size="lg"
-            className="text-base md:text-lg px-8 py-4 h-auto font-semibold tracking-wide shadow-elegant hover:shadow-gold transition-all duration-300 transform hover:scale-105"
+            className="text-base md:text-lg px-8 py-4 h-14 font-semibold tracking-wide shadow-elegant hover:shadow-gold transition-all duration-300 transform hover:scale-105 interactive-element"
             onClick={() => {
-              const hallSection = document.getElementById("reservation");
+              const hallSection = document.getElementById("meeting-hall");
               if (hallSection)
                 hallSection.scrollIntoView({ behavior: "smooth" });
             }}

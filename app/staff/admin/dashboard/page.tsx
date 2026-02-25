@@ -178,7 +178,7 @@ export default function AdminDashboard() {
         }
     };
 
-    if (status === "loading" || isLoading) return <div className="min-h-screen items-center flex justify-center text-primary">Loading Framework...</div>;
+    if (status === "loading" || isLoading) return <div className="min-h-screen items-center flex justify-center text-primary">Loading...</div>;
 
     return (
         <section className="bg-background min-h-screen py-20 px-4 md:px-8">

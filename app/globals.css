@@ -91,6 +91,57 @@
     box-shadow: 0 0 40px hsl(48 100% 65% / 0.4);
     transform: scale(1.05);
   }
+
+  /* Consistent interactive elements */
+  .interactive-element {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+
+  .interactive-element:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px hsl(45 100% 50% / 0.2);
+  }
+
+  .interactive-element:active {
+    transform: translateY(0);
+    box-shadow: 0 5px 15px -5px hsl(45 100% 50% / 0.2);
+  }
+
+  /* Consistent card styles */
+  .card-luxury {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-elegant);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-luxury:hover {
+    box-shadow: 0 25px 50px -12px hsl(0 0% 0% / 0.8);
+    border-color: hsl(var(--primary) / 0.3);
+  }
+
+  /* Consistent text gradients */
+  .text-gradient-gold {
+    background: linear-gradient(135deg, hsl(45 100% 50%), hsl(48 100% 65%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Consistent spacing utilities */
+  .section-spacing {
+    padding: 5rem 0;
+  }
+
+  .section-spacing-sm {
+    padding: 3rem 0;
+  }
+
+  .section-spacing-lg {
+    padding: 7rem 0;
+  }
 }
 
 @layer utilities {
@@ -155,6 +206,33 @@
   }
 }
 
+@keyframes checkmark {
+  0% {
+    stroke-dasharray: 0 100;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dasharray: 100 100;
+    opacity: 1;
+  }
+}
+
+@keyframes shrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+.animate-checkmark .checkmark-path {
+  animation: checkmark 0.6s ease-in-out;
+}
+
 /* Global Alert Styling */
 .alert-bottom-right {
   position: fixed;
@@ -169,6 +247,42 @@
 input,
 textarea {
   border-width: 1px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: hsl(var(--primary)) !important;
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1), 0 0 20px hsl(var(--primary) / 0.2) !important;
+  transform: translateY(-1px);
+}
+
+input:hover,
+textarea:hover {
+  border-color: hsl(var(--primary) / 0.5) !important;
+}
+
+/* Enhanced input styling */
+.input-luxury {
+  background: hsl(var(--background-subtle));
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground-accent));
+  border-radius: calc(var(--radius) - 2px);
+  padding: 0.75rem 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-luxury:focus {
+  background: hsl(var(--background));
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1), 0 0 20px hsl(var(--primary) / 0.2);
+  transform: translateY(-1px);
+}
+
+.input-luxury:hover {
+  border-color: hsl(var(--primary) / 0.3);
+  background: hsl(var(--background));
 }
 
 /* Fix autofill colors */
@@ -183,13 +297,6 @@ textarea:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px hsl(var(--background-subtle)) inset !important;
   -webkit-text-fill-color: hsl(var(--foreground-accent)) !important;
   background-color: hsl(var(--background-subtle)) !important;
-}
-
-/* Fix calendar and time picker icons */
-input[type="date"]::-webkit-calendar-picker-indicator,
-input[type="time"]::-webkit-calendar-picker-indicator {
-  filter: invert(1) brightness(0) contrast(200);
-  cursor: pointer;
 }
 
 /* Custom Scrollbar Styles */

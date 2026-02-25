@@ -77,12 +77,18 @@ const Footer = () => {
                   <Phone className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex flex-col space-y-1">
-                  <p className="hover:text-primary transition-colors duration-300 font-medium">
+                  <a 
+                    href="tel:+251945184545" 
+                    className="hover:text-primary transition-colors duration-300 font-medium"
+                  >
                     +251 945 184 545
-                  </p>
-                  <p className="hover:text-primary transition-colors duration-300 font-medium">
+                  </a>
+                  <a 
+                    href="tel:+25145666555" 
+                    className="hover:text-primary transition-colors duration-300 font-medium"
+                  >
                     +251 456 665 55
-                  </p>
+                  </a>
                 </div>
               </div>
 
@@ -91,9 +97,14 @@ const Footer = () => {
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors duration-300">
                   <MapPin className="h-5 w-5 text-primary" />
                 </div>
-                <p className="hover:text-primary transition-colors duration-300 font-medium">
+                <a 
+                  href="https://maps.app.goo.gl/4L6ArGjjvARUhF7K9"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors duration-300 font-medium"
+                >
                   Adama, Ethiopia
-                </p>
+                </a>
               </div>
 
               {/* Email */}
@@ -113,7 +124,7 @@ const Footer = () => {
             <Button
               onClick={handleMapClick}
               variant="gold"
-              className="flex items-center gap-3 px-6 py-3 shadow-gold hover:shadow-glow transition-all duration-300 transform hover:scale-105"
+              className="flex items-center gap-3 px-6 py-3 shadow-gold hover:shadow-glow transition-all duration-300 transform hover:scale-105 interactive-element"
             >
               <MapPin className="h-5 w-5" />
               View on Map
@@ -132,7 +143,8 @@ const Footer = () => {
                 onClick={() => handleSocialClick("tiktok")}
                 variant="outline"
                 size="icon"
-                className="w-12 h-12 gold-hover border-primary/30 text-primary hover:text-background hover:bg-primary transition-all duration-300 transform hover:scale-110"
+                className="w-12 h-12 gold-hover border-primary/30 text-primary hover:text-background hover:bg-primary transition-all duration-300"
+                aria-label="Visit our TikTok"
               >
                 <FaTiktok className="h-5 w-5" />
               </Button>
@@ -140,7 +152,8 @@ const Footer = () => {
                 onClick={() => handleSocialClick("instagram")}
                 variant="outline"
                 size="icon"
-                className="w-12 h-12 gold-hover border-primary/30 text-primary hover:text-background hover:bg-primary transition-all duration-300 transform hover:scale-110"
+                className="w-12 h-12 gold-hover border-primary/30 text-primary hover:text-background hover:bg-primary transition-all duration-300"
+                aria-label="Visit our Instagram"
               >
                 <FaInstagram className="h-5 w-5" />
               </Button>
@@ -148,7 +161,8 @@ const Footer = () => {
                 onClick={() => handleSocialClick("facebook")}
                 variant="outline"
                 size="icon"
-                className="w-12 h-12 gold-hover border-primary/30 text-primary hover:text-background hover:bg-primary transition-all duration-300 transform hover:scale-110"
+                className="w-12 h-12 gold-hover border-primary/30 text-primary hover:text-background hover:bg-primary transition-all duration-300"
+                aria-label="Visit our Facebook"
               >
                 <FaFacebook className="h-5 w-5" />
               </Button>
@@ -175,7 +189,7 @@ const Footer = () => {
         <div className="mt-16 pt-8 border-t border-primary/20 text-center">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-foreground-muted">
-              © 2025 Mafi Restaurant. All rights reserved.
+              © 2026 Mafi Restaurant. All rights reserved.
             </p>
             {/* <div className="flex items-center space-x-6 text-sm text-foreground-muted">
               <a href="#" className="hover:text-primary transition-colors duration-300">Privacy Policy</a>

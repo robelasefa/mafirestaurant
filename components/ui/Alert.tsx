@@ -21,58 +21,99 @@ const AlertComponent = ({
   onClose,
   className = ""
 }: AlertProps) => {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isLeaving, setIsLeaving] = useState(false);
 
   useEffect(() => {
-    if (duration > 0) {
+    // Enter animation
+    const enterTimer = setTimeout(() => setIsVisible(true), 50);
+    
+    return () => clearTimeout(enterTimer);
+  }, []);
+
+  useEffect(() => {
+    if (duration > 0 && isVisible) {
       const timer = setTimeout(() => {
-        setIsVisible(false);
-        onClose?.();
+        handleLeave();
       }, duration);
       return () => clearTimeout(timer);
     }
-  }, [duration, onClose]);
+  }, [duration, isVisible]);
 
-  const handleClose = () => {
-    setIsVisible(false);
-    onClose?.();
+  const handleLeave = () => {
+    setIsLeaving(true);
+    setTimeout(() => {
+      setIsVisible(false);
+      onClose?.();
+    }, 300);
   };
 
-  if (!isVisible) return null;
+  const handleClose = () => {
+    handleLeave();
+  };
+
+  if (!isVisible && !isLeaving) return null;
 
   const getIcon = () => {
+    const iconClass = "h-5 w-5 flex-shrink-0";
     switch (type) {
       case "success":
-        return <CheckCircle className="h-4 w-4 text-primary" />;
+        return <CheckCircle className={`${iconClass} text-primary`} />;
       case "error":
-        return <AlertCircle className="h-4 w-4 text-destructive" />;
+        return <AlertCircle className={`${iconClass} text-destructive`} />;
       case "warning":
-        return <AlertCircle className="h-4 w-4 text-amber-500" />;
+        return <AlertCircle className={`${iconClass} text-amber-500`} />;
       case "info":
-        return <Info className="h-4 w-4 text-blue-500" />;
+        return <Info className={`${iconClass} text-blue-500`} />;
       default:
-        return <CheckCircle className="h-4 w-4 text-primary" />;
+        return <CheckCircle className={`${iconClass} text-primary}`} />;
     }
   };
 
   const getAlertClasses = () => {
-    const baseClasses = "border-primary/30 bg-background-subtle text-foreground-accent shadow-elegant relative";
-    return `${baseClasses} ${className}`;
+    const baseClasses = "relative overflow-hidden rounded-lg border shadow-lg backdrop-blur-sm transition-all duration-300 ease-out border-primary/30 bg-background-subtle text-foreground-accent";
+    const animationClasses = isVisible && !isLeaving 
+      ? "translate-x-0 opacity-100 scale-100" 
+      : "translate-x-full opacity-0 scale-95";
+    
+    return `${baseClasses} ${animationClasses} ${className}`;
   };
 
   return (
     <Alert className={getAlertClasses()}>
+      {/* Progress bar */}
+      {duration > 0 && (
+        <div 
+          className="absolute bottom-0 left-0 h-1 bg-white/30 transition-all duration-100 linear"
+          style={{
+            animation: isVisible && !isLeaving ? `shrink ${duration}ms linear` : 'none'
+          }}
+        />
+      )}
+      
+      {/* Close button */}
       <button
         onClick={handleClose}
-        className="absolute top-2 right-2 text-foreground-muted hover:text-primary transition-colors"
+        className="absolute top-3 right-3 p-1 rounded-full hover:bg-white/10 transition-colors duration-200"
+        aria-label="Close notification"
       >
-        <X className="h-4 w-4" />
+        <X className="h-4 w-4 opacity-70 hover:opacity-100" />
       </button>
-      {getIcon()}
-      <AlertTitle className="text-primary font-semibold pr-6">{title}</AlertTitle>
-      <AlertDescription className="text-foreground-muted">
-        {description}
-      </AlertDescription>
+      
+      {/* Content */}
+      <div className="flex items-start gap-3 pr-8">
+        <div className="animate-pulse">
+          {getIcon()}
+        </div>
+        <div className="flex-1 min-w-0">
+          <AlertTitle className="font-semibold text-sm mb-1">
+            {title}
+          </AlertTitle>
+          <AlertDescription className="text-sm opacity-90 leading-relaxed">
+            {description}
+          </AlertDescription>
+        </div>
+      </div>
     </Alert>
   );
 };

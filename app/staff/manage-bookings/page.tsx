@@ -258,31 +258,33 @@ export default function ManageBookings() {
                       {b.status.charAt(0).toUpperCase() + b.status.slice(1)}
                     </span>
                   </td>
-                  <td className="py-4 px-4 text-center space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="border-primary/30 text-primary hover:bg-primary hover:text-background transition-elegant"
-                      onClick={() => handleStatus(b.id, "approved")}
-                    >
-                      Approve
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="border-destructive/30 text-destructive hover:bg-destructive hover:text-background transition-elegant"
-                      onClick={() => handleStatus(b.id, "rejected")}
-                    >
-                      Reject
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-foreground-muted hover:text-destructive"
-                      onClick={() => handleDelete(b.id)}
-                    >
-                      Delete
-                    </Button>
+                  <td className="py-4 px-4">
+                    <div className="flex flex-col items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-24 border-primary/30 text-foreground-muted hover:bg-primary hover:text-background hover:border-primary transition-elegant box-border"
+                        onClick={() => handleStatus(b.id, "approved")}
+                      >
+                        Approve
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-24 border-primary/30 text-foreground-muted hover:bg-primary hover:text-background transition-elegant box-border"
+                        onClick={() => handleStatus(b.id, "rejected")}
+                      >
+                        Reject
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-24 border-primary/30 text-foreground-muted hover:bg-destructive hover:text-background hover:border-destructive transition-elegant box-border"
+                        onClick={() => handleDelete(b.id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))

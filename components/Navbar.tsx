@@ -12,7 +12,7 @@ const sections = [
   { label: "Home", id: "hero" },
   { label: "About", id: "about" },
   { label: "Menu", id: "menu" },
-  { label: "Reservation", id: "reservation" },
+  { label: "Meeting Hall", id: "meeting-hall" },
   { label: "Contact", id: "contact" },
 ];
 
