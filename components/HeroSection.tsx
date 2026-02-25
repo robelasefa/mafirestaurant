@@ -36,8 +36,8 @@ const HeroSection = () => {
 
         {/* Subtitle with Better Typography */}
         <p className="text-lg md:text-xl lg:text-2xl text-foreground-muted mb-12 max-w-3xl mx-auto font-light leading-relaxed">
-          Experience luxury dining with exquisite cuisine and elegant atmosphere
-          in the heart of Adama, Ethiopia
+          Discover refined Ethiopian and international cuisine in an intimate,
+          beautifully designed setting in the heart of Adama.
         </p>
 
         {/* Buttons with Better Spacing and Icons */}

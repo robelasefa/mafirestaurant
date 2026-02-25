@@ -12,7 +12,7 @@ export async function PUT(req: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { newPassword } = await req.json();
+        const { newPassword, name } = await req.json();
 
         if (!newPassword || newPassword.length < 6) {
             return NextResponse.json({ error: "Password must be at least 6 characters long." }, { status: 400 });
@@ -25,6 +25,7 @@ export async function PUT(req: NextRequest) {
             data: {
                 password: hashedPassword,
                 needsPasswordChange: false, // Flag successfully flipped!
+            ...(name && typeof name === "string" ? { name } : {}),
             },
         });
 

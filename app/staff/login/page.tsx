@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   useEffect(() => {
@@ -16,6 +17,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,8 +35,14 @@ export default function Login() {
       if (result?.error) {
         setError("Invalid email or password");
       } else {
-        // Redirect to staff root which middleware catches and routes to specific dashboards!
-        router.push("/staff");
+        // Check if this is a first-time login and redirect accordingly
+        const sessionRes = await fetch("/api/auth/session");
+        const session = await sessionRes.json();
+        if (session?.user?.needsPasswordChange) {
+          router.push("/staff/setup-password");
+        } else {
+          router.push("/staff");
+        }
       }
     } catch {
       setError("An error occurred. Please try again.");
@@ -83,15 +91,25 @@ export default function Login() {
               <Label htmlFor="password" className="text-primary font-medium">
                 Password
               </Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary mt-2"
-                placeholder="Enter your password"
-              />
+              <div className="relative mt-2">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="bg-background-subtle border-primary/20 text-foreground-accent focus:border-primary pr-10"
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute inset-y-0 right-0 px-3 flex items-center text-foreground-muted hover:text-primary"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
 
             <Button

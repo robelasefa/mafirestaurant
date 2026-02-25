@@ -12,17 +12,43 @@ interface Message {
   timestamp: Date;
 }
 
-// Simple markdown parser for basic formatting
-const formatMarkdown = (text: string) => {
-  return text
+// Escape HTML to prevent XSS before applying minimal markdown
+const escapeHtml = (text: string) =>
+  text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+// Very small markdown parser for basic formatting, built on top of escaped text.
+// Only allows <strong>, <em>, <a>, and <br> that we generate ourselves.
+const formatMarkdown = (rawText: string) => {
+  const escaped = escapeHtml(rawText);
+
+  return escaped
     // Bold text
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     // Italic text
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    // Links
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">$1</a>')
+    .replace(/\*(.*?)\*/g, "<em>$1</em>")
+    // Links (whitelist basic protocols and relative URLs)
+    .replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      (match, label, href) => {
+        const trimmedHref = String(href).trim();
+        const isAllowedProtocol = /^(https?:|mailto:|tel:|\/)/i.test(trimmedHref);
+        const safeHref = isAllowedProtocol ? trimmedHref : "#";
+
+        const escapedHref = safeHref
+          .replace(/&/g, "&amp;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+
+        return `<a href="${escapedHref}" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline">${label}</a>`;
+      }
+    )
     // Line breaks
-    .replace(/\n/g, '<br />');
+    .replace(/\n/g, "<br />");
 };
 
 const ChatBot = () => {
@@ -144,6 +170,8 @@ const ChatBot = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-2xl z-50 bg-primary hover:bg-primary-glow transition-all duration-300 transform hover:scale-105 group"
         size="icon"
+        aria-label={isOpen ? "Close Mafi AI chat" : "Open Mafi AI chat"}
+        aria-expanded={isOpen}
       >
         {isOpen ? (
           <X className="h-7 w-7 transition-transform duration-300 group-hover:rotate-90" />
@@ -179,7 +207,12 @@ const ChatBot = () => {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 p-5 overflow-y-auto space-y-6 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+            <div
+              className="flex-1 p-5 overflow-y-auto space-y-6 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent"
+              role="log"
+              aria-live="polite"
+              aria-relevant="additions"
+            >
               {messages.map((message) => (
                 <div
                   key={message.id}
@@ -194,11 +227,23 @@ const ChatBot = () => {
                         : "bg-primary text-primary-foreground shadow-gold rounded-2xl rounded-tr-sm"
                         }`}
                     >
-                      <div className={`text-sm leading-relaxed break-words whitespace-pre-wrap ${message.isBot && message.id === 1 ? "font-serif text-[15px]" : ""}`}
-                        dangerouslySetInnerHTML={{
-                          __html: message.isBot ? formatMarkdown(message.text) : message.text
-                        }}
-                      />
+                      {message.isBot ? (
+                        <div
+                          className={`text-sm leading-relaxed break-words whitespace-pre-wrap ${
+                            message.id === 1 ? "font-serif text-[15px]" : ""
+                          }`}
+                          // Content is sanitized in formatMarkdown.
+                          dangerouslySetInnerHTML={{
+                            __html: formatMarkdown(message.text),
+                          }}
+                        />
+                      ) : (
+                        <div
+                          className="text-sm leading-relaxed break-words whitespace-pre-wrap"
+                        >
+                          {message.text}
+                        </div>
+                      )}
                       <div className={`text-[9px] mt-1.5 opacity-70 flex ${message.isBot ? "justify-start" : "justify-end"}`}>
                         {formatTime(message.timestamp)}
                       </div>

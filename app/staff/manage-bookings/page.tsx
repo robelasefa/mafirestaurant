@@ -77,7 +77,9 @@ export default function ManageBookings() {
           title: 'Success!',
           text: `Booking ${status} successfully!`,
           icon: 'success',
-          confirmButtonColor: '#d4af37'
+          confirmButtonColor: '#d4af37',
+          background: '#02010a',
+          color: '#f9fafb',
         });
       }
     } catch (error) {
@@ -86,7 +88,9 @@ export default function ManageBookings() {
         title: 'Error!',
         text: 'Error updating booking status. Please try again.',
         icon: 'error',
-        confirmButtonColor: '#d4af37'
+        confirmButtonColor: '#d4af37',
+        background: '#02010a',
+        color: '#f9fafb',
       });
     }
   };
@@ -98,7 +102,9 @@ export default function ManageBookings() {
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d4af37',
-      cancelButtonColor: '#d33',
+      cancelButtonColor: '#4b5563',
+      background: '#02010a',
+      color: '#f9fafb',
       confirmButtonText: 'Yes, delete it!'
     });
 
@@ -112,7 +118,9 @@ export default function ManageBookings() {
           title: 'Deleted!',
           text: 'Booking deleted successfully.',
           icon: 'success',
-          confirmButtonColor: '#d4af37'
+          confirmButtonColor: '#d4af37',
+          background: '#02010a',
+          color: '#f9fafb',
         });
       }
     } catch (error) {
@@ -121,7 +129,9 @@ export default function ManageBookings() {
         title: 'Error!',
         text: 'Error deleting booking. Please try again.',
         icon: 'error',
-        confirmButtonColor: '#d4af37'
+        confirmButtonColor: '#d4af37',
+        background: '#02010a',
+        color: '#f9fafb',
       });
     }
   };
@@ -135,27 +145,37 @@ export default function ManageBookings() {
   }
 
   return (
-    <section className="max-w-5xl mx-auto px-4 animate-fade-in">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary">
-          Manage Meeting Hall Bookings
-        </h1>
-        <div className="flex items-center gap-4">
-          <div className="text-foreground-muted">
-            Welcome, {session?.user?.name}
+    <section className="bg-background min-h-screen py-16 px-4">
+      <div className="max-w-5xl mx-auto space-y-8 animate-fade-in">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <Button
+            variant="outline"
+            className="border-primary/40 text-primary hover:bg-primary/10 w-full md:w-auto"
+            onClick={() => router.push('/')}
+          >
+            Back to Home
+          </Button>
+          <div className="text-right w-full md:w-auto">
+            <p className="text-sm uppercase tracking-wide text-foreground-muted">
+              Signed in as
+            </p>
+            <p className="text-lg font-semibold text-primary">
+              {session?.user?.name || "Staff"}
+            </p>
           </div>
-          {session?.user?.role === "admin" && (
-            <Button
-              variant="gold"
-              onClick={() => router.push('/staff/admin/add')}
-            >
-              Add Staff
-            </Button>
-          )}
         </div>
-      </div>
 
-      <div className="overflow-x-auto">
+        {/* Header */}
+        <div>
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-primary mb-2">
+            Manage Meeting Hall Bookings
+          </h1>
+          <p className="text-foreground-muted">
+            Review, approve, or reject upcoming reservation requests.
+          </p>
+        </div>
+
+        <div className="overflow-x-auto">
         <table className="min-w-full bg-background-subtle rounded-2xl shadow-elegant border border-primary/20">
           <thead>
             <tr className="text-left text-primary text-lg">
@@ -269,6 +289,7 @@ export default function ManageBookings() {
             )}
           </tbody>
         </table>
+      </div>
       </div>
     </section>
   );

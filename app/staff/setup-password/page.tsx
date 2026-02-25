@@ -12,6 +12,7 @@ export default function SetupPassword() {
     const { data: session, status } = useSession();
     const router = useRouter();
 
+    const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -24,6 +25,12 @@ export default function SetupPassword() {
         }
     }, [status, session, router]);
 
+    useEffect(() => {
+        if (session?.user?.name && !name) {
+            setName(session.user.name);
+        }
+    }, [session, name]);
+
     if (status === "loading" || status === "unauthenticated" || (status === "authenticated" && !session?.user?.needsPasswordChange)) {
         return <div className="text-center py-20 text-primary">Loading...</div>;
     }
@@ -31,7 +38,14 @@ export default function SetupPassword() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (password !== confirmPassword) {
-            return Swal.fire("Error", "Passwords do not match.", "error");
+            return Swal.fire({
+                title: "Error",
+                text: "Passwords do not match.",
+                icon: "error",
+                confirmButtonColor: "#d4af37",
+                background: "#02010a",
+                color: "#f9fafb",
+            });
         }
 
         setIsLoading(true);
@@ -40,20 +54,41 @@ export default function SetupPassword() {
             const res = await fetch("/api/staff/setup-password", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ newPassword: password }),
+                body: JSON.stringify({ newPassword: password, name }),
             });
 
             if (res.ok) {
-                await Swal.fire("Success!", "Your password has been securely updated.", "success");
+                await Swal.fire({
+                    title: "Success!",
+                    text: "Your password has been securely updated.",
+                    icon: "success",
+                    confirmButtonColor: "#d4af37",
+                    background: "#02010a",
+                    color: "#f9fafb",
+                });
                 // Logout user explicitly to refresh the JWT session payload
                 await signOut({ redirect: false });
                 router.push("/staff/login");
             } else {
                 const data = await res.json();
-                Swal.fire("Error", data.error || "Failed to setup password", "error");
+                Swal.fire({
+                    title: "Error",
+                    text: data.error || "Failed to setup password",
+                    icon: "error",
+                    confirmButtonColor: "#d4af37",
+                    background: "#02010a",
+                    color: "#f9fafb",
+                });
             }
         } catch {
-            Swal.fire("Error", "A network error occurred.", "error");
+            Swal.fire({
+                title: "Error",
+                text: "A network error occurred.",
+                icon: "error",
+                confirmButtonColor: "#d4af37",
+                background: "#02010a",
+                color: "#f9fafb",
+            });
         } finally {
             setIsLoading(false);
         }
@@ -67,11 +102,24 @@ export default function SetupPassword() {
                     Security Setup
                 </h1>
                 <p className="text-foreground-muted mb-8">
-                    Please choose a secure password to activate your staff account.
+                    Please tell us your name and choose a secure password to activate your staff account.
                 </p>
 
                 <div className="bg-background rounded-2xl shadow-elegant p-8 border border-primary/20 text-left">
                     <form onSubmit={handleSubmit} className="space-y-6">
+
+                        <div>
+                            <Label htmlFor="name">Full Name</Label>
+                            <Input
+                                id="name"
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                                className="mt-2"
+                                placeholder="e.g. Amanuel Bekele"
+                            />
+                        </div>
 
                         <div>
                             <Label htmlFor="password">New Password</Label>

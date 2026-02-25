@@ -35,7 +35,7 @@ const Footer = () => {
             Contact Us
           </h2>
           <p className="text-lg md:text-xl text-foreground-muted max-w-3xl mx-auto leading-relaxed">
-            Experience luxury dining with exquisite cuisine and elegant atmosphere in the heart of Adama, Ethiopia.
+            Reserve your table, plan a celebration, or book our meeting halls — our team is ready to welcome you to Mafi Restaurant in Adama.
           </p>
         </div>
 
@@ -59,8 +59,8 @@ const Footer = () => {
                 Mafi Restaurant
               </h3>
               <p className="text-foreground-muted leading-relaxed text-lg">
-                Experience luxury dining with exquisite cuisine and elegant
-                atmosphere in the heart of Adama, Ethiopia.
+                A modern dining destination offering carefully crafted dishes,
+                warm hospitality, and a refined atmosphere for every occasion.
               </p>
             </div>
           </div>

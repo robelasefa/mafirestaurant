@@ -57,7 +57,7 @@ export default function Home() {
       <div id="meeting-hall">
         <MeetingHallBooking />
       </div>
-      <div id="contact">
+      <div>
         <Footer />
       </div>
       <ChatBot />

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Swal from 'sweetalert2';
-import { Users, FileText, CheckCircle, TrendingUp } from "lucide-react";
+import { Users, FileText, CheckCircle } from "lucide-react";
 
 interface User {
     id: string;
@@ -24,6 +24,11 @@ export default function AdminDashboard() {
     const [inviteEmail, setInviteEmail] = useState("");
     const [inviteRole, setInviteRole] = useState("staff");
     const [isLoading, setIsLoading] = useState(true);
+    const [bookingStats, setBookingStats] = useState({
+        total: 0,
+        pending: 0,
+        approved: 0,
+    });
 
     useEffect(() => {
         document.title = "Admin Dashboard | Mafi Restaurant";
@@ -35,6 +40,7 @@ export default function AdminDashboard() {
         }
 
         fetchUsers();
+        fetchBookingStats();
     }, [session, status, router]);
 
     const fetchUsers = async () => {
@@ -51,6 +57,21 @@ export default function AdminDashboard() {
         }
     };
 
+    const fetchBookingStats = async () => {
+        try {
+            const response = await fetch("/api/bookings");
+            if (!response.ok) return;
+            const result = await response.json();
+            const bookings = result.data || [];
+            const total = bookings.length;
+            const pending = bookings.filter((b: { status: string }) => b.status === "pending").length;
+            const approved = bookings.filter((b: { status: string }) => b.status === "approved").length;
+            setBookingStats({ total, pending, approved });
+        } catch (error) {
+            console.error("Error fetching booking stats:", error);
+        }
+    };
+
     const handleInvite = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
@@ -62,14 +83,35 @@ export default function AdminDashboard() {
             const data = await res.json();
 
             if (res.ok) {
-                Swal.fire('Invited!', `Added with temporary password "password123". They will be forced to change it on login.`, 'success');
+                Swal.fire({
+                    title: 'Staff Invited',
+                    html: `Temporary password for <strong>${inviteEmail}</strong>:<br/><code class="px-2 py-1 rounded bg-black/60 border border-primary/40 text-primary text-sm">${data.tempPassword}</code><br/><span class="text-xs text-foreground-muted block mt-2">Share this password securely. They will be forced to change it on first login.</span>`,
+                    icon: 'success',
+                    confirmButtonColor: '#d4af37',
+                    background: '#02010a',
+                    color: '#f9fafb',
+                });
                 setInviteEmail("");
                 setUsers([data.user, ...users]);
             } else {
-                Swal.fire('Error', data.error, 'error');
+                Swal.fire({
+                    title: 'Error',
+                    text: data.error || 'Failed to invite staff member.',
+                    icon: 'error',
+                    confirmButtonColor: '#d4af37',
+                    background: '#02010a',
+                    color: '#f9fafb',
+                });
             }
         } catch {
-            Swal.fire('Error', 'Network Error', 'error');
+            Swal.fire({
+                title: 'Error',
+                text: 'Network error. Please try again.',
+                icon: 'error',
+                confirmButtonColor: '#d4af37',
+                background: '#02010a',
+                color: '#f9fafb',
+            });
         }
     };
 
@@ -81,13 +123,29 @@ export default function AdminDashboard() {
         });
         if (res.ok) {
             setUsers(prev => prev.map(u => u.id === id ? { ...u, role: newRole } : u));
-            Swal.fire({ toast: true, position: 'top-end', text: 'Role Updated!', icon: 'success', timer: 2000, showConfirmButton: false });
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                text: 'Role updated',
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false,
+                background: '#02010a',
+                color: '#f9fafb',
+            });
         }
     };
 
     const handleDelete = async (id: string, name: string) => {
         if (session?.user?.id === id) {
-            Swal.fire('Error', "You cannot delete yourself!", 'error');
+            Swal.fire({
+                title: 'Error',
+                text: 'You cannot delete yourself.',
+                icon: 'error',
+                confirmButtonColor: '#d4af37',
+                background: '#02010a',
+                color: '#f9fafb',
+            });
             return;
         }
 
@@ -95,7 +153,10 @@ export default function AdminDashboard() {
             title: `Remove ${name || 'user'}?`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
+            confirmButtonColor: '#d4af37',
+            cancelButtonColor: '#4b5563',
+            background: '#02010a',
+            color: '#f9fafb',
         });
 
         if (isConfirmed) {
@@ -105,7 +166,14 @@ export default function AdminDashboard() {
             });
             if (res.ok) {
                 setUsers(prev => prev.filter(u => u.id !== id));
-                Swal.fire('Deleted', 'User removed from system.', 'success');
+                Swal.fire({
+                    title: 'Deleted',
+                    text: 'User removed from system.',
+                    icon: 'success',
+                    confirmButtonColor: '#d4af37',
+                    background: '#02010a',
+                    color: '#f9fafb',
+                });
             }
         }
     };
@@ -114,40 +182,61 @@ export default function AdminDashboard() {
 
     return (
         <section className="bg-background min-h-screen py-20 px-4 md:px-8">
-            <div className="max-w-7xl mx-auto space-y-12 animate-fade-in">
+            <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
 
-                {/* Header */}
-                <div className="flex flex-col md:flex-row justify-between items-center bg-background-subtle border border-primary/20 p-8 rounded-2xl shadow-elegant">
-                    <div>
-                        <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary mb-2">Admin Dashboard</h1>
-                        <p className="text-foreground-muted">System Overview & Staff Management</p>
-                    </div>
-                    <div className="mt-6 md:mt-0 flex gap-4">
-                        <Button onClick={() => router.push('/staff/manage-bookings')} variant="luxury">View Bookings Portal</Button>
+                {/* Top bar: back + welcome */}
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <Button
+                        variant="outline"
+                        className="border-primary/40 text-primary hover:bg-primary/10 w-full md:w-auto"
+                        onClick={() => router.push('/')}
+                    >
+                        Back to Home
+                    </Button>
+                    <div className="text-right w-full md:w-auto">
+                        <p className="text-sm uppercase tracking-wide text-foreground-muted">
+                            Signed in as
+                        </p>
+                        <p className="text-lg font-semibold text-primary">
+                            {session?.user?.name || "Admin"}
+                        </p>
                     </div>
                 </div>
 
-                {/* Analytics Overview - Mock Data For Display */}
+                {/* Header */}
+                <div className="bg-background-subtle border border-primary/20 p-8 rounded-2xl shadow-elegant">
+                    <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary mb-3">Admin Dashboard</h1>
+                    <p className="text-foreground-muted">
+                        System overview & staff management
+                    </p>
+                    <div className="mt-4">
+                        <Button onClick={() => router.push('/staff/manage-bookings')} variant="luxury">
+                            View Bookings Portal
+                        </Button>
+                    </div>
+                </div>
+
+                {/* Analytics Overview - Live Data */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div className="bg-background-accent border border-primary/10 p-6 rounded-xl shadow-elegant hover:shadow-glow transition-all">
-                        <div className="flex items-center gap-4 text-primary mb-2"><TrendingUp /> <span className="font-semibold text-lg">Website Visits</span></div>
-                        <div className="text-4xl font-bold text-foreground">1,248</div>
-                        <div className="text-sm text-green-500 mt-2">+14% this week</div>
-                    </div>
-                    <div className="bg-background-accent border border-primary/10 p-6 rounded-xl shadow-elegant hover:shadow-glow transition-all">
+                    <div className="bg-background-accent border border-primary/15 p-5 rounded-xl shadow-sm transition-colors duration-200 hover:border-primary/40 hover:bg-background-subtle">
                         <div className="flex items-center gap-4 text-primary mb-2"><FileText /> <span className="font-semibold text-lg">Total Bookings</span></div>
-                        <div className="text-4xl font-bold text-foreground">84</div>
-                        <div className="text-sm text-foreground-muted mt-2">Historical</div>
+                        <div className="text-3xl font-bold text-foreground">{bookingStats.total}</div>
+                        <div className="text-xs text-foreground-muted mt-2">Across all time</div>
                     </div>
-                    <div className="bg-background-accent border border-primary/10 p-6 rounded-xl shadow-elegant hover:shadow-glow transition-all">
+                    <div className="bg-background-accent border border-primary/15 p-5 rounded-xl shadow-sm transition-colors duration-200 hover:border-primary/40 hover:bg-background-subtle">
                         <div className="flex items-center gap-4 text-primary mb-2"><CheckCircle /> <span className="font-semibold text-lg">Pending Requests</span></div>
-                        <div className="text-4xl font-bold text-amber-500">5</div>
-                        <div className="text-sm text-foreground-muted mt-2">Needs approval</div>
+                        <div className="text-3xl font-bold text-amber-400">{bookingStats.pending}</div>
+                        <div className="text-xs text-foreground-muted mt-2">Awaiting review</div>
                     </div>
-                    <div className="bg-background-accent border border-primary/10 p-6 rounded-xl shadow-elegant hover:shadow-glow transition-all">
+                    <div className="bg-background-accent border border-primary/15 p-5 rounded-xl shadow-sm transition-colors duration-200 hover:border-primary/40 hover:bg-background-subtle">
+                        <div className="flex items-center gap-4 text-primary mb-2"><CheckCircle /> <span className="font-semibold text-lg">Approved Bookings</span></div>
+                        <div className="text-3xl font-bold text-green-400">{bookingStats.approved}</div>
+                        <div className="text-xs text-foreground-muted mt-2">Confirmed events</div>
+                    </div>
+                    <div className="bg-background-accent border border-primary/15 p-5 rounded-xl shadow-sm transition-colors duration-200 hover:border-primary/40 hover:bg-background-subtle">
                         <div className="flex items-center gap-4 text-primary mb-2"><Users /> <span className="font-semibold text-lg">Active Staff</span></div>
-                        <div className="text-4xl font-bold text-foreground">{users.length}</div>
-                        <div className="text-sm text-foreground-muted mt-2">Manage below</div>
+                        <div className="text-3xl font-bold text-foreground">{users.length}</div>
+                        <div className="text-xs text-foreground-muted mt-2">Accounts with access</div>
                     </div>
                 </div>
 

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -94,6 +96,15 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
+    const session = await getServerSession(authOptions);
+    const role = session?.user?.role;
+    if (!session || (role !== "admin" && role !== "staff")) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 403 }
+      );
+    }
+
     const bookings = await prisma.booking.findMany({
       orderBy: { createdAt: "desc" },
     });

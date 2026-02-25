@@ -10,55 +10,55 @@ const menuItems = [
     id: 1,
     title: "Mixed Grill",
     description:
-      "mixed lamb, chicken, sausage, steak served with roasted tomatoes and french fries topped with red wine sauce",
+      "Mixed lamb, chicken, sausage, and steak served with roasted tomatoes and golden fries, finished with a rich red wine sauce.",
     image: "/images/mixed-grill.png",
   },
   {
     id: 2,
     title: "Roast Chicken",
     description:
-      "roasted boneless chicken legs served with french fries and seasonal vegetables topped with french fries or tomato garlic butter sauce",
+      "Roasted boneless chicken legs served with crisp fries and seasonal vegetables, topped with your choice of tomato–garlic butter or classic pan jus.",
     image: "/images/roast-chicken.png",
   },
   {
     id: 3,
     title: "Beef or Chicken Fajita",
     description:
-      "mixed lamb or chicken sausage, steak served with roasted tomatoes and french fries topped with red wine sauce",
+      "Sizzling strips of marinated beef or chicken with peppers and onions, served with warm accompaniments for a vibrant, shareable plate.",
     image: "/images/fajita.png",
   },
   {
     id: 4,
     title: "Rolled Beef",
     description:
-      "mafi beef rolle stuffed with ricotta cheese and spinach served with mashed potatoes and seasonal vegetables",
+      "Tender rolled beef stuffed with ricotta and spinach, served with creamy mashed potatoes and seasonal vegetables.",
     image: "/images/rolled-beef.png",
   },
   {
     id: 5,
     title: "Fish & Chips",
-    description: "fried tilapia served with french fries and tartar sauce",
+    description: "Crispy battered tilapia served with fries, house tartar sauce, and a wedge of lemon.",
     image: "/images/fish-chips.png",
   },
   {
     id: 6,
     title: "Fish Cutlet",
     description:
-      "breaded fish fillet topped with sweet or sour sauce served with mashed potatoes and seasonal vegetables",
+      "Breaded fish fillet topped with a delicate sweet-and-sour glaze, served with mashed potatoes and seasonal vegetables.",
     image: "/images/fish-cutlet.png",
   },
   {
     id: 7,
     title: "Grilled Fish",
     description:
-      "grilled catch of the trillet of tilapia or nile perch served with spinach and parsley potato with garlic lemon butter sauce or sweet and sour sauce",
+      "Grilled fillet of tilapia or Nile perch served with sautéed spinach, parsley potatoes, and a garlic–lemon butter or sweet-and-sour sauce.",
     image: "/images/grilled-fish.png",
   },
   {
     id: 8,
     title: "Stuffed Chicken Breast",
     description:
-      "spinach and ricotta cheese stuffed chicken breast served with curry rice and seasonal vegetables topped with creamy white wine sauce",
+      "Spinach and ricotta–stuffed chicken breast served with fragrant curry rice, seasonal vegetables, and a silky white wine cream sauce.",
     image: "/images/stuffed-chicken.png",
   },
 ];
@@ -122,9 +122,8 @@ const MenuCarousel = () => {
         {/* Carousel Container */}
         <div className="w-full flex flex-col items-center">
           {/* Image Display - FIXED to show food portions */}
-          <div className="relative w-full max-w-lg aspect-[4/3] rounded-xl overflow-hidden shadow-lg bg-white group">
+          <div className="relative w-full max-w-lg aspect-[4/3] rounded-xl overflow-hidden shadow-lg bg-background-subtle group">
             <Image
-              key={currentItem.image}
               src={currentItem.image}
               alt={currentItem.title}
               width={800} // Set the actual width in px if known

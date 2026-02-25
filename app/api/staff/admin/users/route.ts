@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
     try {
+        const session = await getServerSession(authOptions);
+        if (!session || session.user?.role !== "admin") {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+        }
+
         const users = await prisma.user.findMany({
             select: {
                 id: true,
@@ -26,6 +33,11 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
     try {
+        const session = await getServerSession(authOptions);
+        if (!session || session.user?.role !== "admin") {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+        }
+
         const { email, role, name } = await req.json();
 
         if (!email || !role) {
@@ -37,7 +49,9 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "User already exists." }, { status: 400 });
         }
 
-        const tempPassword = 'password123'; // Default temporary password
+        const tempPassword = Array.from(crypto.randomUUID().replace(/-/g, ""))
+            .slice(0, 10)
+            .join("");
         const hashedPassword = await bcrypt.hash(tempPassword, 10);
 
         const user = await prisma.user.create({
@@ -58,7 +72,7 @@ export async function POST(req: NextRequest) {
             }
         });
 
-        return NextResponse.json({ message: "Staff invited.", user }, { status: 201 });
+        return NextResponse.json({ message: "Staff invited.", user, tempPassword }, { status: 201 });
     } catch {
         return NextResponse.json({ error: "Internal server error." }, { status: 500 });
     }
@@ -66,6 +80,11 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
     try {
+        const session = await getServerSession(authOptions);
+        if (!session || session.user?.role !== "admin") {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+        }
+
         const { id, role } = await req.json();
         if (!id || !role) return NextResponse.json({ error: "Missing data" }, { status: 400 });
 
@@ -82,6 +101,11 @@ export async function PATCH(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
     try {
+        const session = await getServerSession(authOptions);
+        if (!session || session.user?.role !== "admin") {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+        }
+
         const { id } = await req.json();
 
         // Prevent deleting oneself implicitly through auth rules, but hardcode it here

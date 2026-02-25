@@ -348,20 +348,22 @@ export default function Booking() {
                   >
                     Upload Letter (Optional)
                   </Label>
-                  <Input
-                    id="letter"
-                    name="letter"
-                    type="file"
-                    accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files.length > 0) {
-                        setLetterFile(e.target.files[0]);
-                      } else {
-                        setLetterFile(null);
-                      }
-                    }}
-                    className="bg-background-subtle border-primary/20 text-foreground-accent file:bg-primary file:text-primary-foreground file:border-0 file:rounded-md file:mr-4 file:px-4 file:py-2 focus:border-primary mt-2 cursor-pointer hover:border-primary/50"
-                  />
+                  <div className="mt-2">
+                    <Input
+                      id="letter"
+                      name="letter"
+                      type="file"
+                      accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files.length > 0) {
+                          setLetterFile(e.target.files[0]);
+                        } else {
+                          setLetterFile(null);
+                        }
+                      }}
+                      className="bg-background-subtle border-primary/20 text-foreground-accent file:bg-primary file:text-primary-foreground file:border-0 file:rounded-md file:mr-4 file:px-4 file:py-2 focus:border-primary h-11 cursor-pointer hover:border-primary/50"
+                    />
+                  </div>
                   <p className="mt-2 text-sm text-foreground-muted">
                     Please upload an official letter if booking on behalf of an organization. Supported formats: PDF, DOC, Images. Max 2MB.
                   </p>

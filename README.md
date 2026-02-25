@@ -17,9 +17,9 @@ Includes a **meeting hall booking system**, a protected **staff portal**, and **
 ---
 
 ## 🛠 Tech Stack
-- **Frontend**: Next.js 15, React 18, TypeScript  
+- **Frontend**: Next.js, React, TypeScript  
 - **Styling**: Tailwind CSS  
-- **Database**: PostgreSQL (Supabase)  
+- **Database**: SQLite (development) with Prisma, configurable to PostgreSQL in production  
 - **ORM**: Prisma  
 - **Auth**: NextAuth.js  
 - **Icons**: Lucide React  

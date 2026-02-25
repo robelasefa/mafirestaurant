@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 const VALID_STATUSES = ["pending", "approved", "rejected"] as const;
 
@@ -10,6 +12,12 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+    const role = session?.user?.role;
+    if (!session || (role !== "admin" && role !== "staff")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
     const { id } = await params;
     const body = await request.json();
     const { status } = body;
@@ -46,6 +54,12 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+    const role = session?.user?.role;
+    if (!session || (role !== "admin" && role !== "staff")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
     const { id } = await params;
 
     const booking = await prisma.booking.findUnique({ where: { id } });
