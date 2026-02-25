@@ -49,17 +49,53 @@ export async function POST(request: NextRequest) {
     let letterUrl = null;
 
     if (letter && letter.size > 0) {
-      const bytes = await letter.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      // Validate file size (2MB max)
+      const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+      if (letter.size > maxSize) {
+        return NextResponse.json(
+          { success: false, message: "File size must be less than 2MB." },
+          { status: 400 }
+        );
+      }
 
-      const uploadDir = join(process.cwd(), "public", "uploads", "letters");
-      await mkdir(uploadDir, { recursive: true });
+      // Validate file type
+      const allowedTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'image/jpeg',
+        'image/jpg',
+        'image/png'
+      ];
+      
+      if (!allowedTypes.includes(letter.type)) {
+        return NextResponse.json(
+          { success: false, message: "Invalid file type. Allowed types: PDF, DOC, DOCX, JPG, PNG." },
+          { status: 400 }
+        );
+      }
 
-      const fileName = `${Date.now()}-${letter.name.replace(/\s+/g, "_")}`;
-      const filePath = join(uploadDir, fileName);
-      await writeFile(filePath, buffer);
+      try {
+        const bytes = await letter.arrayBuffer();
+        const buffer = Buffer.from(bytes);
 
-      letterUrl = `/uploads/letters/${fileName}`;
+        const uploadDir = join(process.cwd(), "public", "uploads", "letters");
+        await mkdir(uploadDir, { recursive: true });
+
+        // Sanitize filename
+        const sanitizedName = letter.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+        const fileName = `${Date.now()}-${sanitizedName}`;
+        const filePath = join(uploadDir, fileName);
+        
+        await writeFile(filePath, buffer);
+        letterUrl = `/uploads/letters/${fileName}`;
+      } catch (fileError) {
+        console.error("❌ Error uploading file:", fileError);
+        return NextResponse.json(
+          { success: false, message: "Failed to upload file. Please try again." },
+          { status: 500 }
+        );
+      }
     }
 
     // Create booking
