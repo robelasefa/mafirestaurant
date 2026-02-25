@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useAlert } from "@/components/providers/AlertProvider";
+import { UploadCloud, FileText } from "lucide-react";
 import {
   Popover,
   PopoverTrigger,
@@ -348,7 +349,8 @@ export default function Booking() {
                   >
                     Upload Letter (Optional)
                   </Label>
-                  <div className="mt-2">
+                  <div className="mt-3 mb-4 flex items-center gap-4">
+                    {/* Hidden native input */}
                     <Input
                       id="letter"
                       name="letter"
@@ -361,11 +363,40 @@ export default function Booking() {
                           setLetterFile(null);
                         }
                       }}
-                      className="bg-background-subtle border-primary/20 text-foreground-accent file:bg-primary file:text-primary-foreground file:border-0 file:rounded-md file:mr-4 file:px-4 file:py-2 focus:border-primary h-11 cursor-pointer hover:border-primary/50"
+                      className="hidden"
                     />
+
+                    {/* Square action area */}
+                    <label
+                      htmlFor="letter"
+                      className="flex h-14 w-14 items-center justify-center rounded-2xl border border-dashed border-primary/40 bg-background-subtle text-primary hover:border-primary hover:bg-primary/10 cursor-pointer transition-colors"
+                    >
+                      {letterFile ? (
+                        <FileText className="h-6 w-6" />
+                      ) : (
+                        <UploadCloud className="h-6 w-6" />
+                      )}
+                    </label>
+
+                    {/* File name / status */}
+                    <div className="flex-1 min-w-0">
+                      {letterFile ? (
+                        <div className="inline-flex items-center gap-2 rounded-full bg-background-subtle border border-primary/20 px-3 py-1.5 text-sm text-foreground-accent">
+                          <FileText className="h-4 w-4 text-primary" />
+                          <span className="truncate max-w-[220px]">
+                            {letterFile.name}
+                          </span>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-foreground-muted">
+                          Click the square to upload your official letter.
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  <p className="mt-2 text-sm text-foreground-muted">
-                    Please upload an official letter if booking on behalf of an organization. Supported formats: PDF, DOC, Images. Max 2MB.
+                  <p className="mt-1 text-sm text-foreground-muted">
+                    Please upload an official letter if booking on behalf of an organization.
+                    Supported formats: PDF, DOC, Images. Max 2MB.
                   </p>
                 </div>
               )}
@@ -429,7 +460,7 @@ export default function Booking() {
                         }}
                       />
                     </div>
-                    <div className="p-4 border-t border-primary/10 bg-background-subtle rounded-b-xl">
+                    <div className="p-4 pt-5 border-t border-primary/10 bg-background-subtle rounded-b-xl">
                       <Label className="text-sm font-medium text-foreground mb-2 block">Time</Label>
                       <Input
                         type="time"
