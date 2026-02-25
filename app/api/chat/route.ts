@@ -92,7 +92,26 @@ Respond helpfully. If context is insufficient, say so and suggest calling or ema
       },
     });
 
-    const result = await model.generateContent(prompt);
+    // Add a hard timeout to avoid very long waits
+    const result = await Promise.race([
+      model.generateContent(prompt),
+      new Promise<null>((_resolve, reject) =>
+        setTimeout(() => reject(new Error("LLM timeout")), 20000)
+      ),
+    ]);
+
+    if (!result) {
+      return NextResponse.json(
+        {
+          reply:
+            "I'm taking longer than expected to respond. Please try again in a moment, or contact the restaurant directly for urgent questions.",
+          sources: [],
+        },
+        { status: 504 }
+      );
+    }
+
+   
     let text = result.response.text()?.trim();
 
     if (!text) {

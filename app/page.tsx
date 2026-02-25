@@ -60,7 +60,7 @@ export default function Home() {
       <div>
         <Footer />
       </div>
-      <ChatBot />
+      {/* <ChatBot /> */}
     </div>
   );
 }
