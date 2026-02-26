@@ -9,6 +9,85 @@
   display: none !important;
 }
 
+/* Target the "upload-complete" state specifically to prevent the transition flash */
+[data-ut-element="button"][data-state="upload-complete"] {
+  background-color: rgba(245, 158, 11, 0.1) !important; /* Keep soft gold */
+  color: #f59e0b !important; /* Keep gold text */
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+  pointer-events: none; /* Prevent double clicking */
+}
+
+/* Hide the internal UploadThing "check/done" icon that causes the jump */
+[data-ut-element="button"][data-state="upload-complete"] > svg,
+[data-ut-element="button"][data-state="upload-complete"]::after {
+  display: none !important;
+}
+
+/* Ensure the text stays "Uploading..." or "Upload Letter" even when internal state is 'done' */
+[data-ut-element="button"][data-state="upload-complete"] span {
+  display: inline-block !important;
+}
+
+@keyframes smoothFadeIn {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+.animate-success-pop {
+  animation: smoothFadeIn 0.4s ease-out forwards;
+}
+
+/* Hide the UploadThing "Complete" checkmark to prevent double icons */
+[data-ut-element="button"][data-state="upload-complete"] {
+  background-color: rgba(245, 158, 11, 0.1) !important;
+  color: transparent !important; /* Hide the internal 'done' text to prevent jumps */
+}
+
+/* 1. Target ALL states of the button to force the Soft Gold look */
+[data-ut-element="button"],
+[data-ut-element="button"][data-state="readying"],
+[data-ut-element="button"][data-state="uploading"],
+[data-ut-element="button"][data-state="upload-complete"] {
+  background-color: rgba(245, 158, 11, 0.1) !important; /* Soft Amber Background */
+  color: #f59e0b !important; /* Gold Text */
+  border: 1px solid rgba(245, 158, 11, 0.3) !important; /* Soft Gold Border */
+  box-shadow: none !important;
+  outline: none !important;
+  transition: all 0.3s ease !important;
+  border-radius: 8px !important; /* Matches your rounded-lg */
+}
+
+/* 2. Consistent Hover State */
+[data-ut-element="button"]:hover {
+  background-color: rgba(245, 158, 11, 0.2) !important;
+  border-color: rgba(245, 158, 11, 0.5) !important;
+}
+
+/* 3. Kill the blue "Focus" ring on click/tab */
+[data-ut-element="button"]:focus,
+[data-ut-element="button"]:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 4. Fix the Blue Progress Bar transition */
+/* This handles the internal div that grows blue as you upload */
+[data-ut-element="button"] > div[class*="bg-"] {
+  background-color: rgba(245, 158, 11, 0.3) !important; 
+}
+
+/* 5. Target the actual Uploading bar growth */
+[data-ut-element="button"]::after {
+    background-color: #f59e0b !important;
+}
+
+/* 6. Specifically target the "blue flash" container */
+.ut-button {
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
 @layer base {
   :root {
     --primary: 45 100% 50%;

@@ -227,7 +227,7 @@ export default function Booking() {
                 onSubmit={handleSubmit}
                 className="space-y-6 bg-background rounded-2xl shadow-elegant p-8 border border-primary/20"
               >
-                {/* Full Name */}
+                {/* Name */}
                 <div>
                   <Label htmlFor="name" className="text-primary font-medium">
                     Full Name *
@@ -321,7 +321,7 @@ export default function Booking() {
                   )}
                 </div>
 
-                {/* Organization (Optional) */}
+                {/* Organization */}
                 <div>
                   <Label
                     htmlFor="organization"
@@ -358,7 +358,7 @@ export default function Booking() {
                   </div>
                 )}
 
-                {/* Booking Date & Time */}
+                {/* Date */}
                 <div>
                   <Label htmlFor="bookingAt" className="text-primary font-medium">
                     Booking Date & Time *

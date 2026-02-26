@@ -1,5 +1,6 @@
 import { UploadButton } from "@uploadthing/react";
 import type { OurFileRouter } from "@/lib/uploadthing";
+import { cn } from "@/lib/utils";
 
 interface CustomUploadButtonProps {
   letterUrl: string | null;
@@ -8,11 +9,11 @@ interface CustomUploadButtonProps {
   setIsUploading: (uploading: boolean) => void;
 }
 
-export default function CustomUploadButton({ 
-  letterUrl, 
-  setLetterUrl, 
-  isUploading, 
-  setIsUploading 
+export default function CustomUploadButton({
+  letterUrl,
+  setLetterUrl,
+  isUploading,
+  setIsUploading
 }: CustomUploadButtonProps) {
   const uploadProps = {
     endpoint: "pdfUploader" as const,
@@ -30,29 +31,31 @@ export default function CustomUploadButton({
 
   return (
     <div className="relative w-full">
-      {letterUrl ? (
-        <div className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg 
-                        bg-green-900/20 text-green-400 border border-green-500/40 shadow-none">
-          <span>✓</span>
-          <span>Letter Attached</span>
-        </div>
-      ) : (
-        <UploadButton<OurFileRouter, "pdfUploader">
-          {...uploadProps}
-          content={{
-            button({ isUploading }) {
-              if (isUploading) return "Uploading...";
-              return "Upload Letter";
-            },
-            allowedContent: () => null,
-          }}
-          appearance={{
-            button: "bg-[#EAB308] !text-black !hover:bg-[#CA8A04] w-full shadow-none ring-0",
-            container: "p-0 border-none",
-            allowedContent: "hidden",
-          }}
-        />
-      )}
+  {letterUrl ? (
+    <div className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg 
+                    bg-green-900/20 text-green-400 border border-green-500/40 shadow-none
+                    animate-success-pop">
+      <span>✓</span>
+      <span className="font-medium">Letter Attached</span>
     </div>
+  ) : (
+    <div className={cn(isUploading ? "opacity-90" : "opacity-100", "transition-opacity duration-300")}>
+      <UploadButton<OurFileRouter, "pdfUploader">
+        {...uploadProps}
+        content={{
+          button({ isUploading }) {
+            return isUploading ? "Uploading..." : "Upload Letter";
+          },
+          allowedContent: () => null,
+        }}
+        appearance={{
+          button: "w-full h-11 px-4 py-2 font-medium shadow-none ring-0 border-none transition-none",
+          container: "w-full p-0 border-none",
+          allowedContent: "hidden",
+        }}
+      />
+    </div>
+  )}
+</div>
   );
 }
