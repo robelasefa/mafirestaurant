@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
+[data-ut-element="container"]::before,
+[data-ut-element="label"] {
+  display: none !important;
+}
+
 @layer base {
   :root {
     --primary: 45 100% 50%;

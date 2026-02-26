@@ -244,7 +244,7 @@ export default function ManageBookings() {
                         rel="noopener noreferrer"
                         className="text-primary hover:underline font-medium flex items-center gap-1"
                       >
-                        📄 View
+                        📄 View Letter
                       </a>
                     ) : (
                       <span className="text-foreground-muted">-</span>
@@ -263,7 +263,7 @@ export default function ManageBookings() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-24 border-primary/30 text-foreground-muted hover:bg-primary hover:text-background hover:border-primary transition-elegant box-border"
+                        className="w-24 rounded-lg border-primary/30 text-foreground-muted hover:bg-primary hover:text-background hover:border-primary transition-elegant box-border"
                         onClick={() => handleStatus(b.id, "approved")}
                       >
                         Approve
@@ -271,7 +271,7 @@ export default function ManageBookings() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-24 border-primary/30 text-foreground-muted hover:bg-primary hover:text-background transition-elegant box-border"
+                        className="w-24 rounded-lg border-primary/30 text-foreground-muted hover:bg-primary hover:text-background hover:border-primary transition-elegant box-border"
                         onClick={() => handleStatus(b.id, "rejected")}
                       >
                         Reject
@@ -279,7 +279,7 @@ export default function ManageBookings() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-24 border-primary/30 text-foreground-muted hover:bg-destructive hover:text-background hover:border-destructive transition-elegant box-border"
+                        className="w-24 rounded-lg border-primary/30 text-foreground-muted hover:bg-destructive hover:text-background hover:border-destructive transition-elegant box-border"
                         onClick={() => handleDelete(b.id)}
                       >
                         Delete
