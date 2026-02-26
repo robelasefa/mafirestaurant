@@ -198,7 +198,7 @@ export default function Booking() {
     return (
       <div className="bg-background">
         <Navbar />
-        <main className="pt-20">
+        <main>
           <section className="py-20 bg-background-accent">
             <div className="max-w-3xl mx-auto px-6 animate-fade-in">
               <h2 className=" text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-primary mb-3 text-center">

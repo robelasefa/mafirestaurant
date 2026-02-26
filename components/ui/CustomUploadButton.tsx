@@ -47,7 +47,7 @@ export default function CustomUploadButton({
             allowedContent: () => null,
           }}
           appearance={{
-            button: "bg-[#EAB308] !text-black hover:bg-[#CA8A04] w-full shadow-none ring-0",
+            button: "bg-[#EAB308] !text-black !hover:bg-[#CA8A04] w-full shadow-none ring-0",
             container: "p-0 border-none",
             allowedContent: "hidden",
           }}
