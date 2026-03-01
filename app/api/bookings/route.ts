@@ -5,25 +5,28 @@ import { authOptions } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
-    const formData = await request.formData();
+    // 1. Parse JSON instead of FormData
+    const body = await request.json();
 
-    const name = formData.get("name") as string;
-    const email = formData.get("email") as string;
-    const phone = formData.get("phone") as string;
-    const organization = formData.get("organization") as string;
-    const bookingAt = formData.get("bookingAt") as string;
-    const purpose = formData.get("purpose") as string;
-    const letterUrl = formData.get("letterUrl") as string | null;
+    const { 
+      name, 
+      email, 
+      phone, 
+      organization, 
+      bookingAt, 
+      purpose, 
+      letterUrl 
+    } = body;
 
-    // Required fields
+    // 2. Required fields validation
     if (!name || !email || !bookingAt || !purpose) {
       return NextResponse.json(
-        { success: false, message: "Missing required fields: name, email, bookingAt, purpose." },
+        { success: false, message: "Missing required fields." },
         { status: 400 }
       );
     }
 
-    // Validate booking date
+    // 3. Validate booking date
     const bookingDate = new Date(bookingAt);
     if (isNaN(bookingDate.getTime())) {
       return NextResponse.json(
@@ -32,7 +35,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Basic email validation
+    // 4. Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -41,7 +44,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create booking
+    // 5. Create booking in Prisma
     const booking = await prisma.booking.create({
       data: {
         name,
@@ -51,7 +54,7 @@ export async function POST(request: NextRequest) {
         bookingAt: bookingDate,
         purpose,
         status: "pending",
-        letterUrl,
+        letterUrl: letterUrl || null, // This is just the string URL from UploadThing
       },
     });
 

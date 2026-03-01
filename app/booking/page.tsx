@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useAlert } from "@/components/providers/AlertProvider";
-import CustomUploadButton from "@/components/ui/CustomUploadButton";
+import { useUploadThing } from "@/lib/utils";
 import {
   Popover,
   PopoverTrigger,
@@ -39,11 +39,42 @@ export default function Booking() {
   });
   const [letterUrl, setLetterUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
   const router = useRouter();
   const { showAlert } = useAlert();
+  
+  // Initialize UploadThing Hook
+  const { startUpload } = useUploadThing("pdfUploader");
+  
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file size (2MB limit)
+      if (file.size > 2 * 1024 * 1024) {
+        showAlert("error", "File Too Large", "Please select a file smaller than 2MB.");
+        return;
+      }
+      
+      // Validate file type
+      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
+      if (!allowedTypes.includes(file.type)) {
+        showAlert("error", "Invalid File Type", "Please upload PDF, DOC, DOCX, JPG, or PNG files only.");
+        return;
+      }
+      
+      setUploadedFile(file);
+      setLetterUrl(null); // Clear any previous uploaded URL
+    }
+  };
+
+  const removeFile = () => {
+    setUploadedFile(null);
+    setLetterUrl(null);
+  };
 
   const validateField = (name: string, value: string) => {
     let error = "";
@@ -74,10 +105,11 @@ export default function Booking() {
         if (!value) error = "Please select a date and time.";
         else {
           const selectedDate = new Date(value);
+          const now = new Date();
           if (isNaN(selectedDate.getTime())) {
             error = "Invalid date format.";
-          } else if (selectedDate < new Date()) {
-            error = "Booking date must be in the future.";
+          } else if (selectedDate < now) {
+            error = "Booking time must be in the future.";
           }
         }
         break;
@@ -122,9 +154,10 @@ export default function Booking() {
 
   const isFormValid =
     Object.values(errors).every((err) => err === "") &&
-    ["name", "email", "bookingAt", "purpose"].every(
-      (field) => formData[field as keyof typeof formData].trim() !== ""
-    );
+    ["name", "email", "phone", "bookingAt", "purpose"].every(
+      (field) => formData[field as keyof typeof formData]
+    ) &&
+    (!formData.organization.trim() || uploadedFile !== null); // If org is present, file is required
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -148,22 +181,37 @@ export default function Booking() {
     setIsSubmitting(true);
 
     try {
-      const submitData = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        submitData.append(key, value);
-      });
-      if (letterUrl && formData.organization) {
-        submitData.append("letterUrl", letterUrl);
+      let finalLetterUrl = null;
+
+      // Handle File Upload first
+      if (uploadedFile && formData.organization) {
+        setIsUploading(true);
+        const uploadRes = await startUpload([uploadedFile]);
+        
+        if (!uploadRes || uploadRes.length === 0) {
+          throw new Error("Failed to upload file.");
+        }
+        // Note: check if your version of UploadThing uses .ufsUrl or .url
+        finalLetterUrl = uploadRes[0].url; 
+        setIsUploading(false);
       }
+
+      // Prepare the payload as JSON (Standard for Next.js API routes)
+      const payload = {
+        ...formData,
+        letterUrl: finalLetterUrl,
+      };
 
       const response = await fetch("/api/bookings", {
         method: "POST",
-        body: submitData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
 
       if (response.ok) {
+        // ... (Your existing success logic)
         setFormData({
           name: "",
           email: "",
@@ -173,25 +221,18 @@ export default function Booking() {
           purpose: "",
         });
         setLetterUrl(null);
+        setUploadedFile(null);
 
-        showAlert(
-          "success",
-          "Booking Request Sent",
-          "Your request is pending approval."
-        );
+        showAlert("success", "Success", "Booking request sent!");
         router.push("/");
       } else {
         throw new Error(data.error || "Failed to submit booking");
       }
-    } catch (error: unknown) {
-      showAlert(
-        "error",
-        "Booking Failed",
-        (error as Error)?.message || "Please try again or contact us."
-      );
-      console.error("Error submitting booking:", error);
+    } catch (error: any) {
+      showAlert("error", "Error", error.message);
     } finally {
       setIsSubmitting(false);
+      setIsUploading(false);
     }
   };
 
@@ -344,12 +385,44 @@ export default function Booking() {
                 {formData.organization.trim() && (
                   <div className="animate-fade-in">
                     <div className="mt-3 mb-4">
-                      <CustomUploadButton 
-                        letterUrl={letterUrl}
-                        setLetterUrl={setLetterUrl}
-                        isUploading={isUploading}
-                        setIsUploading={setIsUploading}
-                      />
+                      {uploadedFile ? (
+                        <div className="w-full flex items-center justify-between gap-2 px-4 py-3 rounded-lg 
+                                        bg-green-900/20 text-green-400 border border-green-500/40">
+                          <div className="flex items-center gap-2">
+                            <span>📄</span>
+                            <div>
+                              <span className="font-medium">File Selected</span>
+                              <p className="text-sm text-green-300/80">{uploadedFile.name}</p>
+                            </div>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={removeFile}
+                            className="text-green-400 hover:text-green-300 hover:bg-green-900/20"
+                          >
+                            ✕
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="relative">
+                          <input
+                            type="file"
+                            id="letter-upload"
+                            onChange={handleFileChange}
+                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            disabled={isSubmitting || isUploading}
+                          />
+                          <div className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg 
+                                          bg-primary/10 text-primary border border-primary/30 hover:border-primary/50 
+                                          transition-colors cursor-pointer">
+
+                            <span className="font-medium">Attach Letter</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
                     <p className="mt-1 text-sm text-foreground-muted">
                       Please upload an official letter if booking on behalf of an organization.
@@ -497,9 +570,9 @@ export default function Booking() {
                   variant="gold"
                   size="lg"
                   className="w-full text-lg py-6 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={!isFormValid || isSubmitting}
+                  disabled={!isFormValid || isSubmitting || isUploading}
                 >
-                  {isSubmitting ? "Submitting..." : "Submit"}
+                  {isSubmitting ? "Submitting..." : isUploading ? "Uploading File..." : "Submit"}
                 </Button>
               </form>
             </div>
