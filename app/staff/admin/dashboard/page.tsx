@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Swal from 'sweetalert2';
+import { MafiSwal } from "@/lib/mafi-swal";
 import { Users, FileText, CheckCircle } from "lucide-react";
 
 interface User {
@@ -83,35 +83,14 @@ export default function AdminDashboard() {
             const data = await res.json();
 
             if (res.ok) {
-                Swal.fire({
-                    title: 'Staff Invited',
-                    html: `Temporary password for <strong>${inviteEmail}</strong>:<br/><code class="px-2 py-1 rounded bg-black/60 border border-primary/40 text-primary text-sm">${data.tempPassword}</code><br/><span class="text-xs text-foreground-muted block mt-2">Share this password securely. They will be forced to change it on first login.</span>`,
-                    icon: 'success',
-                    confirmButtonColor: '#d4af37',
-                    background: '#02010a',
-                    color: '#f9fafb',
-                });
+                await MafiSwal.success('Staff Invited', `Temporary password for <strong>${inviteEmail}</strong>:<br/><code class="px-2 py-1 rounded bg-black/60 border border-primary/40 text-primary text-sm">${data.tempPassword}</code><br/><span class="text-xs text-foreground-muted block mt-2">Share this password securely. They will be forced to change it on first login.</span>`);
                 setInviteEmail("");
                 setUsers([data.user, ...users]);
             } else {
-                Swal.fire({
-                    title: 'Error',
-                    text: data.error || 'Failed to invite staff member.',
-                    icon: 'error',
-                    confirmButtonColor: '#d4af37',
-                    background: '#02010a',
-                    color: '#f9fafb',
-                });
+                await MafiSwal.error('Error', data.error || 'Failed to invite staff member.');
             }
         } catch {
-            Swal.fire({
-                title: 'Error',
-                text: 'Network error. Please try again.',
-                icon: 'error',
-                confirmButtonColor: '#d4af37',
-                background: '#02010a',
-                color: '#f9fafb',
-            });
+            await MafiSwal.error('Error', 'Network error. Please try again.');
         }
     };
 
@@ -123,42 +102,17 @@ export default function AdminDashboard() {
         });
         if (res.ok) {
             setUsers(prev => prev.map(u => u.id === id ? { ...u, role: newRole } : u));
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                text: 'Role updated',
-                icon: 'success',
-                timer: 2000,
-                showConfirmButton: false,
-                background: '#02010a',
-                color: '#f9fafb',
-            });
+            await MafiSwal.info('Success', 'Role updated');
         }
     };
 
     const handleDelete = async (id: string, name: string) => {
         if (session?.user?.id === id) {
-            Swal.fire({
-                title: 'Error',
-                text: 'You cannot delete yourself.',
-                icon: 'error',
-                confirmButtonColor: '#d4af37',
-                background: '#02010a',
-                color: '#f9fafb',
-            });
+            await MafiSwal.error('Error', 'You cannot delete yourself.');
             return;
         }
 
-        const { isConfirmed } = await Swal.fire({
-            title: `Remove ${name || 'user'}?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d4af37',
-            cancelButtonColor: '#4b5563',
-            background: '#02010a',
-            color: '#f9fafb',
-        });
-
+        const { isConfirmed } = await MafiSwal.confirm(`Remove ${name || 'user'}?`, 'This action cannot be undone.', 'Remove');
         if (isConfirmed) {
             const res = await fetch('/api/staff/admin/users', {
                 method: 'DELETE',
@@ -166,14 +120,7 @@ export default function AdminDashboard() {
             });
             if (res.ok) {
                 setUsers(prev => prev.filter(u => u.id !== id));
-                Swal.fire({
-                    title: 'Deleted',
-                    text: 'User removed from system.',
-                    icon: 'success',
-                    confirmButtonColor: '#d4af37',
-                    background: '#02010a',
-                    color: '#f9fafb',
-                });
+                await MafiSwal.success('Deleted', 'User removed from system.');
             }
         }
     };

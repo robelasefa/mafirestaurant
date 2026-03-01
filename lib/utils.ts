@@ -7,5 +7,5 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-
+// Uploadthing
 export const { useUploadThing } = generateReactHelpers<OurFileRouter>();

@@ -11,17 +11,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useAlert } from "@/components/providers/AlertProvider";
 import { useUploadThing } from "@/lib/utils";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import dynamic from "next/dynamic";
-
-const Calendar = dynamic(
-  () => import("@/components/ui/calendar").then((mod) => mod.Calendar),
-  { ssr: false, loading: () => <div className="p-4 text-center text-sm text-foreground-muted">Loading calendar...</div> }
-);
 
 export default function Booking() {
   useEffect(() => {
@@ -431,96 +420,36 @@ export default function Booking() {
                   </div>
                 )}
 
-                {/* Date */}
-                <div>
+                {/* Date & Time */}
+                <div className="space-y-2">
                   <Label htmlFor="bookingAt" className="text-primary font-medium">
                     Booking Date & Time *
                   </Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={`w-full justify-start text-left font-normal mt-2 h-11 px-4 ${!formData.bookingAt ? "text-muted-foreground" : ""
-                          } ${errors.bookingAt && touched.bookingAt
-                            ? "border-amber-500 focus:ring-amber-500/20"
-                            : "hover:border-primary/50 border-primary/30 bg-background-subtle"
-                          }`}
-                      >
-                        <span className="flex items-center gap-2">
-                          📅
-                          {formData.bookingAt ? (
-                            new Date(formData.bookingAt).toLocaleDateString('en-US', {
-                              weekday: 'short',
-                              month: 'short',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })
-                          ) : (
-                            "Select date & time"
-                          )}
-                        </span>
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <div className="p-4">
-                        <Calendar
-                          mode="single"
-                          selected={
-                            formData.bookingAt
-                              ? new Date(formData.bookingAt)
-                              : undefined
-                          }
-                          onSelect={(date) => {
-                            if (!date) return;
-                            const withTime = new Date(date);
-                          if (!formData.bookingAt) {
-                            withTime.setHours(12, 0, 0, 0);
-                          } else {
-                            const prev = new Date(formData.bookingAt);
-                            withTime.setHours(prev.getHours(), prev.getMinutes());
-                          }
-                            handleInputChange({
-                              target: {
-                                name: "bookingAt",
-                                value: withTime.toISOString(),
-                              },
-                            } as React.ChangeEvent<HTMLInputElement>);
-                          }}
-                        />
-                      </div>
-                      <div className="p-4 pt-5 border-t border-primary/10 bg-background-subtle rounded-b-xl">
-                        <Label className="text-sm font-medium text-foreground mb-2 block">Time</Label>
-                        <Input
-                          type="time"
-                          value={
-                            formData.bookingAt
-                              ? new Date(formData.bookingAt).toLocaleTimeString(
-                                "en-GB",
-                                {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                }
-                              )
-                              : "12:00"
-                          }
-                          onChange={(e) => {
-                            if (!formData.bookingAt) return;
-                            const newDate = new Date(formData.bookingAt);
-                            const [h, m] = e.target.value.split(":").map(Number);
-                            newDate.setHours(h, m, 0, 0);
-                            handleInputChange({
-                              target: {
-                                name: "bookingAt",
-                                value: newDate.toISOString(),
-                              },
-                            } as React.ChangeEvent<HTMLInputElement>);
-                          }}
-                          className="w-full border-primary/30 bg-background focus:border-primary"
-                        />
-                      </div>
-                    </PopoverContent>
-                  </Popover>
+                  <Input
+                    id="bookingAt"
+                    name="bookingAt"
+                    type="datetime-local"
+                    value={formData.bookingAt ? new Date(formData.bookingAt).toISOString().slice(0, 16) : ""}
+                    onChange={handleInputChange}
+                    onBlur={handleBlur}
+                    min={new Date().toISOString().slice(0, 16)}
+                    required
+                    className={`
+                      bg-background-subtle 
+                      border-primary/20 
+                      text-foreground-accent 
+                      focus:border-primary 
+                      mt-2 
+                      h-11
+                      selection:bg-primary/30
+                      /* Ensures the text color is bright enough on mobile dark mode */
+                      scheme-dark
+                      ${errors.bookingAt && touched.bookingAt
+                        ? "border-amber-500 focus:ring-amber-500/20"
+                        : "hover:border-primary/50"
+                      }
+                    `}
+                  />
                   {errors.bookingAt && touched.bookingAt && (
                     <p
                       id="bookingAt-error"

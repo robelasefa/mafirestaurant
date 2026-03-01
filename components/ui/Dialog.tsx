@@ -51,7 +51,7 @@ const Dialog = ({
     setTimeout(() => {
       onClose();
       setIsClosing(false);
-    }, 200);
+    }, 500); // Slower transition for premium feel
   };
 
   const handleConfirm = () => {
@@ -67,12 +67,12 @@ const Dialog = ({
   };
 
   const getOverlayClasses = () => {
-    const baseClasses = "absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-200";
+    const baseClasses = "absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-500 ease-in-out";
     return isClosing ? "opacity-0" : "opacity-100";
   };
 
   const getContentClasses = () => {
-    const baseClasses = "relative bg-background border border-primary/20 rounded-xl shadow-2xl max-w-md w-full p-6 transition-all duration-200 transform";
+    const baseClasses = "relative bg-background border border-primary/20 rounded-xl shadow-2xl max-w-md w-full p-6 transition-all duration-500 ease-in-out transform";
     const variantClasses = variant === "destructive" 
       ? "border-red-500/30" 
       : "border-primary/20";
@@ -84,7 +84,7 @@ const Dialog = ({
   };
 
   const getConfirmButtonClasses = () => {
-    const baseClasses = "px-4 py-2 rounded-md font-medium transition-all duration-200 transform hover:scale-105";
+    const baseClasses = "px-4 py-2 rounded-md font-medium transition-all duration-500 ease-in-out transform hover:scale-105";
     const variantClasses = variant === "destructive"
       ? "bg-red-500 text-white hover:bg-red-600 shadow-red-500/25"
       : "bg-primary text-primary-foreground hover:bg-primary-dark shadow-gold";
