@@ -45,7 +45,7 @@ const Footer = () => {
             <div className="flex justify-center lg:justify-start">
               <div className="relative group">
                 <Image
-                  src="/images/logo.png"
+                  src="/images/logo.webp"
                   alt="Mafi Restaurant Logo"
                   width={80}
                   height={80}

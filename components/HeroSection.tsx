@@ -2,18 +2,20 @@
 
 import { Button } from "@/components/ui/button";
 import { Star, MapPin, Clock } from "lucide-react";
+import Image from "next/image";
 
 const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex flex-col justify-center overflow-hidden pt-20 md:pt-24 lg:pt-28">
 
       {/* Background Image with Parallax Effect */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat cursor-pointer group transition-transform duration-700 hover:scale-105"
-        style={{
-          backgroundImage:
-            "url('/images/hero-bg.png')",
-        }}
+      <Image
+        src="/images/hero-bg.webp"
+        alt="Mafi Restaurant - Elegant Ethiopian and international cuisine dining atmosphere"
+        className="absolute inset-0 w-full h-full object-cover cursor-pointer group transition-transform duration-700 hover:scale-105"
+        priority
+        fill
+        sizes="100vw"
         onClick={() => {
           const menuSection = document.getElementById("menu");
           if (menuSection) menuSection.scrollIntoView({ behavior: "smooth" });

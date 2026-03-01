@@ -56,7 +56,7 @@ const AboutUs = () => {
             <div className="relative">
               <div className="relative overflow-hidden rounded-3xl shadow-2xl">
                 <Image
-                  src="/images/meeting-hall.png"
+                  src="/images/meeting-hall.webp"
                   alt="Mafi Restaurant Interior"
                   width={1000}
                   height={500}

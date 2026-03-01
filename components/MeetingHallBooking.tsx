@@ -32,7 +32,7 @@ const MeetingHallBooking = () => {
           <div className="order-2 lg:order-1 animate-fade-in">
             <div className="relative overflow-hidden rounded-3xl shadow-2xl group">
               <Image
-                src="/images/meeting-hall.png"
+                src="/images/meeting-hall.webp"
                 alt="Mafi Restaurant Meeting Hall"
                 width={1000}
                 height={500}

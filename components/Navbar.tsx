@@ -79,15 +79,14 @@ export default function Navbar() {
           >
             <div className="relative">
               <Image
-                src="/images/logo.png"
+                src="/images/logo.webp"
                 alt="Mafi Restaurant"
                 width={56}   // h-14 = 56px
                 height={56}
-                className="h-14 w-14 rounded-full object-cover border-2 border-primary transition-all duration-300 group-hover:border-primary-glow group-hover:scale-105"
+                className="h-14 w-14 rounded-full object-cover border-2 border-primary"
               />
-              <div className="absolute inset-0 rounded-full bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </div>
-            <span className="ml-4 text-2xl font-serif font-bold text-primary group-hover:text-primary-glow transition-colors duration-300">
+            <span className="ml-4 text-2xl font-serif font-bold text-primary">
               Mafi Restaurant
             </span>
           </Link>

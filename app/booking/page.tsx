@@ -214,7 +214,7 @@ export default function Booking() {
               <div className="flex justify-center mb-10">
                 <div className="relative overflow-hidden rounded-2xl shadow-elegant">
                   <Image
-                    src="/images/meeting-hall.png"
+                    src="/images/meeting-hall.webp"
                     alt="Mafi Restaurant Meeting Hall"
                     width={600}
                     height={300}

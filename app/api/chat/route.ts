@@ -5,12 +5,12 @@ import { getRelevantInfo, formatContext } from "@/lib/retriever";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const API_KEY = process.env.GEMINI_API_KEY as string;
+const API_KEY = process.env.OPENROUTER_API_KEY as string;
 
 const SYSTEM_PROMPT = `
 You are **Mafi Restaurant's** friendly, on-brand assistant.
 Your job:
-- Answer ONLY questions about Mafi Restaurant: menu items, prices when provided, meeting halls, reservations, opening hours, location, contact details, policies, and general dining info.
+- Answer ONLY questions about Mafi Restaurant: menu items, meeting halls, reservations, opening hours, location, contact details, policies, and general dining info.
 - If the user asks anything unrelated, politely decline and guide them back to restaurant topics.
 - Be concise, warm, and professional. Use **bold** for emphasis and structure with line breaks.
 - Use markdown formatting: **bold** for important info, *italic* for subtle emphasis.
@@ -25,7 +25,7 @@ Your job:
 export async function POST(request: NextRequest) {
   try {
     if (!API_KEY) {
-      return NextResponse.json({ error: "GEMINI_API_KEY missing" }, { status: 500 });
+      return NextResponse.json({ error: "OPENROUTER_API_KEY missing" }, { status: 500 });
     }
 
     let data: { message?: string; history?: Array<{ role: string; text: string }> } = {};
