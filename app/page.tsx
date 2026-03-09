@@ -6,9 +6,9 @@ import HeroSection from "@/components/HeroSection";
 import AboutUs from "@/components/AboutUs";
 import MenuCarousel from "@/components/MenuCarousel";
 import MeetingHallBooking from "@/components/MeetingHallBooking";
-import ChatBot from "@/components/ChatBot";
 import Footer from "@/components/Footer";
 import AlertComponent from "@/components/ui/Alert";
+import StaffQuickAccess from "@/components/StaffQuickAccess";
 
 export default function Home() {
   const [alert, setAlert] = useState<{ type: "success" | "error"; message: string } | null>(null);
@@ -60,6 +60,7 @@ export default function Home() {
       <div>
         <Footer />
       </div>
+      <StaffQuickAccess />
       {/* <ChatBot /> */}
     </div>
   );
