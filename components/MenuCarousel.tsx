@@ -8,54 +8,47 @@ import Image from 'next/image';
 const menuItems = [
   {
     id: 1,
-    title: "Mixed Grill",
-    description:
-      "Mixed lamb, chicken, sausage, and steak served with roasted tomatoes and golden fries, finished with a rich red wine sauce.",
-    image: "/images/mixed-grill.webp",
-  },
-  {
-    id: 2,
     title: "Roast Chicken",
     description:
       "Roasted boneless chicken legs served with crisp fries and seasonal vegetables, topped with your choice of tomato–garlic butter or classic pan jus.",
     image: "/images/roast-chicken.webp",
   },
   {
-    id: 3,
+    id: 2,
     title: "Beef or Chicken Fajita",
     description:
       "Sizzling strips of marinated beef or chicken with peppers and onions, served with warm accompaniments for a vibrant, shareable plate.",
     image: "/images/fajita.webp",
   },
   {
-    id: 4,
+    id: 3,
     title: "Rolled Beef",
     description:
       "Tender rolled beef stuffed with ricotta and spinach, served with creamy mashed potatoes and seasonal vegetables.",
     image: "/images/rolled-beef.webp",
   },
   {
-    id: 5,
+    id: 4,
     title: "Fish & Chips",
     description: "Crispy battered tilapia served with fries, house tartar sauce, and a wedge of lemon.",
     image: "/images/fish-chips.webp",
   },
   {
-    id: 6,
+    id: 5,
     title: "Fish Cutlet",
     description:
       "Breaded fish fillet topped with a delicate sweet-and-sour glaze, served with mashed potatoes and seasonal vegetables.",
     image: "/images/fish-cutlet.webp",
   },
   {
-    id: 7,
+    id: 6,
     title: "Grilled Fish",
     description:
       "Grilled fillet of tilapia or Nile perch served with sautéed spinach, parsley potatoes, and a garlic–lemon butter or sweet-and-sour sauce.",
     image: "/images/grilled-fish.webp",
   },
   {
-    id: 8,
+    id: 7,
     title: "Stuffed Chicken Breast",
     description:
       "Spinach and ricotta–stuffed chicken breast served with fragrant curry rice, seasonal vegetables, and a silky white wine cream sauce.",
