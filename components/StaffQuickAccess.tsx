@@ -49,7 +49,7 @@ const StaffQuickAccess = () => {
         {/* Admin button only shows if user is admin */}
         {isAdmin && (
           <Link
-            href="/admin"
+            href="/staff/admin/dashboard"
             className="flex items-center gap-3 px-4 py-3 bg-black/60 backdrop-blur-md border border-primary/30 rounded-lg shadow-elegant hover:shadow-gold transition-all duration-300 hover:bg-black/70 hover:border-primary/50 hover:scale-105 group"
           >
             <Shield className="h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
