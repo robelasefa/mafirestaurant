@@ -9,10 +9,23 @@ const StaffQuickAccess = () => {
   const { data: session, status } = useSession();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  
-  // 1. Use useRef for the count so it doesn't reset on re-renders
+  const [secretUnlocked, setSecretUnlocked] = useState(false);
+
+  // Persistence for knock count
   const clickCount = useRef(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Entrance animation
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (session) {
+      setSecretUnlocked(false);
+    }
+  }, [session]);
 
   // 2. Secret Knock Handler
   const handleKnock = () => {
@@ -26,27 +39,24 @@ const StaffQuickAccess = () => {
       clickCount.current = 0;
     }, 2000);
 
-    // If 3 knocks, trigger a re-render to show the menu
+    // If 3 knocks, unlock the door
     if (clickCount.current >= 3) {
-      // We need one useState for the UI visibility trigger
-      setSecretUnlocked(true); 
+      setSecretUnlocked(true);
     }
   };
 
-  const [secretUnlocked, setSecretUnlocked] = useState(false);
+  // The condition for showing the trigger or the full menu
+  const showSecretDoor = secretUnlocked;
 
   if (status === "loading") return null;
 
   const isAdmin = session?.user?.role === "admin";
   const isStaff = session?.user?.role === "staff" || isAdmin;
 
-  // If logged-in but not staff, hide forever
+  // If not logged in, show menu ONLY if secretUnlocked is true
   if (session && !isStaff) return null;
 
-  // Secret found when 3 quick taps occur
-  const showSecretDoor = clickCount >= 3;
-
-  if (!session && !showSecretDoor) {
+  if (!session && !secretUnlocked) {
   return (
     <div
       onClick={handleKnock}
