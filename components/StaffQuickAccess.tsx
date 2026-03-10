@@ -110,15 +110,17 @@ const StaffQuickAccess = () => {
         {/* Mafi Gold Accent Circle */}
         <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 pointer-events-none" />
 
-        {/* Icon */}
+        {/* Icon Container: Now swaps between Chevron and a crisp X */}
         <div
-          className={`relative z-10 transform transition-transform duration-200 ${
-            isExpanded ? "rotate-45" : "rotate-0"
+          className={`relative z-10 transform transition-all duration-300 ${
+            isExpanded ? "rotate-0 scale-110" : "rotate-0 scale-100"
           }`}
         >
           {isExpanded ? (
-            <X className="h-6 w-6 text-primary transition-transform" />
+            /* The 'X' icon for closing */
+            <X className="h-6 w-6 text-primary stroke-[2.5px] transition-transform" />
           ) : (
+            /* The 'ChevronUp' or 'Plus' for opening */
             <ChevronUp className="h-6 w-6 text-primary transition-transform" />
           )}
         </div>
@@ -126,6 +128,13 @@ const StaffQuickAccess = () => {
         {/* Hover Glow Effect */}
         <div className="absolute inset-0 rounded-full bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       </button>
+
+      {/* Updated Label Text */}
+      {!isExpanded && (
+        <div className="absolute -top-8 right-0 text-[10px] uppercase tracking-widest text-primary/40 font-bold whitespace-nowrap">
+          {session ? "Staff Access" : "Authorized"}
+        </div>
+      )}
 
       {/* Conditional Label: hide text when expanded */}
       {!isExpanded && (
