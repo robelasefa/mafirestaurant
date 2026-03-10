@@ -40,11 +40,10 @@ const StaffQuickAccess = () => {
     return (
       // 20x20px invisible clickable box in the bottom-right corner
       <div
-        onClick={() => setClickCount((prev) => prev + 1)}
-        className="fixed bottom-0 right-0 w-5 h-5 z-[60] opacity-0 bg-transparent cursor-default"
-        title="Nothing to see here"
-        aria-hidden
-      />
+  onClick={() => setClickCount((prev) => prev + 1)}
+  className="fixed bottom-0 right-0 w-20 h-20 z-[9999] bg-red-500 opacity-50 cursor-pointer"
+  title="Test Trigger"
+/>
     );
   }
 
