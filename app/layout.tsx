@@ -3,6 +3,7 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/components/providers/AuthProvider";
 import { AlertProvider } from "@/components/providers/AlertProvider";
+import StaffQuickAccess from "@/components/StaffQuickAccess";
 
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["300", "400", "500", "600"] });
 
@@ -90,6 +91,7 @@ export default function RootLayout({
         <AuthProvider>
           <AlertProvider>
             {children}
+            <StaffQuickAccess />
           </AlertProvider>
         </AuthProvider>
       </body>
