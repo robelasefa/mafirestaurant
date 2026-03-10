@@ -2,11 +2,20 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import { Calendar, Shield, X, ChevronUp, LogIn, LogOut } from "lucide-react";
 import Link from "next/link";
 
 const StaffQuickAccess = () => {
+  const pathname = usePathname();
   const { data: session, status } = useSession();
+
+  // Note: If you want it on other pages, add them to this array
+  const isHomePage = pathname === "/";
+
+  // If we aren't on the home page, return null immediately
+  if (!isHomePage) return null;
+  
   const [isExpanded, setIsExpanded] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [secretUnlocked, setSecretUnlocked] = useState(false);
