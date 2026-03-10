@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { Calendar, Shield, X, ChevronUp, LogIn } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
+import { Calendar, Shield, X, ChevronUp, LogIn, LogOut } from "lucide-react";
 import Link from "next/link";
 
 const StaffQuickAccess = () => {
@@ -92,6 +92,17 @@ const StaffQuickAccess = () => {
                 </span>
               </Link>
             )}
+
+             {/* Logout button for staff/admin */}
+            <button
+  onClick={() => signOut()}
+  className="group flex items-center gap-3 px-4 py-3 bg-black/60 backdrop-blur-md border border-red-900/30 rounded-lg shadow-elegant hover:bg-red-950/40 transition-all duration-300 w-full"
+>
+  <LogOut className="h-5 w-5 text-red-500 group-hover:scale-110 transition-transform" />
+  <span className="text-red-200 font-medium text-sm whitespace-nowrap">
+    Logout
+  </span>
+</button>
           </>
         ) : (
           <Link
@@ -141,13 +152,7 @@ const StaffQuickAccess = () => {
           {session ? "Staff Access" : "Authorized"}
         </div>
       )}
-
-      {/* Conditional Label: hide text when expanded */}
-      {!isExpanded && (
-        <div className="absolute -top-8 right-0 text-xs text-primary/40 font-medium whitespace-nowrap">
-          {session ? "Staff Active" : "Authorized Only"}
-        </div>
-      )}
+     
     </div>
   );
 };
