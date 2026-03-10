@@ -36,16 +36,21 @@ const StaffQuickAccess = () => {
   const showSecretDoor = clickCount >= 3;
 
   // If not logged in and not found the secret, render only the invisible trigger
-  if (!session && !showSecretDoor) {
-    return (
-      // 20x20px invisible clickable box in the bottom-right corner
-      <div
-  onClick={() => setClickCount((prev) => prev + 1)}
-  className="fixed bottom-0 right-0 w-20 h-20 z-[9999] bg-red-500 opacity-50 cursor-pointer"
-  title="Test Trigger"
-/>
-    );
-  }
+  // 1. Refined Trigger Logic
+if (!session && !showSecretDoor) {
+  return (
+    <div
+      onClick={(e) => {
+        e.stopPropagation(); // Prevents clicks from 'bubbling' up and resetting
+        setClickCount((prev) => prev + 1);
+        console.log("Tap count:", clickCount + 1);
+      }}
+      // Use fixed and a very high z-index to stay on top
+      className="fixed bottom-0 right-0 w-20 h-20 z-[9999] bg-red-500/50 cursor-pointer pointer-events-auto"
+      title="Secret Trigger"
+    />
+  );
+}
 
   const toggleExpanded = () => setIsExpanded((s) => !s);
 
