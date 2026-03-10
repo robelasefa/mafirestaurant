@@ -52,17 +52,23 @@ const StaffQuickAccess = () => {
 
   return (
     <div
-      className={`fixed bottom-6 right-6 z-50 transition-all duration-500 transform ${
-        isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+    className={`fixed bottom-6 right-6 z-[9999] transition-all duration-500 will-change-transform ${
+      isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+    }`}
+  >
+    {/* 1. Only ONE label here - fixed absolute position so it doesn't affect flow */}
+    {!isExpanded && (
+      <div className="absolute -top-8 right-0 text-[10px] uppercase tracking-widest text-primary/40 font-bold whitespace-nowrap">
+        {session ? "Staff Access" : "Authorized"}
+      </div>
+    )}
+
+    {/* Expanded Menu - Use 'bottom-20' to ensure it sits above the button */}
+    <div
+      className={`absolute bottom-20 right-0 space-y-3 transition-all duration-300 origin-bottom-right ${
+        isExpanded ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"
       }`}
-      aria-hidden={false}
     >
-      {/* Expanded Menu */}
-      <div
-        className={`absolute bottom-16 right-0 space-y-3 transition-all duration-300 transform origin-bottom-right ${
-          isExpanded ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"
-        }`}
-      >
         {session ? (
           <>
             <Link
