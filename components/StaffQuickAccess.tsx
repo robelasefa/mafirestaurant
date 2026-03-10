@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { Calendar, Shield, X, ChevronUp, LogIn, LogOut } from "lucide-react";
 import Link from "next/link";
@@ -9,20 +9,31 @@ const StaffQuickAccess = () => {
   const { data: session, status } = useSession();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [clickCount, setClickCount] = useState(0);
+  
+  // 1. Use useRef for the count so it doesn't reset on re-renders
+  const clickCount = useRef(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Show the floating affordance after a short delay (subtle entrance)
-  useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 1000);
-    return () => clearTimeout(timer);
-  }, []);
+  // 2. Secret Knock Handler
+  const handleKnock = () => {
+    clickCount.current += 1;
+    
+    // Reset timer on every click
+    if (timerRef.current) clearTimeout(timerRef.current);
+    
+    // Auto-reset knock count after 2 seconds
+    timerRef.current = setTimeout(() => {
+      clickCount.current = 0;
+    }, 2000);
 
-  // Reset secret clicks after 2 seconds of inactivity (requires quick 3 taps)
-  useEffect(() => {
-    if (clickCount === 0) return;
-    const timer = setTimeout(() => setClickCount(0), 2000);
-    return () => clearTimeout(timer);
-  }, [clickCount]);
+    // If 3 knocks, trigger a re-render to show the menu
+    if (clickCount.current >= 3) {
+      // We need one useState for the UI visibility trigger
+      setSecretUnlocked(true); 
+    }
+  };
+
+  const [secretUnlocked, setSecretUnlocked] = useState(false);
 
   if (status === "loading") return null;
 
@@ -35,18 +46,11 @@ const StaffQuickAccess = () => {
   // Secret found when 3 quick taps occur
   const showSecretDoor = clickCount >= 3;
 
-  // If not logged in and not found the secret, render only the invisible trigger
-  // 1. Refined Trigger Logic
-if (!session && !showSecretDoor) {
+  if (!session && !showSecretDoor) {
   return (
     <div
-      onClick={(e) => {
-        e.stopPropagation(); // Prevents clicks from 'bubbling' up and resetting
-        setClickCount((prev) => prev + 1);
-        console.log("Tap count:", clickCount + 1);
-      }}
-      // Use fixed and a very high z-index to stay on top
-      className="fixed bottom-0 right-0 w-20 h-20 z-[9999] bg-red-500/50 cursor-pointer pointer-events-auto"
+      onClick={handleKnock}
+      className="fixed bottom-0 right-0 w-20 h-20 z-[9999] bg-transparent cursor-pointer pointer-events-auto"
       title="Secret Trigger"
     />
   );
