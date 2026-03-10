@@ -2,60 +2,101 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { Calendar, Shield, X, ChevronUp } from "lucide-react";
+import { Calendar, Shield, X, ChevronUp, LogIn } from "lucide-react";
 import Link from "next/link";
 
 const StaffQuickAccess = () => {
   const { data: session, status } = useSession();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
 
-  // 1. Initialize hooks first, THEN check for conditions
+  // Show the floating affordance after a short delay (subtle entrance)
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 1000);
     return () => clearTimeout(timer);
   }, []);
 
-  // 2. Early return only AFTER all hooks are called
-  if (status === "loading" || !session) return null;
-  
-  const isStaff = session.user?.role === "staff" || session.user?.role === "admin";
-  const isAdmin = session.user?.role === "admin";
+  // Reset secret clicks after 2 seconds of inactivity (requires quick 3 taps)
+  useEffect(() => {
+    if (clickCount === 0) return;
+    const timer = setTimeout(() => setClickCount(0), 2000);
+    return () => clearTimeout(timer);
+  }, [clickCount]);
 
-  if (!isStaff) return null;
+  if (status === "loading") return null;
 
-  const toggleExpanded = () => setIsExpanded(!isExpanded);
+  const isAdmin = session?.user?.role === "admin";
+  const isStaff = session?.user?.role === "staff" || isAdmin;
+
+  // If logged-in but not staff, hide forever
+  if (session && !isStaff) return null;
+
+  // Secret found when 3 quick taps occur
+  const showSecretDoor = clickCount >= 3;
+
+  // If not logged in and not found the secret, render only the invisible trigger
+  if (!session && !showSecretDoor) {
+    return (
+      // 20x20px invisible clickable box in the bottom-right corner
+      <div
+        onClick={() => setClickCount((prev) => prev + 1)}
+        className="fixed bottom-0 right-0 w-5 h-5 z-[60] opacity-0 bg-transparent cursor-default"
+        title="Nothing to see here"
+        aria-hidden
+      />
+    );
+  }
+
+  const toggleExpanded = () => setIsExpanded((s) => !s);
 
   return (
-    <div className={`fixed bottom-6 right-6 z-50 transition-all duration-500 transform ${
-        isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+    <div
+      className={`fixed bottom-6 right-6 z-50 transition-all duration-500 transform ${
+        isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
       }`}
+      aria-hidden={false}
     >
       {/* Expanded Menu */}
-      <div className={`absolute bottom-16 right-0 space-y-3 transition-all duration-300 transform origin-bottom-right ${
+      <div
+        className={`absolute bottom-16 right-0 space-y-3 transition-all duration-300 transform origin-bottom-right ${
           isExpanded ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"
         }`}
       >
-        <Link
-          href="/staff/manage-bookings"
-          className="flex items-center gap-3 px-4 py-3 bg-black/60 backdrop-blur-md border border-primary/30 rounded-lg shadow-elegant hover:shadow-gold transition-all duration-300 hover:bg-black/70 hover:border-primary/50 hover:scale-105 group"
-        >
-          <Calendar className="h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
-          <span className="text-primary font-medium text-sm whitespace-nowrap">
-            Manage Bookings
-          </span>
-        </Link>
+        {session ? (
+          <>
+            <Link
+              href="/staff/manage-bookings"
+              className="group flex items-center gap-3 px-4 py-3 bg-black/60 backdrop-blur-md border border-primary/30 rounded-lg shadow-elegant hover:shadow-gold transition-all duration-300 hover:bg-black/70"
+            >
+              <Calendar className="h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
+              <span className="text-primary font-medium text-sm whitespace-nowrap">
+                Manage Bookings
+              </span>
+            </Link>
 
-        {/* Admin button only shows if user is admin */}
-        {isAdmin && (
+            {isAdmin && (
+              <Link
+                href="/staff/admin/dashboard"
+                className="group flex items-center gap-3 px-4 py-3 bg-black/60 backdrop-blur-md border border-primary/30 rounded-lg shadow-elegant hover:shadow-gold transition-all duration-300 hover:bg-black/70"
+              >
+                <Shield className="h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
+                <span className="text-primary font-medium text-sm whitespace-nowrap">
+                  Admin Dashboard
+                </span>
+              </Link>
+            )}
+          </>
+        ) : (
           <Link
-            href="/staff/admin/dashboard"
-            className="flex items-center gap-3 px-4 py-3 bg-black/60 backdrop-blur-md border border-primary/30 rounded-lg shadow-elegant hover:shadow-gold transition-all duration-300 hover:bg-black/70 hover:border-primary/50 hover:scale-105 group"
+            href="/staff/login"
+            className="flex items-center gap-2 bg-primary text-black px-4 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+            onClick={() => {
+              /* When user navigates to login, we keep the menu visible until session changes */
+            }}
           >
-            <Shield className="h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
-            <span className="text-primary font-medium text-sm whitespace-nowrap">
-              Admin Dashboard
-            </span>
+            <LogIn size={18} />
+            <span className="font-bold">Staff Login</span>
           </Link>
         )}
       </div>
@@ -63,19 +104,22 @@ const StaffQuickAccess = () => {
       {/* Main Toggle Button */}
       <button
         onClick={toggleExpanded}
-        className={`relative w-14 h-14 bg-black/60 backdrop-blur-md border border-primary/50 rounded-full shadow-elegant hover:shadow-gold transition-all duration-300 hover:bg-black/70 hover:scale-110 group flex items-center justify-center ${
-          isExpanded ? "rotate-45" : "rotate-0"
-        }`}
+        aria-label={isExpanded ? "Close staff quick access" : "Open staff quick access"}
+        className={`group relative w-14 h-14 bg-black/60 backdrop-blur-md border border-primary/50 rounded-full shadow-elegant hover:shadow-gold transition-all duration-300 hover:bg-black/70 hover:scale-110 flex items-center justify-center`}
       >
         {/* Mafi Gold Accent Circle */}
         <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 pointer-events-none" />
-        
+
         {/* Icon */}
-        <div className="relative">
+        <div
+          className={`relative z-10 transform transition-transform duration-200 ${
+            isExpanded ? "rotate-45" : "rotate-0"
+          }`}
+        >
           {isExpanded ? (
-            <X className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
+            <X className="h-6 w-6 text-primary transition-transform" />
           ) : (
-            <ChevronUp className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
+            <ChevronUp className="h-6 w-6 text-primary transition-transform" />
           )}
         </div>
 
@@ -85,8 +129,8 @@ const StaffQuickAccess = () => {
 
       {/* Conditional Label: hide text when expanded */}
       {!isExpanded && (
-        <div className="absolute -top-8 right-0 text-xs text-primary/60 font-medium whitespace-nowrap opacity-70">
-          Staff Access
+        <div className="absolute -top-8 right-0 text-xs text-primary/40 font-medium whitespace-nowrap">
+          {session ? "Staff Active" : "Authorized Only"}
         </div>
       )}
     </div>
