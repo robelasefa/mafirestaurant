@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendTelegramNotification } from "@/lib/telegram";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
@@ -56,6 +57,11 @@ export async function POST(request: NextRequest) {
         status: "pending",
         letterUrl: letterUrl || null, // This is just the string URL from UploadThing
       },
+    });
+
+    // Trigger Telegram notification (fire-and-forget so it doesn't block the response)
+    sendTelegramNotification(booking).catch((err) => {
+      console.error("Failed to send Telegram notification:", err);
     });
 
     return NextResponse.json(
