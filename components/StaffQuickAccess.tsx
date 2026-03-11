@@ -9,71 +9,78 @@ import Link from "next/link";
 const StaffQuickAccess = () => {
   const pathname = usePathname();
   const { data: session, status } = useSession();
-
-  // Note: If you want it on other pages, add them to this array
-  const isHomePage = pathname === "/";
-
-  // If we aren't on the home page, return null immediately
-  if (!isHomePage) return null;
   
   const [isExpanded, setIsExpanded] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [secretUnlocked, setSecretUnlocked] = useState(false);
 
-  // Persistence for knock count
   const clickCount = useRef(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const isHomePage = pathname === "/";
+
   // Entrance animation
   useEffect(() => {
+    if (!isHomePage) return;
     const timer = setTimeout(() => setIsVisible(true), 1000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [isHomePage]);
 
+  // Reset if user logs in
   useEffect(() => {
     if (session) {
       setSecretUnlocked(false);
+      setIsExpanded(false);
     }
   }, [session]);
 
-  // 2. Secret Knock Handler
+  // Auto-hide after 10 seconds of inactivity
+  useEffect(() => {
+    let autoHideTimer: NodeJS.Timeout;
+
+    if (secretUnlocked && !session) {
+      autoHideTimer = setTimeout(() => {
+        setSecretUnlocked(false);
+        setIsExpanded(false);
+        clickCount.current = 0; 
+      }, 10000); 
+    }
+
+    return () => {
+      if (autoHideTimer) clearTimeout(autoHideTimer);
+    };
+  }, [secretUnlocked, session]);
+
+  // do the early returns
+  if (!isHomePage || status === "loading") return null;
+
+  const isAdmin = session?.user?.role === "admin";
+  const isStaff = session?.user?.role === "staff" || isAdmin;
+
+  if (session && !isStaff) return null;
+
   const handleKnock = () => {
     clickCount.current += 1;
-    
-    // Reset timer on every click
     if (timerRef.current) clearTimeout(timerRef.current);
-    
-    // Auto-reset knock count after 2 seconds
     timerRef.current = setTimeout(() => {
       clickCount.current = 0;
     }, 2000);
 
-    // If 3 knocks, unlock the door
     if (clickCount.current >= 3) {
       setSecretUnlocked(true);
     }
   };
 
-  // The condition for showing the trigger or the full menu
-  const showSecretDoor = secretUnlocked;
-
-  if (status === "loading") return null;
-
-  const isAdmin = session?.user?.role === "admin";
-  const isStaff = session?.user?.role === "staff" || isAdmin;
-
-  // If not logged in, show menu ONLY if secretUnlocked is true
-  if (session && !isStaff) return null;
-
+  // Render the Invisible Trigger if locked
   if (!session && !secretUnlocked) {
-  return (
-    <div
-      onClick={handleKnock}
-      className="fixed bottom-0 right-0 w-20 h-20 z-[9999] bg-transparent cursor-pointer pointer-events-auto"
-      title="Secret Trigger"
-    />
-  );
-}
+    return (
+      <div
+        onClick={handleKnock}
+        className="fixed bottom-0 right-0 w-24 h-24 z-[9999] bg-transparent cursor-pointer pointer-events-auto"
+        aria-hidden="true"
+      />
+    );
+  }
 
   const toggleExpanded = () => setIsExpanded((s) => !s);
 
