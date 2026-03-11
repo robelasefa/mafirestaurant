@@ -36,13 +36,21 @@ export const sendTelegramNotification = async (bookingData: any) => {
         parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
-            [
-              {
-                text: "📂 View in Dashboard",
-                url: "https://mafirestaurant.vercel.app/staff/manage-bookings"
-              }
-            ]
+          [
+            {
+              text: "✅ View in Dashboard",
+              url: "https://mafirestaurant.vercel.app/staff/manage-bookings",
+              style: "success" // This makes the button Green
+            }
+          ],
+          [
+            {
+              text: "📞 Call Client",
+              url: `tel:${bookingData.phone}`,
+              style: "primary" // This makes the button Blue
+            }
           ]
+        ]
         }
       }),
     });
