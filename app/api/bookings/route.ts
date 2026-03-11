@@ -60,9 +60,13 @@ export async function POST(request: NextRequest) {
     });
 
     // Trigger Telegram notification (fire-and-forget so it doesn't block the response)
-    sendTelegramNotification(booking).catch((err) => {
-      console.error("Failed to send Telegram notification:", err);
-    });
+    try {
+      await sendTelegramNotification(booking);
+    } catch (err) {
+    console.error("Telegram notification failed but booking was saved:", err);
+    // We don't return an error to the user here because the booking 
+    // was already successfully saved to Prisma.
+    }
 
     return NextResponse.json(
       {
