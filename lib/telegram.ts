@@ -2,8 +2,12 @@ export const sendTelegramNotification = async (bookingData: any) => {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
+  console.log("🔔 Telegram: function called");
+  console.log("🔔 Telegram: token exists?", !!token);
+  console.log("🔔 Telegram: chatId exists?", !!chatId);
+
   if (!token || !chatId) {
-    console.warn("Telegram env vars missing: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID");
+    console.warn("⚠️ Telegram env vars missing");
     return;
   }
 
@@ -41,13 +45,15 @@ export const sendTelegramNotification = async (bookingData: any) => {
     inlineKeyboard.push([
       {
         text: `📞 Client: ${bookingData.phone}`,
-        // Show the number in the button text instead of a tel: link
-        url: "https://mafirestaurant.vercel.app/staff/manage-bookings",
+        // If you want a clickable link to call the client, consider using a different URL format
+        // You might want to replace the link with a `tel:` link or simply show the number without a URL.
+        url: `https://wa.me/${bookingData.phone}`, // WhatsApp clickable link example
       },
     ]);
   }
 
   try {
+    console.log("🔔 Telegram: sending fetch...");
     const res = await fetch(
       `https://api.telegram.org/bot${token}/sendMessage`,
       {
@@ -63,15 +69,15 @@ export const sendTelegramNotification = async (bookingData: any) => {
         }),
       }
     );
+    console.log("🔔 Telegram: fetch completed, status:", res.status);
 
-    // ✅ Now we actually check if Telegram accepted the request
     if (!res.ok) {
       const errorBody = await res.json();
-      console.error("Telegram API error:", errorBody);
-      throw new Error(`Telegram API error: ${errorBody.description}`);
+      console.error("❌ Telegram API error:", errorBody);
+    } else {
+      console.log("✅ Telegram: message sent successfully");
     }
   } catch (error) {
-    console.error("Telegram notification failed:", error);
-    throw error; // Re-throw so the caller in route.ts can log it properly
+    console.error("❌ Telegram fetch threw:", error);
   }
 };
