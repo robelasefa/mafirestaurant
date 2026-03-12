@@ -52,6 +52,9 @@ export const sendTelegramNotification = async (bookingData: any) => {
     ]);
   }
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout
+
   try {
     console.log("🔔 Telegram: sending fetch...");
     const res = await fetch(
@@ -59,6 +62,7 @@ export const sendTelegramNotification = async (bookingData: any) => {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal, // timeout
         body: JSON.stringify({
           chat_id: chatId,
           text: message,
@@ -69,15 +73,19 @@ export const sendTelegramNotification = async (bookingData: any) => {
         }),
       }
     );
-    console.log("🔔 Telegram: fetch completed, status:", res.status);
-
+    clearTimeout(timeout);
+    console.log("🔔 Telegram: status:", res.status);  // This was missing a closing parenthesis
+    
     if (!res.ok) {
       const errorBody = await res.json();
       console.error("❌ Telegram API error:", errorBody);
-    } else {
-      console.log("✅ Telegram: message sent successfully");
+      throw new Error(errorBody.description);
     }
+
+    console.log("✅ Telegram: sent!");
   } catch (error) {
+    clearTimeout(timeout);
     console.error("❌ Telegram fetch threw:", error);
+    throw error;
   }
 };
