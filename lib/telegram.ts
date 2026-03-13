@@ -18,12 +18,12 @@ export async function sendTelegramNotification(bookingData: any) {
       : "Not specified";
 
     const message = [
-      "🔔 *New Booking Alert!*",
+      "🔔 <b>New Booking Alert!</b>",
       "---------------------------",
-      `👤 *Client:* ${bookingData.name}`,
-      `📅 *Date:* ${dateStr}`,
-      `📍 *Purpose:* ${bookingData.purpose || "-"}`,
-      `📞 *Phone:* ${bookingData.phone || "N/A"}`,
+      `👤 <b>Client:</b> ${bookingData.name}`,
+      `📅 <b>Date:</b> ${dateStr}`,
+      `📍 <b>Purpose:</b> ${bookingData.purpose || "-"}`,
+      `📞 <b>Phone:</b> ${bookingData.phone || "N/A"}`,
       "---------------------------",
     ].join("\n");
 
@@ -57,7 +57,7 @@ export async function sendTelegramNotification(bookingData: any) {
         body: JSON.stringify({
           chat_id: chatId,
           text: message,
-          parse_mode: "MarkdownV2",
+          parse_mode: "HTML",
           reply_markup: {
             inline_keyboard: keyboard,
           },
