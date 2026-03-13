@@ -133,8 +133,8 @@ export async function reportError(title: string, error: unknown) {
     for (let i = 0; i < chunks.length; i++) {
       const details =
         chunks.length > 1
-          ? `(part ${i + 1}/${chunks.length})\n\n${chunks[i]}`
-          : chunks[i];
+          ? `(part ${i + 1}/${chunks.length})\n\n<pre>${chunks[i]}</pre>`
+          : `<pre>${chunks[i]}</pre>`;
 
       await sendSystemAlert(title, details);
     }
