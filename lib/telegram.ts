@@ -57,7 +57,7 @@ export async function sendTelegramNotification(bookingData: any) {
         body: JSON.stringify({
           chat_id: chatId,
           text: message,
-          parse_mode: "Markdown",
+          parse_mode: "MarkdownV2",
           reply_markup: {
             inline_keyboard: keyboard,
           },
@@ -66,6 +66,7 @@ export async function sendTelegramNotification(bookingData: any) {
     );
 
     const data = await res.json();
+    console.log("📩 Telegram response:", data);
 
     if (!data.ok) {
       console.error("❌ Telegram API error:", data);
