@@ -110,3 +110,37 @@ ${details}
     console.error("❌ Failed to send system alert:", err);
   }
 }
+
+
+const TELEGRAM_LIMIT = 4096;
+
+function chunkMessage(text: string, size: number = TELEGRAM_LIMIT - 50) {
+  const chunks: string[] = [];
+
+  for (let i = 0; i < text.length; i += size) {
+    chunks.push(text.slice(i, i + size));
+  }
+
+  return chunks;
+}
+
+export async function reportError(title: string, error: unknown) {
+  const errorText = String((error as Error)?.stack || error);
+
+  const chunks = chunkMessage(errorText);
+
+  try {
+    for (let i = 0; i < chunks.length; i++) {
+      const details =
+        chunks.length > 1
+          ? `(part ${i + 1}/${chunks.length})\n\n${chunks[i]}`
+          : chunks[i];
+
+      await sendSystemAlert(title, details);
+    }
+  } catch (err) {
+    console.error("Failed to send Telegram error alert:", err);
+  }
+
+  console.error(title, error);
+}
