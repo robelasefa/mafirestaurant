@@ -53,7 +53,7 @@ export const sendTelegramNotification = async (bookingData: any) => {
   }
 
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout
+  const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
 
   try {
     console.log("🔔 Telegram: sending fetch...");
