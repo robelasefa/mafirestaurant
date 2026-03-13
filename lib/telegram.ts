@@ -78,3 +78,31 @@ export async function sendTelegramNotification(bookingData: any) {
     console.error("❌ Telegram notification failed:", error);
   }
 }
+
+
+export async function sendSystemAlert(title: string, details: string) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_ERROR_CHAT_ID;
+
+  if (!token || !chatId) return;
+
+  const message = `
+<b>🚨 System Alert</b>
+
+<b>${title}</b>
+
+${details}
+
+<b>Time:</b> ${new Date().toLocaleString()}
+`.trim();
+
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: message,
+      parse_mode: "HTML",
+    }),
+  });
+}
