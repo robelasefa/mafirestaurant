@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendTelegramNotification } from "@/lib/telegram";
-import { reportError } from "@/lib/reportError";
+import { reportError } from "@/lib/telegram";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
