@@ -55,14 +55,16 @@ export async function POST(request: NextRequest) {
         bookingAt: bookingDate,
         purpose,
         status: "pending",
-        letterUrl: letterUrl || null, // This is just the string URL from UploadThing
+        letterUrl: letterUrl || null, // string URL from UploadThing
       },
     });
 
-    // trigger telegram notification (fire-and-forget)
-    sendTelegramNotification(booking).catch((err) => {
+    // trigger telegram notification
+    try {
+      await sendTelegramNotification(booking);
+    } catch (err) {
       console.error("Telegram notification failed but booking was saved:", err);
-    });
+    }
 
     return NextResponse.json(
       {
