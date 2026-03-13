@@ -17,35 +17,39 @@ export async function sendTelegramNotification(bookingData: any) {
         })
       : "Not specified";
 
+    // limit purpose length
+    const PURPOSE_LIMIT = 120;
+    let purpose = bookingData.purpose || "-";
+
+    if (purpose.length > PURPOSE_LIMIT) {
+      purpose = purpose.slice(0, PURPOSE_LIMIT).trim() + "...";
+    }
+
+    // detect organization booking
+    const organizationInfo = bookingData.organization
+      ? `🏢 <b>Organization:</b> ${bookingData.organization}`
+      : "👤 <b>Individual Booking</b>";
+
     const message = [
-      "🔔 <b>New Booking Alert!</b>",
+      "<b>New Booking Alert</b>",
       "---------------------------",
       `👤 <b>Client:</b> ${bookingData.name}`,
+      organizationInfo,
       `📅 <b>Date:</b> ${dateStr}`,
-      `📍 <b>Purpose:</b> ${bookingData.purpose || "-"}`,
+      `📍 <b>Purpose:</b> ${purpose}`,
       `📞 <b>Phone:</b> ${bookingData.phone || "N/A"}`,
       "---------------------------",
     ].join("\n");
 
-    const keyboard: any[] = [
+    const keyboard = [
       [
         {
-          text: "✅ View in Dashboard",
+          text: "View in Dashboard",
           url: "https://mafirestaurant.vercel.app/staff/manage-bookings",
+          style: "primary", // blue button
         },
       ],
     ];
-
-    if (bookingData.phone) {
-      const phone = bookingData.phone.replace(/\D/g, "");
-
-      keyboard.push([
-        {
-          text: `📞 Client: ${phone}`,
-          url: `https://wa.me/${phone}`,
-        },
-      ]);
-    }
 
     const res = await fetch(
       `https://api.telegram.org/bot${token}/sendMessage`,
@@ -74,6 +78,7 @@ export async function sendTelegramNotification(bookingData: any) {
     }
 
     console.log("✅ Telegram notification sent");
+
   } catch (error) {
     console.error("❌ Telegram notification failed:", error);
   }
