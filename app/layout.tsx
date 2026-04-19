@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/components/providers/AuthProvider";
@@ -7,16 +7,16 @@ import { AlertProvider } from "@/components/providers/AlertProvider";
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["300", "400", "500", "600"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: "Mafi Restaurant & Meeting Hall | Luxury Dining in Adama, Ethiopia",
   description: "Experience Adama's premier luxury dining and professional event venue. We offer 5 premium meeting halls for corporate events, workshops, and celebrations.",
   keywords: ["Mafi Restaurant", "Meeting Hall Adama", "Luxury Dining Ethiopia", "Event Venue Adama", "Corporate Meetings"],
   authors: [{ name: "Mafi Restaurant" }],
-  viewport: "width=device-width, initial-scale=1",
   robots: "index, follow",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL}/`,
+    url: "/",
     title: "Mafi Restaurant & Meeting Hall - Adama",
     description: "Exquisite cuisine and elegant meeting spaces in the heart of Adama.",
     siteName: "Mafi Restaurant",
@@ -29,6 +29,11 @@ export const metadata: Metadata = {
       },
     ],
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({

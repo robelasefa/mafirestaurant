@@ -4,7 +4,6 @@ export const sendTelegramNotification = async (bookingData: any) => {
 
   if (!token || !chatId) return;
 
-  // Formatting the date nicely for the staff
   const dateStr = bookingData.bookingAt 
     ? new Date(bookingData.bookingAt).toLocaleDateString('en-US', {
         weekday: 'short',
@@ -14,7 +13,6 @@ export const sendTelegramNotification = async (bookingData: any) => {
       })
     : 'Not specified';
 
-  // Use HTML mode for better reliability with special characters
   const message = `
 <b>🔔 New Booking Alert!</b>
 ---------------------------
@@ -40,14 +38,14 @@ export const sendTelegramNotification = async (bookingData: any) => {
             {
               text: "✅ View in Dashboard",
               url: "https://mafirestaurant.vercel.app/staff/manage-bookings",
-              style: "success" // This makes the button Green
+              style: "success"
             }
           ],
           [
             {
               text: "📞 Call Client",
               url: `tel:${bookingData.phone}`,
-              style: "primary" // This makes the button Blue
+              style: "primary"
             }
           ]
         ]

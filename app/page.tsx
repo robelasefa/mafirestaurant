@@ -6,7 +6,6 @@ import HeroSection from "@/components/HeroSection";
 import AboutUs from "@/components/AboutUs";
 import MenuCarousel from "@/components/MenuCarousel";
 import MeetingHallBooking from "@/components/MeetingHallBooking";
-import ChatBot from "@/components/ChatBot";
 import Footer from "@/components/Footer";
 import AlertComponent from "@/components/ui/Alert";
 
@@ -24,7 +23,6 @@ export default function Home() {
         message: msg || (status === "success" ? "Booking confirmed successfully!" : "An error occurred."),
       });
 
-      // Optional: remove query params after showing alert
       const newUrl = window.location.pathname;
       window.history.replaceState({}, "", newUrl);
     }
@@ -60,7 +58,6 @@ export default function Home() {
       <div>
         <Footer />
       </div>
-      {/* <ChatBot /> */}
     </div>
   );
 }

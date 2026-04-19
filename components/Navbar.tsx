@@ -5,8 +5,18 @@ import { cn } from "../lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { FaTiktok } from "react-icons/fa";
 import Image from 'next/image';
+
+const TikTokIcon = ({ className }: { className?: string }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+  </svg>
+);
 
 const sections = [
   { label: "Home", id: "hero" },
@@ -21,16 +31,12 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Consolidated scroll effect for efficiency.
   useEffect(() => {
     const handleScroll = () => {
-      // Use a single state variable to track the scroll position.
       setScrolled(window.scrollY > 10);
     };
 
-    // Call it once on mount to set the initial state.
     handleScroll();
-    // Use a passive event listener for better performance.
     window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
@@ -43,17 +49,14 @@ export default function Navbar() {
   const hrefFor = (id: string) => (pathname === "/" ? `#${id}` : `/#${id}`);
 
   const handleSectionClick = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
-    // Only prevent default and scroll if we're on the homepage.
     if (pathname === "/") {
       e.preventDefault();
       const el = document.getElementById(id);
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "start" });
-        // Use window.history for correct URL state management.
         window.history.replaceState(null, "", `#${id}`);
       }
     }
-    // Always close the mobile menu after a click.
     setIsOpen(false);
   };
 
@@ -106,7 +109,6 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Right CTA → TikTok */}
           <div className="hidden xl:flex items-center justify-center lg:justify-start gap-4">
             <a
               href="https://www.tiktok.com/@mafirestaurant"
@@ -115,11 +117,10 @@ export default function Navbar() {
               className="w-12 h-12 rounded-full border border-primary/30 text-primary hover:text-background hover:bg-primary transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
               aria-label="Visit our TikTok"
             >
-              <FaTiktok className="h-5 w-5" />
+              <TikTokIcon className="h-5 w-5" />
             </a>
           </div>
 
-          {/* Mobile Toggle */}
           <div className="lg:hidden ml-auto">
             <button
               aria-label="Toggle menu"
@@ -151,7 +152,6 @@ export default function Navbar() {
                   </span>
                 </Link>
               ))}
-              {/* TikTok in mobile menu */}
               <a
                 href="https://www.tiktok.com/@mafirestaurant"
                 target="_blank"
@@ -159,7 +159,7 @@ export default function Navbar() {
                 className="block w-full text-left px-8 py-5 text-primary hover:text-primary-glow hover:bg-primary/10 transition-all duration-300 group"
               >
                 <span className="text-xl font-semibold group-hover:translate-x-2 transition-transform duration-300 flex items-center space-x-2">
-                  <FaTiktok className="h-5 w-5" />
+                  <TikTokIcon className="h-5 w-5" />
                   <span>TikTok</span>
                 </span>
               </a>

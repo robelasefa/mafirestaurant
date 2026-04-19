@@ -1,29 +1,29 @@
 # Mafi Restaurant
 
 A modern full-stack website for **Mafi Restaurant**, built with Next.js and styled with a luxury **gold/black theme**.  
-Includes a **meeting hall booking system**, a protected **staff portal**, and **Mafi AI** for smart recommendations.
+Includes a **meeting hall booking system** and a protected **staff portal** for managing reservations.
 
 ---
 
 ## ✨ Features
-- Elegant gold/black design with smooth animations  
-- Public booking form for meeting hall reservations  
-- Staff portal to approve, reject, or delete bookings  
-- **Mafi AI**: Smart assistant for personalized suggestions and insights  
-- Secure staff login with NextAuth.js  
-- PostgreSQL database with Prisma ORM  
-- Responsive design for all devices  
+- Elegant gold/black design with smooth animations
+- Public booking form for meeting hall reservations
+- Staff portal to approve, reject, or delete bookings
+- Secure staff login with NextAuth.js
+- PostgreSQL database with Prisma ORM
+- Responsive design for all devices
 
 ---
 
 ## 🛠 Tech Stack
-- **Frontend**: Next.js, React, TypeScript  
-- **Styling**: Tailwind CSS  
-- **Database**: SQLite (development) with Prisma, configurable to PostgreSQL in production  
-- **ORM**: Prisma  
-- **Auth**: NextAuth.js  
-- **Icons**: Lucide React  
-- **Deployment**: Vercel  
+- **Frontend**: Next.js, React, TypeScript
+- **Styling**: Tailwind CSS
+- **Database**: SQLite (development) with Prisma, configurable to PostgreSQL in production
+- **ORM**: Prisma
+- **Auth**: NextAuth.js
+- **Icons**: Lucide React
+- **File Upload**: UploadThing
+- **Deployment**: Vercel
 
 ---
 
