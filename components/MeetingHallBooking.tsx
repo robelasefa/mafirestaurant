@@ -7,51 +7,51 @@ import Image from 'next/image';
 const MeetingHallBooking = () => {
 
   return (
-    <section id="reservation" className="py-20 bg-background relative overflow-hidden">
+    <section id="reservation" className="py-24 bg-background relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-16 animate-fade-in">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="w-16 h-px bg-primary/30"></div>
-            <span className="text-primary font-medium tracking-widest uppercase text-sm">
+        <div className="text-center mb-20 animate-fade-in">
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <div className="w-12 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+            <span className="text-primary font-medium tracking-widest uppercase text-xs md:text-sm">
               Book Your Event
             </span>
-            <div className="w-16 h-px bg-primary/30"></div>
+            <div className="w-12 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-primary mb-3 leading-tight">
-            Meeting Halls
+          <h2 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-primary mb-6 leading-tight text-pretty">
+            Premium Event Spaces
           </h2>
           <p className="text-lg md:text-xl text-foreground-muted max-w-3xl mx-auto leading-relaxed">
             Host your corporate events, meetings, and special gatherings in
-            our elegant meeting hall with state-of-the-art facilities.
+            our elegant meeting halls with state-of-the-art facilities.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
           {/* Meeting Hall Image */}
           <div className="order-2 lg:order-1 animate-fade-in">
-            <div className="relative overflow-hidden rounded-3xl shadow-2xl group">
+            <div className="relative overflow-hidden rounded-2xl shadow-2xl group border border-primary/10">
               <Image
                 src="/images/meeting-hall.webp"
                 alt="Mafi Restaurant Meeting Hall"
                 width={1000}
                 height={500}
-                className="w-full h-[500px] object-cover transition-transform duration-700 group-hover:scale-105"
+                className="w-full h-[550px] object-cover transition-transform duration-700 group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
               {/* Floating Info Cards */}
-              <div className="absolute bottom-6 left-6 bg-background/90 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-primary/20">
+              <div className="absolute bottom-8 left-8 bg-background/95 backdrop-blur-md rounded-lg p-5 shadow-lg border border-primary/20 hover:border-primary/40 transition-all">
                 <div className="flex items-center space-x-3">
                   <div className="w-3 h-3 bg-primary rounded-full"></div>
-                  <span className="text-primary font-semibold text-sm">Capacity: 400+ People</span>
+                  <span className="text-primary font-semibold">Capacity: 400+ People</span>
                 </div>
               </div>
 
-              <div className="absolute top-6 right-6 bg-background/90 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-primary/20">
+              <div className="absolute top-8 right-8 bg-background/95 backdrop-blur-md rounded-lg p-5 shadow-lg border border-primary/20 hover:border-primary/40 transition-all">
                 <div className="flex items-center space-x-3">
                   <div className="w-3 h-3 bg-primary rounded-full"></div>
-                  <span className="text-primary font-semibold text-sm">Professional Setup</span>
+                  <span className="text-primary font-semibold">Professional Setup</span>
                 </div>
               </div>
             </div>

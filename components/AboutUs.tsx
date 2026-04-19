@@ -19,16 +19,16 @@ const AboutUs = () => {
   ];
 
   return (
-    <section id="about" className="py-20 bg-background relative overflow-hidden">
+    <section id="about" className="py-24 bg-background relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-16 animate-fade-in">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="w-16 h-px bg-primary/30"></div>
-            <span className="text-primary font-medium tracking-widest uppercase text-sm">Discover</span>
-            <div className="w-16 h-px bg-primary/30"></div>
+        <div className="text-center mb-20 animate-fade-in">
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <div className="w-12 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+            <span className="text-primary font-medium tracking-widest uppercase text-xs md:text-sm">Discover</span>
+            <div className="w-12 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-primary mb-3 leading-tight">
+          <h2 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-primary mb-6 leading-tight text-pretty">
             Who We Are
           </h2>
           <p className="text-lg md:text-xl text-foreground-muted max-w-3xl mx-auto leading-relaxed">
@@ -37,37 +37,37 @@ const AboutUs = () => {
         </div>
 
         {/* Stats Section */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-24 py-12 border-y border-primary/10">
           {stats.map((stat, index) => (
             <div key={index} className="text-center group">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors duration-300">
-                <stat.icon className="h-8 w-8 text-primary" />
+              <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-primary/15 transition-all duration-300">
+                <stat.icon className="h-10 w-10 text-primary" />
               </div>
-              <div className="text-3xl font-bold text-primary mb-2">{stat.value}</div>
+              <div className="text-4xl font-bold text-primary mb-2">{stat.value}</div>
               <div className="text-foreground-muted text-sm font-medium">{stat.label}</div>
             </div>
           ))}
         </div>
 
         {/* Main Content */}
-        <div className="grid lg:grid-cols-2 gap-16 items-center mb-20">
+        <div className="grid lg:grid-cols-2 gap-20 items-center mb-20">
           {/* Image */}
           <div className="order-2 lg:order-1 animate-fade-in">
             <div className="relative">
-              <div className="relative overflow-hidden rounded-3xl shadow-2xl">
+              <div className="relative overflow-hidden rounded-2xl shadow-2xl group">
                 <Image
                   src="/images/meeting-hall.webp"
                   alt="Mafi Restaurant Interior"
                   width={1000}
                   height={500}
-                  className="w-full h-[500px] object-cover transition-transform duration-700 hover:scale-105"
+                  className="w-full h-[550px] object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
               </div>
               {/* Floating Badge */}
-              <div className="absolute -bottom-6 -right-6 bg-primary/90 backdrop-blur-sm text-primary-foreground px-6 py-3 rounded-full shadow-lg">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5" />
+              <div className="absolute -bottom-8 -right-8 bg-primary/95 backdrop-blur-sm text-primary-foreground px-8 py-4 rounded-full shadow-lg border border-primary/30">
+                <div className="flex items-center gap-3">
+                  <Sparkles className="h-6 w-6" />
                   <span className="font-semibold">Since 2017</span>
                 </div>
               </div>
@@ -101,8 +101,9 @@ const AboutUs = () => {
               <div className="space-y-6">
                 {activeTab === "story" && (
                   <div className="space-y-6">
-                    <h3 className="text-3xl font-serif font-bold text-primary">Our Culinary Journey</h3>
-                    <div className="space-y-4 text-foreground-muted leading-relaxed">
+                    <h3 className="text-4xl font-serif font-bold text-primary">Our Culinary Journey</h3>
+                    <div className="w-12 h-1 bg-gradient-to-r from-primary via-primary to-primary/50"></div>
+                    <div className="space-y-5 text-foreground-muted leading-relaxed text-lg">
                       <p>
                         Founded in 2017, Mafi Restaurant began as a dream to bring authentic Ethiopian cuisine
                         with a modern twist to the heart of Adama. Our mission: to create memorable dining
@@ -122,21 +123,22 @@ const AboutUs = () => {
 
                 {activeTab === "awards" && (
                   <div className="space-y-6">
-                    <h3 className="text-3xl font-serif font-bold text-primary">Recognition & Awards</h3>
-                    <div className="space-y-6">
-                      <div className="bg-background-subtle/50 p-6 rounded-xl border border-primary/20">
-                        <h4 className="text-lg font-semibold text-primary">World Health Organization (WHO)</h4>
-                        <p className="text-sm text-foreground-muted">Awarded for excellence in hygiene and food safety standards.</p>
+                    <h3 className="text-4xl font-serif font-bold text-primary">Recognition & Awards</h3>
+                    <div className="w-12 h-1 bg-gradient-to-r from-primary via-primary to-primary/50"></div>
+                    <div className="space-y-5">
+                      <div className="bg-background-subtle/30 p-7 rounded-lg border border-primary/20 hover:border-primary/40 hover:bg-background-subtle/50 transition-all duration-300 group">
+                        <h4 className="text-lg font-semibold text-primary mb-2 group-hover:text-primary-glow transition-colors">World Health Organization (WHO)</h4>
+                        <p className="text-base text-foreground-muted">Awarded for excellence in hygiene and food safety standards.</p>
                       </div>
 
-                      <div className="bg-background-subtle/50 p-6 rounded-xl border border-primary/20">
-                        <h4 className="text-lg font-semibold text-primary">Ethiopian Electric Service</h4>
-                        <p className="text-sm text-foreground-muted">Recognized for outstanding operational standards.</p>
+                      <div className="bg-background-subtle/30 p-7 rounded-lg border border-primary/20 hover:border-primary/40 hover:bg-background-subtle/50 transition-all duration-300 group">
+                        <h4 className="text-lg font-semibold text-primary mb-2 group-hover:text-primary-glow transition-colors">Ethiopian Electric Service</h4>
+                        <p className="text-base text-foreground-muted">Recognized for outstanding operational standards.</p>
                       </div>
 
-                      <div className="bg-background-subtle/50 p-6 rounded-xl border border-primary/20">
-                        <h4 className="text-lg font-semibold text-primary">Adama City Administration</h4>
-                        <p className="text-sm text-foreground-muted">Honored for contributions to the city&apos;s hospitality sector.</p>
+                      <div className="bg-background-subtle/30 p-7 rounded-lg border border-primary/20 hover:border-primary/40 hover:bg-background-subtle/50 transition-all duration-300 group">
+                        <h4 className="text-lg font-semibold text-primary mb-2 group-hover:text-primary-glow transition-colors">Adama City Administration</h4>
+                        <p className="text-base text-foreground-muted">Honored for contributions to the city&apos;s hospitality sector.</p>
                       </div>
                     </div>
                   </div>

@@ -65,7 +65,7 @@ export default function Navbar() {
       className={cn(
         "fixed top-0 left-0 w-full z-50 transition-all duration-300",
         scrolled
-          ? "bg-background/98 backdrop-blur-md shadow-elegant !shadow-none"
+          ? "bg-background/95 backdrop-blur-xl shadow-elegant border-b border-primary/10"
           : "bg-transparent"
       )}
     >
@@ -84,40 +84,45 @@ export default function Navbar() {
               <Image
                 src="/images/logo.webp"
                 alt="Mafi Restaurant"
-                width={56}   // h-14 = 56px
+                width={56}
                 height={56}
-                className="h-14 w-14 rounded-full object-cover border-2 border-primary"
+                className="h-14 w-14 rounded-full object-cover border-2 border-primary transition-transform duration-300 group-hover:scale-110"
               />
             </div>
-            <span className="ml-4 text-2xl font-serif font-bold text-primary">
-              Mafi Restaurant
-            </span>
+            <div className="ml-4 hidden sm:block">
+              <span className="text-xl lg:text-2xl font-serif font-bold text-primary block leading-tight">
+                Mafi
+              </span>
+              <span className="text-xs lg:text-sm text-primary/70 font-medium tracking-widest uppercase">
+                Restaurant
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden lg:flex flex-1 justify-center items-center space-x-10">
+          <div className="hidden lg:flex flex-1 justify-center items-center space-x-12">
             {sections.map(({ label, id }) => (
               <Link
                 key={id}
                 href={hrefFor(id)}
                 onClick={(e) => handleSectionClick(e, id)}
-                className="relative text-lg font-medium text-primary hover:text-primary-glow transition-all duration-300 group"
+                className="relative text-sm font-medium text-primary hover:text-primary-glow transition-all duration-300 group uppercase tracking-wide"
               >
                 {label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-glow transition-all duration-300 group-hover:w-full" />
+                <span className="absolute -bottom-2 left-0 w-0 h-1 bg-primary-glow transition-all duration-300 group-hover:w-full rounded-full" />
               </Link>
             ))}
           </div>
 
-          <div className="hidden xl:flex items-center justify-center lg:justify-start gap-4">
+          <div className="hidden xl:flex items-center justify-center lg:justify-start gap-4 ml-auto">
             <a
               href="https://www.tiktok.com/@mafirestaurant"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-12 h-12 rounded-full border border-primary/30 text-primary hover:text-background hover:bg-primary transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
+              className="w-10 h-10 rounded-full border border-primary/30 text-primary hover:text-background hover:bg-primary transition-all duration-300 transform hover:scale-110 flex items-center justify-center"
               aria-label="Visit our TikTok"
             >
-              <TikTokIcon className="h-5 w-5" />
+              <TikTokIcon className="h-4 w-4" />
             </a>
           </div>
 
@@ -138,16 +143,16 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="lg:hidden bg-background/98 backdrop-blur-md border-t border-primary/30 animate-slide-in-right">
-            <div className="py-8 space-y-1">
+          <div className="lg:hidden bg-background/98 backdrop-blur-md border-t border-primary/20 animate-slide-in-right">
+            <div className="py-8 space-y-0">
               {sections.map(({ label, id }) => (
                 <Link
                   key={id}
                   href={hrefFor(id)}
                   onClick={(e) => handleSectionClick(e, id)}
-                  className="block w-full text-left px-8 py-5 text-primary hover:text-primary-glow hover:bg-primary/10 transition-all duration-300 border-b border-primary/20 group"
+                  className="block w-full text-left px-8 py-4 text-primary hover:text-primary-glow hover:bg-primary/5 transition-all duration-300 border-b border-primary/10 group uppercase tracking-wide text-sm font-medium"
                 >
-                  <span className="text-xl font-semibold group-hover:translate-x-2 transition-transform duration-300">
+                  <span className="group-hover:translate-x-2 transition-transform duration-300 inline-block">
                     {label}
                   </span>
                 </Link>
@@ -156,10 +161,10 @@ export default function Navbar() {
                 href="https://www.tiktok.com/@mafirestaurant"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full text-left px-8 py-5 text-primary hover:text-primary-glow hover:bg-primary/10 transition-all duration-300 group"
+                className="block w-full text-left px-8 py-4 text-primary hover:text-primary-glow hover:bg-primary/5 transition-all duration-300 group uppercase tracking-wide text-sm font-medium"
               >
-                <span className="text-xl font-semibold group-hover:translate-x-2 transition-transform duration-300 flex items-center space-x-2">
-                  <TikTokIcon className="h-5 w-5" />
+                <span className="group-hover:translate-x-2 transition-transform duration-300 flex items-center space-x-2">
+                  <TikTokIcon className="h-4 w-4" />
                   <span>TikTok</span>
                 </span>
               </a>

@@ -94,45 +94,45 @@ const MenuCarousel = () => {
   const currentItem = menuItems[currentIndex];
 
   return (
-    <section id="menu" className="py-20 bg-background-accent">
-      <div className="max-w-4xl mx-auto px-4">
+    <section id="menu" className="py-24 bg-background-accent relative overflow-hidden">
+      <div className="max-w-5xl mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center mb-16 animate-fade-in">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="w-16 h-px bg-primary/30"></div>
-            <span className="text-primary font-medium tracking-widest uppercase text-sm">Our Cuisine</span>
-            <div className="w-16 h-px bg-primary/30"></div>
+        <div className="text-center mb-20 animate-fade-in">
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <div className="w-12 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+            <span className="text-primary font-medium tracking-widest uppercase text-xs md:text-sm">Our Cuisine</span>
+            <div className="w-12 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-primary mb-3 leading-tight">
+          <h2 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-primary mb-6 leading-tight text-pretty">
             Signature Menu
           </h2>
-          <p className="text-base md:text-lg text-foreground-muted max-w-xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-foreground-muted max-w-2xl mx-auto leading-relaxed">
             Discover our carefully crafted dishes, each prepared with the finest
-            ingredients and presented with elegance
+            ingredients and presented with elegance.
           </p>
         </div>
 
         {/* Carousel Container */}
         <div className="w-full flex flex-col items-center">
           {/* Image Display - FIXED to show food portions */}
-          <div className="relative w-full max-w-lg aspect-[4/3] rounded-xl overflow-hidden shadow-lg bg-background-subtle group">
+          <div className="relative w-full max-w-2xl aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl bg-background-subtle group border border-primary/10">
             <Image
               src={currentItem.image}
               alt={currentItem.title}
-              width={800} // Set the actual width in px if known
-              height={600} // Or 4:3 aspect from the parent div
-              className="w-full h-full object-cover transition-all duration-700 ease-in-out group-hover:scale-105"
+              width={800}
+              height={600}
+              className="w-full h-full object-cover transition-all duration-700 ease-in-out group-hover:scale-110"
               style={{
-                filter: "brightness(1.05) contrast(1.1) saturate(1.05)",
+                filter: "brightness(1.08) contrast(1.15) saturate(1.1)",
                 objectPosition: "center bottom",
               }}
             />
             {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent pointer-events-none" />
 
             {/* Floating Badge */}
-            <div className="absolute top-3 right-3 bg-primary/90 backdrop-blur-sm text-primary-foreground px-2 py-1 rounded-full shadow-md">
-              <span className="font-semibold text-xs">Signature</span>
+            <div className="absolute top-5 right-5 bg-primary/95 backdrop-blur-sm text-primary-foreground px-4 py-2 rounded-full shadow-lg border border-primary/30">
+              <span className="font-semibold text-sm">Signature</span>
             </div>
           </div>
 
@@ -179,27 +179,27 @@ const MenuCarousel = () => {
           </div>
 
           {/* Content Display */}
-          <div className="text-center mt-8 space-y-3 max-w-2xl">
-            <div className="space-y-2">
-              <h3 className="text-xl md:text-2xl lg:text-3xl font-serif font-bold text-primary transition-all duration-500">
+          <div className="text-center mt-12 space-y-5 max-w-3xl">
+            <div className="space-y-4">
+              <h3 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-primary transition-all duration-500 text-pretty">
                 {currentItem.title}
               </h3>
-              <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent mx-auto transition-all duration-500"></div>
+              <div className="w-16 h-1 bg-gradient-to-r from-transparent via-primary to-transparent mx-auto transition-all duration-500"></div>
             </div>
 
-            <p className="text-sm md:text-base text-foreground-muted mx-auto max-w-lg leading-relaxed opacity-90">
+            <p className="text-lg md:text-xl text-foreground-muted mx-auto max-w-2xl leading-relaxed opacity-95">
               {currentItem.description}
             </p>
 
             {/* Menu Categories */}
-            <div className="flex flex-wrap justify-center gap-2 mt-4">
-              <span className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium border border-primary/20">
+            <div className="flex flex-wrap justify-center gap-3 mt-6">
+              <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium border border-primary/30 hover:bg-primary/20 transition-colors">
                 Premium
               </span>
-              <span className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium border border-primary/20">
+              <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium border border-primary/30 hover:bg-primary/20 transition-colors">
                 Fresh
               </span>
-              <span className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium border border-primary/20">
+              <span className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium border border-primary/30 hover:bg-primary/20 transition-colors">
                 Expert
               </span>
             </div>
