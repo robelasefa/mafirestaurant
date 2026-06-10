@@ -34,7 +34,7 @@ export default function Booking() {
   const { showAlert } = useAlert();
   
   // Initialize UploadThing Hook
-  const { startUpload } = useUploadThing("pdfUploader");
+  const { startUpload } = useUploadThing("fileUploader");
   
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});

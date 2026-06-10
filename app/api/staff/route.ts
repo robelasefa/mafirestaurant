@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { reportError } from "@/lib/telegram";
 import bcrypt from "bcryptjs";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -38,7 +39,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ message: "Staff member created.", user }, { status: 201 });
   } catch (err) {
-    console.error(err);
+    await reportError("Staff creation failed", err);
+    
     return NextResponse.json({ error: "Internal server error." }, { status: 500 });
   }
 }

@@ -1,13 +1,19 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/components/providers/AuthProvider";
 import { AlertProvider } from "@/components/providers/AlertProvider";
+import StaffQuickAccess from "@/components/StaffQuickAccess";
 
 const montserrat = Montserrat({ subsets: ["latin"], weight: ["300", "400", "500", "600"] });
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
   title: "Mafi Restaurant & Meeting Hall | Luxury Dining in Adama, Ethiopia",
   description: "Experience Adama's premier luxury dining and professional event venue. We offer 5 premium meeting halls for corporate events, workshops, and celebrations.",
   keywords: ["Mafi Restaurant", "Meeting Hall Adama", "Luxury Dining Ethiopia", "Event Venue Adama", "Corporate Meetings"],
@@ -29,11 +35,6 @@ export const metadata: Metadata = {
       },
     ],
   },
-};
-
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -90,6 +91,7 @@ export default function RootLayout({
         <AuthProvider>
           <AlertProvider>
             {children}
+            <StaffQuickAccess />
           </AlertProvider>
         </AuthProvider>
       </body>

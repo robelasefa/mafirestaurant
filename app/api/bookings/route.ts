@@ -1,23 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendTelegramNotification } from "@/lib/telegram";
+import { reportError } from "@/lib/telegram";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
+    // 1. Parse JSON instead of FormData
     const body = await request.json();
 
-    const {
-      name,
-      email,
-      phone,
-      organization,
-      bookingAt,
-      purpose,
-      letterUrl
+    const { 
+      name, 
+      email, 
+      phone, 
+      organization, 
+      bookingAt, 
+      purpose, 
+      letterUrl 
     } = body;
 
+    // 2. Required fields validation
     if (!name || !email || !bookingAt || !purpose) {
       return NextResponse.json(
         { success: false, message: "Missing required fields." },
@@ -25,6 +28,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // 3. Validate booking date
     const bookingDate = new Date(bookingAt);
     if (isNaN(bookingDate.getTime())) {
       return NextResponse.json(
@@ -33,6 +37,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // 4. Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -41,6 +46,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // 5. Create booking in Prisma
     const booking = await prisma.booking.create({
       data: {
         name,
@@ -50,10 +56,11 @@ export async function POST(request: NextRequest) {
         bookingAt: bookingDate,
         purpose,
         status: "pending",
-        letterUrl: letterUrl || null,
+        letterUrl: letterUrl || null, // string URL from UploadThing
       },
     });
 
+    // trigger telegram notification
     try {
       await sendTelegramNotification(booking);
     } catch (err) {
@@ -69,13 +76,15 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error creating booking:", error);
+    await reportError("Booking creation failed", error);
+    
     return NextResponse.json(
       { success: false, message: "Internal server error" },
       { status: 500 }
     );
   }
 }
+
 
 export async function GET() {
   try {
@@ -94,7 +103,8 @@ export async function GET() {
 
     return NextResponse.json({ success: true, data: bookings });
   } catch (error) {
-    console.error("Error fetching bookings:", error);
+    await reportError("Fetching bookings failed", error);
+    
     return NextResponse.json(
       { success: false, message: "Internal server error" },
       { status: 500 }
