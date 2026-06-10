@@ -33,7 +33,6 @@ export default function Booking() {
   const router = useRouter();
   const { showAlert } = useAlert();
   
-  // Initialize UploadThing Hook
   const { startUpload } = useUploadThing("fileUploader");
   
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -42,13 +41,11 @@ export default function Booking() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file size (2MB limit)
       if (file.size > 2 * 1024 * 1024) {
         showAlert("error", "File Too Large", "Please select a file smaller than 2MB.");
         return;
       }
       
-      // Validate file type
       const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
       if (!allowedTypes.includes(file.type)) {
         showAlert("error", "Invalid File Type", "Please upload PDF, DOC, DOCX, JPG, or PNG files only.");
@@ -56,7 +53,7 @@ export default function Booking() {
       }
       
       setUploadedFile(file);
-      setLetterUrl(null); // Clear any previous uploaded URL
+      setLetterUrl(null);
     }
   };
 
@@ -66,50 +63,37 @@ export default function Booking() {
   };
 
   const validateField = (name: string, value: string) => {
-    let error = "";
-
     switch (name) {
       case "name":
-        if (!value.trim()) error = "Please enter your full name.";
-        else if (value.trim().length < 3) error = "Name must be at least 3 characters.";
-        break;
+        if (!value.trim()) return "Please enter your full name.";
+        if (value.trim().length < 3) return "Name must be at least 3 characters.";
+        return "";
 
       case "email":
-        if (!value) error = "Email is required.";
-        else {
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(value)) error = "Enter a valid email address.";
-        }
-        break;
+        if (!value) return "Email is required.";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Enter a valid email address.";
+        return "";
 
       case "phone":
-        if (!value) error = "Phone number is required.";
-        else {
-          const phoneRegex = /^0(9|7)\d{2}\d{3}\d{3}$/;
-          if (!phoneRegex.test(value)) error = "Enter a valid Ethiopian phone number.";
-        }
-        break;
+        if (!value) return "Phone number is required.";
+        if (!/^0(9|7)\d{2}\d{3}\d{3}$/.test(value)) return "Enter a valid Ethiopian phone number.";
+        return "";
 
       case "bookingAt":
-        if (!value) error = "Please select a date and time.";
-        else {
-          const selectedDate = new Date(value);
-          const now = new Date();
-          if (isNaN(selectedDate.getTime())) {
-            error = "Invalid date format.";
-          } else if (selectedDate < now) {
-            error = "Booking time must be in the future.";
-          }
-        }
-        break;
+        if (!value) return "Please select a date and time.";
+        const selectedDate = new Date(value);
+        if (isNaN(selectedDate.getTime())) return "Invalid date format.";
+        if (selectedDate < new Date()) return "Booking time must be in the future.";
+        return "";
 
       case "purpose":
-        if (!value.trim()) error = "Purpose is required.";
-        else if (value.trim().length < 10) error = "Please provide more details (min 10 chars).";
-        break;
-    }
+        if (!value.trim()) return "Purpose is required.";
+        if (value.trim().length < 10) return "Please provide more details (min 10 chars).";
+        return "";
 
-    return error;
+      default:
+        return "";
+    }
   };
 
 
@@ -172,7 +156,6 @@ export default function Booking() {
     try {
       let finalLetterUrl = null;
 
-      // Handle File Upload first
       if (uploadedFile && formData.organization) {
         setIsUploading(true);
         const uploadRes = await startUpload([uploadedFile]);
@@ -180,12 +163,10 @@ export default function Booking() {
         if (!uploadRes || uploadRes.length === 0) {
           throw new Error("Failed to upload file.");
         }
-        // Note: check if your version of UploadThing uses .ufsUrl or .url
         finalLetterUrl = uploadRes[0].url; 
         setIsUploading(false);
       }
 
-      // Prepare the payload as JSON (Standard for Next.js API routes)
       const payload = {
         ...formData,
         letterUrl: finalLetterUrl,
@@ -200,7 +181,6 @@ export default function Booking() {
       const data = await response.json();
 
       if (response.ok) {
-        // ... (Your existing success logic)
         setFormData({
           name: "",
           email: "",

@@ -7,7 +7,6 @@ const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex flex-col justify-center overflow-hidden pt-20 md:pt-24 lg:pt-28">
 
-      {/* Background Video with Performance Optimizations */}
       <video
         src="/videos/hero-bg.mp4"
         poster="/images/hero-first-frame.webp"
@@ -23,26 +22,21 @@ const HeroSection = () => {
         title="View Menu"
       />
 
-      {/* Gradient Overlay with Multiple Layers */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/80" />
       <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40" />
 
-      {/* Hero Content with Layout */}
       <div className="relative z-10 text-center max-w-6xl mx-auto px-6 animate-slide-up">
-        {/* Main Heading with Typography */}
         <div className="mb-8">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-primary mb-4 leading-tight tracking-tight">
             Mafi Restaurant
           </h1>
         </div>
 
-        {/* Subtitle with Better Typography */}
         <p className="text-lg md:text-xl lg:text-2xl text-foreground-muted mb-12 max-w-3xl mx-auto font-light leading-relaxed">
           Discover refined Ethiopian and international cuisine in an intimate,
           beautifully designed setting in the heart of Adama.
         </p>
 
-        {/* Buttons with Better Spacing and Icons */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
           <Button
             variant="gold"
@@ -70,7 +64,6 @@ const HeroSection = () => {
           </Button>
         </div>
 
-        {/* Feature Highlights - Visible only on larger devices */}
         <div className="hidden lg:grid grid-cols-3 gap-8 max-w-4xl mx-auto">
           <div className="flex flex-col items-center text-center group">
             <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary/30 transition-colors duration-300">

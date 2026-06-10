@@ -20,7 +20,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "All fields are required." }, { status: 400 });
     }
 
-    // Check if user already exists
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
       return NextResponse.json({ error: "User with this email already exists." }, { status: 400 });
@@ -33,7 +32,7 @@ export async function POST(request: NextRequest) {
         name,
         email,
         password: hashedPassword,
-        role, // 'staff' or 'admin'
+        role,
       },
     });
 

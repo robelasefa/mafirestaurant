@@ -7,7 +7,6 @@ import { authOptions } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
-    // 1. Parse JSON instead of FormData
     const body = await request.json();
 
     const { 
@@ -20,7 +19,6 @@ export async function POST(request: NextRequest) {
       letterUrl 
     } = body;
 
-    // 2. Required fields validation
     if (!name || !email || !bookingAt || !purpose) {
       return NextResponse.json(
         { success: false, message: "Missing required fields." },
@@ -28,7 +26,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 3. Validate booking date
     const bookingDate = new Date(bookingAt);
     if (isNaN(bookingDate.getTime())) {
       return NextResponse.json(
@@ -37,7 +34,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 4. Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -46,7 +42,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 5. Create booking in Prisma
     const booking = await prisma.booking.create({
       data: {
         name,
@@ -60,7 +55,6 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // trigger telegram notification
     try {
       await sendTelegramNotification(booking);
     } catch (err) {
