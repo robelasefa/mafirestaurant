@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// Base booking fields for shared validation rules
 const baseBookingFields = {
   name: z.string()
     .min(1, "Please enter your full name.")
@@ -15,7 +14,6 @@ const baseBookingFields = {
     .min(10, "Please provide more details (min 10 chars)."),
 };
 
-// API Schema: Used on the backend for JSON payload validation
 export const bookingSchema = z.object({
   ...baseBookingFields,
   bookingAt: z.string()
@@ -37,8 +35,6 @@ export const bookingSchema = z.object({
   }
 });
 
-// Form Schema: Used on the client side with react-hook-form
-// Uses z.instanceof(File) to support validating the locally selected file before upload
 export const bookingFormSchema = z.object({
   ...baseBookingFields,
   bookingAt: z.string()
