@@ -1,13 +1,27 @@
+import { z } from "zod";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendTelegramNotification } from "@/lib/telegram";
 import { reportError } from "@/lib/telegram";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { bookingSchema } from "@/lib/validations";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+
+    const result = bookingSchema.safeParse(body);
+    if (!result.success) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: result.error.issues.map(err => err.message).join(" "),
+          errors: z.treeifyError(result.error)
+        },
+        { status: 400 }
+      );
+    }
 
     const { 
       name, 
@@ -17,30 +31,10 @@ export async function POST(request: NextRequest) {
       bookingAt, 
       purpose, 
       letterUrl 
-    } = body;
-
-    if (!name || !email || !bookingAt || !purpose) {
-      return NextResponse.json(
-        { success: false, message: "Missing required fields." },
-        { status: 400 }
-      );
-    }
+    } = result.data;
 
     const bookingDate = new Date(bookingAt);
-    if (isNaN(bookingDate.getTime())) {
-      return NextResponse.json(
-        { success: false, message: "Invalid booking date." },
-        { status: 400 }
-      );
-    }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { success: false, message: "Invalid email format." },
-        { status: 400 }
-      );
-    }
 
     const booking = await prisma.booking.create({
       data: {

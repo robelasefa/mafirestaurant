@@ -4,6 +4,7 @@ import { reportError } from "@/lib/telegram";
 import bcrypt from "bcryptjs";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { staffSchema } from "@/lib/validations";
 
 export const dynamic = "force-dynamic";
 
@@ -14,11 +15,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    const { name, email, password, role } = await request.json();
-
-    if (!name || !email || !password || !role) {
-      return NextResponse.json({ error: "All fields are required." }, { status: 400 });
+    const body = await request.json();
+    const result = staffSchema.safeParse(body);
+    if (!result.success) {
+      return NextResponse.json(
+        { error: result.error.issues.map(e => e.message).join(" ") },
+        { status: 400 }
+      );
     }
+
+    const { name, email, password, role } = result.data;
 
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
