@@ -1,6 +1,6 @@
 # Mafi Restaurant
 
-![Mafi Restaurant Preview](public\videos\preview.gif)
+![Mafi Restaurant Preview](./public/images/preview.png)
 
 A modern full-stack website for **Mafi Restaurant**, built with Next.js and styled with a luxury **gold/black theme**.  
 Includes a **meeting hall booking system**, a **staff portal**.
